@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="../global.css">
+		<link rel="stylesheet" type="text/css" href="adm-style.css">
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="../global.js"></script>
+	</head>
+	
+	<body>
+		<header>
+			<div id="topMenu">
+		
+				<div><h1>Controle De Estoque - Foro Da 11ª</h1></div>
+				
+				<div>
+					<input type="text" id="searchInput" placeholder="Pesquisar item">
+				</div>
+				
+				<div id="userProfile"> 
+					<label>admin</label>
+				</div>
+			</div>
+			
+			<div>
+				<ul id="menu">
+					<li>
+						<div><span class="ui-icon ui-icon-home"></span>Início</div>
+					</li>
+					<li>
+						<div><span class="ui-icon ui-icon-circle-arrow-n"></span>Pedidos</div>
+						<ul>
+							<li>
+								<div>		
+									Pendentes
+								</div>
+							</li>
+							<li>
+								<div>		
+									Autorizados
+								</div>
+							</li>
+							<li>
+								<div>		
+									Finalizados
+								</div>
+							</li>
+							<li>
+								<div>		
+									Cancelados Pelo Administrador
+								</div>
+							</li>
+							<li>
+								<div>		
+									Cancelados Pelo Usuário
+								</div>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<div><span class="ui-icon ui-icon-circle-arrow-s"></span>Entradas</div>
+					</li>
+					<li>
+						<div><span class="ui-icon ui-icon-person"></span>Usuários do sistema</div>
+					</li>
+					<li>
+						<div><span class="ui-icon ui-icon-document"></span>Relatórios</div>
+						<ul>
+							<li>
+								<div>		
+									Necessidade de Aquisição
+								</div>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<div>
+							Sair 
+						</div>
+					</li>
+				</ul>
+			</div>
+		</header>
+		
+		<div id="content">
+			<table id="tableHome">
+				<thead>
+					<tr>
+						<th colspan="5"></th>
+						<th colspan="4">Consumo ano atual</th>
+						<th></th>
+						<th colspan="4">Consumo entre datas</th>
+					</tr>
+					<tr>
+						<th>
+							Código
+							<div class="dropdown">
+								<img src="../images/down-arrow.png" class="dropbtn"/>
+								<div class="dropdown-content">
+									<span>Classificar em ordem crescente</span>
+									<span>Classificar em ordem decrescente</span>
+								</div>
+							</div>
+						</th>
+						<th style="width: 30%">
+							Descrição
+							<div class="dropdown">
+								<img src="../images/down-arrow.png" class="dropbtn"/>
+								<div class="dropdown-content">
+									<span>Classificar em ordem crescente</span>
+									<span>Classificar em ordem decrescente</span>
+								</div>
+							</div>
+						</th>
+						<th>
+							Unidade
+							<div class="dropdown">
+								<img src="../images/down-arrow.png" class="dropbtn"/>
+								<div class="dropdown-content">
+									<span>Classificar em ordem crescente</span>
+									<span>Classificar em ordem decrescente</span>
+									<br />
+									<span>Filtros</span>
+									<input type="checkbox"/> Filtro 00 <br />
+									<input type="checkbox"/> Filtro 01
+								</div>
+							</div>
+						</th>
+						<th>
+							Subitem
+							<div class="dropdown">
+								<img src="../images/down-arrow.png" class="dropbtn"/>
+								<div class="dropdown-content">
+									<span>Classificar em ordem crescente</span>
+									<span>Classificar em ordem decrescente</span>
+									<br />
+									<span>Filtros</span>
+									<input type="checkbox"/> Filtro 00 <br />
+									<input type="checkbox"/> Filtro 01
+								</div>
+							</div>	
+						</th>
+						<th>
+							Categoria
+							<div class="dropdown">
+								<img src="../images/down-arrow.png" class="dropbtn"/>
+								<div class="dropdown-content">
+									<span>Classificar em ordem crescente</span>
+									<span>Classificar em ordem decrescente</span>
+									<br />
+									<span>Filtros</span>
+									<input type="checkbox"/> Filtro 00 <br />
+									<input type="checkbox"/> Filtro 01
+								</div>
+							</div>
+						</th>
+						<th class="verticalTableHeader">1ª auditoria</th>
+						<th class="verticalTableHeader">local 01</th>
+						<th class="verticalTableHeader">local 01</th>
+						<th class="verticalTableHeader">local 01</th>
+						<th>
+							Estoque Anterior
+							<br />
+							<input type="date"/>
+						</th>
+						<th class="verticalTableHeader">local 01</th>
+						<th class="verticalTableHeader">local 01</th>
+						<th class="verticalTableHeader">local 01</th>
+						<th class="verticalTableHeader">local 01</th>
+						<th>
+							Estoque Atual
+							<br />
+							<input type="date"/>
+						</th>
+					</tr>
+				</thead>
+				<tbody>	
+					<tr>
+						<td>01</td>
+						<td>Aqui vai o nome do item</td>
+						<td>unidade</td>
+						<td>12</td>
+						<td>categoria</td>
+						<td>12</td>
+						<td>12</td>
+						<td>12</td>
+						<td>15</td>
+						<td>100</td>
+						<td>12</td>
+						<td>12</td>
+						<td>12</td>
+						<td>15</td>
+						<td>10</td>
+					</tr>
+				</tbody>
+				<tbody>
+					<tr>
+						<td>01</td>
+						<td>Aqui vai o nome do item</td>
+						<td>unidade</td>
+						<td>12</td>
+						<td>categoria</td>
+						<td>12</td>
+						<td>12</td>
+						<td>12</td>
+						<td>15</td>
+						<td>100</td>
+						<td>12</td>
+						<td>12</td>
+						<td>12</td>
+						<td>15</td>
+						<td>10</td>
+					</tr>
+				</tbody>		
+			</table>
+		</div>
+		
+	</body>
+</html>

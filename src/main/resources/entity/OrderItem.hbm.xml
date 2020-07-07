@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="entity">
+	
+	<class name="OrderItem" table="order_item">
+	
+		<id name="id" column="id" type="java.lang.Long">
+			<generator class="identity" />		
+		</id>
+		
+		<property name="amount" column="amount" type="java.lang.Integer"/>
+		
+		<many-to-one name="item" column="item_id" class="Item" not-null="true" />
+		
+		<many-to-one name="order" column="order_id" class="Order" not-null="true" />
+		
+	</class>
+</hibernate-mapping>

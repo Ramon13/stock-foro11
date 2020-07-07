@@ -1,0 +1,83 @@
+#tableHome{
+	width: 99%%;
+}
+
+#tableHome tbody:hover{
+	background-color: #babdb6;
+}
+
+#newItemForm{
+	width: 40%;
+	background-color: #ffffff;
+	margin: auto;
+}
+
+#newItemForm fieldset{
+	border: none;
+	padding: 15px;
+}
+
+#newItemForm label{
+	font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #24292e;
+    font-family: sans-serif;
+}
+
+table#tableHome th{
+	padding-top: 50px;
+}
+
+.selectBtn{
+	display: inline;
+}
+
+.selectBtn input[type=button]{
+	background-color: #ffffff;
+    color: #2d2d2d;
+    border: none;
+    box-shadow: 0 0 0 3px rgba(3,102,214,.3);
+}
+
+.selectBtn input[type=button]:hover {
+	background-color: #ffffff;
+}
+
+.ui-dialog-title{
+	color: black;
+}
+
+.jqDialog input[type=text], .jqDialog select{
+	width: 100%;
+}
+
+.fold{
+	display: none;
+}
+
+.open-fold{
+	display: table-row;
+}
+
+.open-view{
+	background-color: #f37b26;
+	color: #ffffff;
+}
+
+.fold:nth-child(even){
+	background-color: #ffffff;
+}
+
+div.fold-content{
+	padding-bottom: 30px;	
+}
+
+div.fold-content thead{
+	background-color: black;
+	color: #ffffff;
+}
+
+.ui-icon-triangle-1-s, .ui-icon-triangle-1-n{
+	float: left;
+}
