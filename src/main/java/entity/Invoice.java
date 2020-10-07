@@ -1,7 +1,10 @@
 package entity;
 
+import dao.Search;
+
 public class Invoice extends Entity{
 
+	@Search
 	private String invoiceIdNumber;
 	private Entry entry;
 

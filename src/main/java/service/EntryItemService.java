@@ -9,6 +9,8 @@ import dao.EntryItemDAO;
 import domain.util.ExceptionMessageUtil;
 import entity.Entry;
 import entity.EntryItem;
+import entity.Item;
+import entity.PaginationFilter;
 
 public class EntryItemService extends Service{
 
@@ -18,6 +20,42 @@ public class EntryItemService extends Service{
 		}catch(DAOException ex) {
 			ex.printStackTrace();
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_LIST, ex);
+		}
+	}
+	
+	public List<EntryItem> listByItem(Item item, PaginationFilter filter) throws ServiceException{
+		try {
+			return getDaoFactory().getDAO(EntryItemDAO.class).listByItem(item, filter);
+		}catch(DAOException ex) {
+			ex.printStackTrace();
+			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_LIST, ex);
+		}
+	}
+	
+	public EntryItem findById(Long id) throws ServiceException {
+		try {
+			return getDaoFactory().getDAO(EntryItemDAO.class).load(id);
+		} catch (DAOException e) {
+			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE, e);
+		}
+	}
+	
+	public EntryItem save(EntryItem entryItem) throws ServiceException{
+		try {
+			Long id = (Long) getDaoFactory().getDAO(EntryItemDAO.class).save(entryItem);
+			return findById(id);
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE);
+		}
+	}
+	
+	public List<EntryItem> searchByItem(String word, Item item) throws ServiceException{
+		try {
+			return getDaoFactory().getDAO(EntryItemDAO.class).searchByItem(word, item);
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
 		}
 	}
 }

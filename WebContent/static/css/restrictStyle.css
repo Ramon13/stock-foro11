@@ -1,0 +1,150 @@
+#tableHome{
+	width: 99%%;
+}
+
+table tbody:hover{
+	background-color: #babdb6 !important;
+}
+
+
+#newItemForm{
+	width: 40%;
+	background-color: #ffffff;
+	margin: auto;
+}
+
+#newItemForm fieldset{
+	border: none;
+	padding: 15px;
+}
+
+#newItemForm label{
+	font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #24292e;
+    font-family: sans-serif;
+}
+
+table#tableHome th{
+	padding-top: 50px;
+}
+
+.selectBtn{
+	display: inline;
+}
+
+.selectBtn input[type=button]{
+	background-color: #ffffff;
+    color: #2d2d2d;
+    border: none;
+    box-shadow: 0 0 0 3px rgba(3,102,214,.3);
+}
+
+.selectBtn input[type=button]:hover {
+	background-color: #ffffff;
+}
+
+.ui-dialog-title{
+	color: black;
+}
+
+.jqDialog input[type=text], .jqDialog select{
+	width: 100%;
+}
+
+.fold{
+	display: none;
+}
+
+.open-fold{
+	display: table-row;
+}
+
+.open-view{
+	background-color: #f37b26;
+	color: #ffffff;
+}
+
+#tabNewEntry table tbody, .fold{
+	background-color: #ffffff;
+}
+
+div.fold-content{
+	padding-bottom: 30px;	
+}
+
+div.fold-content table{
+	width: 98%;
+	margin: auto;
+}
+
+div.fold-content h3{
+	text-align: left;
+}
+
+div.fold-content thead{
+	background-color: black;
+	color: #ffffff;
+}
+
+.ui-icon-triangle-1-s, .ui-icon-triangle-1-n{
+	float: left;
+}
+
+td.sum-locale{
+	width: 30px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.select2-container span{
+	color: black;
+}
+
+input#datePicker {
+    max-width: 200px;
+}
+
+input#invoiceNumber {
+    width: 200px;
+}	
+
+div#info{
+	width: 40%;
+    background-color: #ffffff;
+    margin: auto;
+    padding-top: 20px;
+}
+
+div#info img{
+	width: 100px;
+    height: 100px;
+    border: 1px solid #d2d2d2;
+}
+
+div#info #itemAttr{
+	text-align: center;
+	max-width: 500px;
+}
+
+.editItem{
+	width:40% !important;
+	text-align:center
+}
+
+
+div#imageManagerDlg img{
+	width: 100px;
+    height: 100px;
+    border: 1px solid #d2d2d2;
+    margin: 10px;
+}
+
+img.selectedImage{
+	border: 7px solid #928484 !important;
+}
+
+#info span{
+    font-size: 14px;
+}

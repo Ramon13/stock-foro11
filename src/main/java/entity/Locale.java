@@ -1,7 +1,10 @@
 package entity;
 
+import dao.Search;
+
 public class Locale extends Entity{
 
+	@Search
 	private String name;
 
 	public String getName() {

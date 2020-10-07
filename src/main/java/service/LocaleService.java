@@ -17,4 +17,12 @@ public class LocaleService extends Service{
 			throw new ServiceException("Error in attempt of retrieve Locale list", ex);
 		}
 	}
+	
+	public Locale getLastLocaleById() throws ServiceException{
+		try {
+			return getDaoFactory().getDAO(LocaleDAO.class).getLastLocale();
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

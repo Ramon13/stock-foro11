@@ -1,11 +1,14 @@
 package entity;
 
+import dao.Search;
+
 public class OrderItem extends Entity{
 
 	private Integer amount;
 	
 	private Item item;
 	
+	@Search (getMarckedFields = true)
 	private Order order;
 
 	public Integer getAmount() {

@@ -1,7 +1,10 @@
 package entity;
 
-public abstract class User extends Entity {
+import dao.Search;
 
+public class User extends Entity {
+
+	@Search
 	private String name;
 	
 	private String password;
@@ -10,8 +13,10 @@ public abstract class User extends Entity {
 	
 	private Boolean active;
 	
+	@Search (getMarckedFields = true)
 	private Permission permission;
 	
+	@Search (getMarckedFields = true)
 	private Locale locale;
 
 	public String getName() {

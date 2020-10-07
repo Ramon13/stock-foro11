@@ -1,5 +1,7 @@
 package entity;
 
+import dao.Search;
+
 public class SubCategory extends Entity{
 
 	public SubCategory() {}
@@ -8,6 +10,7 @@ public class SubCategory extends Entity{
 		setId(id);
 	}
 	
+	@Search
 	private String name;
 	
 	private Category category;

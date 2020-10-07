@@ -1,5 +1,7 @@
 package entity;
 
+import dao.Search;
+
 public class Packet extends Entity {
 	
 	public Packet() {}
@@ -8,6 +10,7 @@ public class Packet extends Entity {
 		setId(id);
 	};
 	
+	@Search
 	private String name;
 	
 	public String getName() {

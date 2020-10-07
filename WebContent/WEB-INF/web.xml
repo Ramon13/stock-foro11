@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
-xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
-  
-  <display-name>stock-foro11</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-  </welcome-file-list>
-  
-  <servlet>
-  	<display-name>ControllerServlet</display-name>
-  	<servlet-name>ControllerServlet</servlet-name>
-  	<servlet-class>br.com.javamon.servlet.ControllerServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-  	<servlet-name>ControllerServlet</servlet-name>
-  	<url-pattern>*.action</url-pattern>
-  </servlet-mapping>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+
+	<display-name>stock-foro11</display-name>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<servlet>
+		<display-name>ControllerServlet</display-name>
+		<servlet-name>ControllerServlet</servlet-name>
+		<servlet-class>br.com.javamon.servlet.ControllerServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>ControllerServlet</servlet-name>
+		<url-pattern>*.action</url-pattern>
+	</servlet-mapping>
+
+	<context-param>
+		<description>Location to store uploaded product images</description>
+		<param-name>itemImagePath</param-name>
+		<param-value>
+			/home/ramon/Imagens/app-images
+		</param-value>
+	</context-param>
 </web-app>

@@ -1,85 +1,115 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="cfmt" uri="/WEB-INF/tag/custom-fmt.tld" %>
 
-<jsp:include page="header.jsp" />
+<style>
+	input.date {
+    	font-size: 12px;
+	}
+</style>
 
-<c:url var="saveItemURL" value="/restrict/SaveItem.action" />
-<c:url var="downArrowImg" value="/images/down-arrow.png"/>
+<c:url var="newItemURL" value="/restrict/item/New.action" />
+<c:url var="searchItemsURL" value="/restrict/item/List.action" />
+<c:url var="changeFilterDate" value="/restrict/date/ChangeHomeFilterDate.action"/>
+<c:url var="homeURL" value="/restrict/item/List.action" />
 
 <table id="tableHome">
 	<thead>
 		<tr>
 			<th colspan="5"></th>
-			<th colspan="7">Consumo ano atual</th>
+			<th colspan="7">
+				<span>Consumo por seção - ${lastYear}</span>
+			</th>
 			<th></th>
-			<th colspan="7">Consumo entre datas</th>
+			<th colspan="7">
+				<span>Consumo entre datas</span>
+			</th>
 			<th>
-				<input type="button" value="Novo Item" onclick="loadPage('${saveItemURL}')">
+				<input type="button" value="Novo Item" 
+					onclick="window.location.href='${newItemURL}'">
 			</th>
 		</tr>
 		<tr>
 			<th>
-				Código
 				<div class="dropdown">
-					<img src="${downArrowImg }" class="dropbtn"/>
-					<div class="dropdown-content">
-						<span>Classificar em ordem crescente</span>
-						<span>Classificar em ordem decrescente</span>
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
+						</button>
+						<br />
+						<span class="sortBy" data-property="id" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="id" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
 				</div>
-			</th>
-			<th style="width: 30%">
-				Descrição
-				<div class="dropdown">
-					<img src="${downArrowImg}" class="dropbtn"/>
-					<div class="dropdown-content">
-						<span>Classificar em ordem crescente</span>
-						<span>Classificar em ordem decrescente</span>
-					</div>
-				</div>
+				<span>Código</span>
 			</th>
 			<th>
-				Unidade
 				<div class="dropdown">
-					<img src="${downArrowImg}" class="dropbtn"/>
-					<div class="dropdown-content">
-						<span>Classificar em ordem crescente</span>
-						<span>Classificar em ordem decrescente</span>
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
+						</button>
 						<br />
-						<span>Filtros</span>
-						<input type="checkbox"/> Filtro 00 <br />
-						<input type="checkbox"/> Filtro 01
+						<span class="sortBy" data-property="name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="name" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
 				</div>
+				<span>Descrição</span>
 			</th>
 			<th>
-				Subitem
 				<div class="dropdown">
-					<img src="${downArrowImg}" class="dropbtn"/>
-					<div class="dropdown-content">
-						<span>Classificar em ordem crescente</span>
-						<span>Classificar em ordem decrescente</span>
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
+						</button>
 						<br />
-						<span>Filtros</span>
-						<input type="checkbox"/> Filtro 00 <br />
-						<input type="checkbox"/> Filtro 01
-					</div>
-				</div>	
-			</th>
-			<th>
-				Categoria
-				<div class="dropdown">
-					<img src="${downArrowImg}" class="dropbtn"/>
-					<div class="dropdown-content">
-						<span>Classificar em ordem crescente</span>
-						<span>Classificar em ordem decrescente</span>
-						<br />
-						<span>Filtros</span>
-						<input type="checkbox"/> Filtro 00 <br />
-						<input type="checkbox"/> Filtro 01
+						<span class="sortBy" data-property="packet.name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="packet.name" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
 				</div>
+				<span>Unidade</span>
+			</th>
+			<th>
+				<div class="dropdown">
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
+						</button>
+						<br />
+						<span class="sortBy" data-property="category.name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="category.name" data-order="desc">Classificar em ordem decrescente</span>
+					</div>
+				</div>
+				<span>Subitem</span>
+			</th>
+			<th>
+				<div class="dropdown">
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
+						</button>
+						<br />
+						<span class="sortBy" data-property="subCategory.name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="subCategory.name" data-order="desc">Classificar em ordem decrescente</span>
+					</div>
+				</div>
+				<span>Categoria</span>
 			</th>
 			
 			<c:forEach items="${locales}" var="locale">
@@ -87,9 +117,13 @@
 			</c:forEach>
 			
 			<th>
-				Estoque Anterior
+				<span class="dateErrorMsg"></span>
+				<div id="dateErrorDiv"></div>
+				<span>Estoque em:</span>
 				<br />
-				<input type="date" value="${applicationScope.firstDayOfYear}"/>
+				<input type="text" id="primaryDate" class="date" name="date" 
+							value="<cfmt:formatDate value="${primaryDate}" locale="ptBR"/>" 
+							data-url="${changeFilterDate}"/>
 			</th>
 			
 			<c:forEach items="${locales}" var="locale">
@@ -97,47 +131,57 @@
 			</c:forEach>
 			
 			<th>
-				Estoque Atual
+				<span>Estoque em:</span>
 				<br />
-				<input type="date" value="${applicationScope.today}"/>
+				<input type="text" id="secondDate" class="date" name="date" 
+							value="<cfmt:formatDate value="${secondDate}" locale="ptBR"/>" 
+							data-url="${changeFilterDate}"/>
 			</th>
 		</tr>
 	</thead>
-	<c:forEach items="${itemLocales}" var="itemLocale">
-		<tbody>	
-			<tr>
-				<td>
-					<c:out value="${itemLocale.item.id}"></c:out>
-				</td>
-				<td>
-					<c:out value="${itemLocale.item.name}"></c:out>
-				</td>
-				<td>
-					<c:out value="${itemLocale.item.packet.name}"></c:out>
-				</td>
-				<td>
-					<c:out value="${itemLocale.item.category.name}"></c:out>
-				</td>
-				<td>
-					<c:out value="${itemLocale.item.subCategory.name}"></c:out>
-				</td>
-				
-				<c:forEach items="${itemLocale.sumLocales}" var="sumLocale" end="${splitIndex}">
-					<td>
-						<c:out value="${sumLocale }"></c:out>
-					</td>
-				</c:forEach>
-				
-				<td>100</td>
-				
-				<c:forEach items="${itemLocale.sumLocales}" var="sumLocale" begin="${splitIndex + 1}">
-					<td>
-						<c:out value="${sumLocale }"></c:out>
-					</td>
-				</c:forEach>		
-			</tr>
-		</tbody>
-	</c:forEach>
+	
 </table>
 
-<jsp:include page="footer.jsp" />
+<script>
+	$(document).ready(function(){	
+		const PRIMARY_DATE = "primaryDate";
+		const SECOND_DATE = "secondDate";
+		
+		$(".date").datepicker();
+		$(".date").datepicker("option", "altFormat", "(dd/mm/yyyy)");
+		
+		initContent();
+		$("#dinamicContent").attr("data-pagination-url", '${homeURL}');
+		$("#searchForm").attr("action", '${homeURL}');
+		
+		$(".date").on("change", function(){
+			var date = formatDate($(this).datepicker("getDate"));
+			var url = $(this).attr("data-url");
+			var paramName = $(this).attr("id");
+			
+			var param = [{name: paramName, value: date}];
+			ajaxCall("get", url, $.param(param), function(data, textStatus, xhr){
+				if (hasCallbackErrors(xhr)){
+					var JSONData = jQuery.parseJSON(data);
+	  	   			showInputErrors(JSONData);
+	  	   			showDivErrors(JSONData);
+	  	   		
+				}else{
+					loadPage('${homeURL}');
+				}
+			});
+		});
+	});
+	
+	function initContent(){
+		ajaxCall("get", '${homeURL}', null, function(data, textStatus, xhr){
+			if (isSuccessRequest(xhr)){
+				var tbodyList = $(data).find("tbody");
+				$.each(tbodyList, function(){
+					$("table").append($(this));	
+				});
+			}
+		});
+	}
+	
+</script>

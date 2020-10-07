@@ -1,0 +1,6 @@
+Maps And Caching item amount By locale
+
+step01-> Create A Class ItemLocalAmount With Fields, Item item And Map<Locale, Amount>
+step02-> list All locales And Order By Id
+step03-> Create An Array To Stores The Value Of x (stores the value of x in same index of location list)
+step04 -> index Of sum = LocationId - x

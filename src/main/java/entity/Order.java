@@ -1,18 +1,29 @@
 package entity;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+import dao.Search;
 
 public class Order extends Entity{
 
+	@Search
 	private LocalDate finalDate;
 	
 	private LocalDate releaseDate;
 	
 	private Character status;
 	
+	@Search
 	private String receivedPersonName;
 	
-	private Customer customer;
+	@Search (getMarckedFields = true)
+	private User customer;
+	
+	private User releaseAdministrator;
+	
+	private Set<OrderItem> orderItems = new HashSet<OrderItem>(0);
 
 	public LocalDate getFinalDate() {
 		return finalDate;
@@ -31,7 +42,7 @@ public class Order extends Entity{
 	}
 
 	public Character getStatus() {
-		return status;
+		return this.status;
 	}
 
 	public void setStatus(Character status) {
@@ -46,12 +57,28 @@ public class Order extends Entity{
 		this.receivedPersonName = receivedPersonName;
 	}
 
-	public Customer getCustomer() {
+	public User getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(Customer customer) {
+	public void setCustomer(User customer) {
 		this.customer = customer;
+	}
+
+	public Set<OrderItem> getOrderItems() {
+		return orderItems;
+	}
+
+	public void setOrderItems(Set<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public User getReleaseAdministrator() {
+		return releaseAdministrator;
+	}
+
+	public void setReleaseAdministrator(User releaseAdministrator) {
+		this.releaseAdministrator = releaseAdministrator;
 	}
 	
 }

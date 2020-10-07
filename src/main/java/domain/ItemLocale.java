@@ -5,12 +5,6 @@ import java.util.List;
 
 import entity.Item;
 
-/**
- * This class Handles With The Sum Of The amount Output Of Each locale
- * By item.
- * @author Ramon
- *
- */
 public class ItemLocale {
 
 	/**
@@ -22,6 +16,9 @@ public class ItemLocale {
 	 * An array That Stores The Sum Amount Output By locale
 	 */
 	private List<Integer> sumLocales = new ArrayList<Integer>();
+	
+	private Integer startDateAmount = 0;
+	private Integer endDateAmount = 0;
 		
 	public Item getItem() {
 		return item;
@@ -38,4 +35,21 @@ public class ItemLocale {
 	public void setSumLocales(List<Integer> sumLocales) {
 		this.sumLocales = sumLocales;
 	}
+
+	public Integer getStartDateAmount() {
+		return startDateAmount;
+	}
+
+	public void setStartDateAmount(Integer startDateAmount) {
+		this.startDateAmount = startDateAmount;
+	}
+
+	public Integer getEndDateAmount() {
+		return endDateAmount;
+	}
+
+	public void setEndDateAmount(Integer endDateAmount) {
+		this.endDateAmount = endDateAmount;
+	}
+
 }
