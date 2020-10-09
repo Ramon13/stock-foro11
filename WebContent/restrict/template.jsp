@@ -44,6 +44,21 @@
 				loadPage('${homeURL}');
 			});
 		</script>
+		
+		<style>
+			#tableOptions{
+				float: right;
+			}
+			
+			button img{
+				width: 25px; 
+			}
+			
+			.ui-button{
+				padding: 5px;
+				border: none;
+			}
+		</style>
 	</head>
 	
 	<body>
@@ -128,6 +143,18 @@
 					<span class="ui-icon ui-icon-search"></span>
 					<input id="searchInput" placeholder="Pesquisar..."  name="search" type="text" data-fields="all"/>
 				</form>
+				<div id="tableOptions">
+					<button class="ui-button ui-widget ui-corner-all">
+						<img src="static/images/pdf-icon-512x512.png">
+					</button>
+					<button class="ui-button ui-widget ui-corner-all">
+						<img src="static/images/printer-icon-512x512.png">
+					</button>
+					<button class="ui-button ui-widget ui-corner-all">
+						<img src="static/images/details-icon-512x512.png">
+					</button>
+					
+				</div>
 			</div>
 			
 			<div id="dinamicContent">

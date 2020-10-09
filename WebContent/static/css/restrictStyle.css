@@ -26,10 +26,6 @@ table tbody:hover{
     font-family: sans-serif;
 }
 
-table#tableHome th{
-	padding-top: 50px;
-}
-
 .selectBtn{
 	display: inline;
 }

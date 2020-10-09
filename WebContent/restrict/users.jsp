@@ -15,11 +15,12 @@
 <c:url var="listUsersURL" value="/restrict/user/List.action">
 	<c:param name="listAll" value="true"/>
 </c:url>
+<c:url var="newUserURL" value="/restrict/user/NewUser.action"/>
 
 <div id="tabs">
 	<ul>
 		<li><a href="#tabUsers" >Usuários</a></li>
-		<li><a href="#tabNewUser" onclick="loadNewUserPage() ; return false;" >Cadastrar</a></li>
+		<li><a href="#tabNewUser" onclick="loadNewUserPage('${newUserURL}') ; return false;" >Cadastrar</a></li>
 	</ul>
 	
 	<div id="tabUsers" data-url="${listUsersURL}"></div>
@@ -48,5 +49,12 @@
 		return false;
 	}
 	
+	function loadNewUserPage(url){
+		
+		ajaxCall("get", url, null, function(data, textStatus, xhr){
+			$("#tabNewEntry").html(data);
+		});
+		return false;
+	}
 	
 </script>

@@ -10,42 +10,28 @@
 		</c:url>
 		<tbody>	
 			<tr class="itemRow" onclick="loadPage('${itemInfoURL}')">
-				<td>
-					<c:out value="${item.id}"></c:out>
-				</td>
-				<td>
-					<c:out value="${item.name}"></c:out>
-				</td>
-				<td>
-					<c:out value="${item.packet.name}"></c:out>
-				</td>
-				<td>
-					<c:out value="${item.category.name}"></c:out>
-				</td>
-				<td>
-					<c:out value="${item.subCategory.name}"></c:out>
-				</td>
+				<td><c:out value="${item.id}"></c:out></td>
+				
+				<td><c:out value="${item.name}"></c:out></td>
+				
+				<td><c:out value="${item.packet.name}"></c:out></td>
+				
+				<td><c:out value="${item.category.name}"></c:out></td>
+				
+				<td><c:out value="${item.subCategory.name}"></c:out></td>
 				
 				<c:forEach items="${locales}" var="locale">
-					<td class="sum-locale">
-						<c:out value="${itemLocaleFromPreviousYear.itemLocales[loop.index].sumLocales[locale.id]}"></c:out>
-					</td>
+					<td class="sum-locale"><c:out 
+						value="${itemLocaleFromPreviousYear.itemLocales[loop.index].sumLocales[locale.id]}"></c:out></td>
 				</c:forEach>
 			
-				<td>
-					<c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].startDateAmount}" />
-				</td>
-				
-				
+				<td><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].startDateAmount}" /></td>
+			
 				<c:forEach items="${locales}" var="locale">
-					<td class="sum-locale">
-						<c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].sumLocales[locale.id]}"></c:out>
-					</td>
+					<td class="sum-locale"><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].sumLocales[locale.id]}"></c:out></td>
 				</c:forEach>
 				
-				<td>
-					<c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].endDateAmount}" />
-				</td>		
+				<td><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].endDateAmount}" /></td>		
 			</tr>
 		</tbody>
 	</c:forEach>

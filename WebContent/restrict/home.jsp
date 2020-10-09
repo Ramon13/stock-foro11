@@ -6,6 +6,23 @@
 <style>
 	input.date {
     	font-size: 12px;
+    	width: 120px;
+	}
+	
+	thead tr th{
+		background-color: #ffffff;
+		padding-bottom: 20px;
+	}
+	
+	#myHeader tr th{
+		top: 0;
+    position: sticky;
+	}
+	
+	#myHeader2 tr th{
+		top: 20px;
+    position: sticky;
+    padding-top: 50px;
 	}
 </style>
 
@@ -14,8 +31,9 @@
 <c:url var="changeFilterDate" value="/restrict/date/ChangeHomeFilterDate.action"/>
 <c:url var="homeURL" value="/restrict/item/List.action" />
 
+
 <table id="tableHome">
-	<thead>
+	<thead id="myHeader">
 		<tr>
 			<th colspan="5"></th>
 			<th colspan="7">
@@ -25,11 +43,17 @@
 			<th colspan="7">
 				<span>Consumo entre datas</span>
 			</th>
+			 
 			<th>
+			<!--
 				<input type="button" value="Novo Item" 
 					onclick="window.location.href='${newItemURL}'">
+					-->
 			</th>
+			 
 		</tr>
+	</thead>
+	<thead  id="myHeader2">
 		<tr>
 			<th>
 				<div class="dropdown">
