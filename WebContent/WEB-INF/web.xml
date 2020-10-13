@@ -22,9 +22,17 @@
 
 	<context-param>
 		<description>Location to store uploaded product images</description>
-		<param-name>itemImagePath</param-name>
+		<param-name>UnixItemImagePath</param-name>
 		<param-value>
 			/home/ramon/Imagens/app-images
+		</param-value>
+	</context-param>
+	
+	<context-param>
+		<description>Location to store uploaded product images</description>
+		<param-name>WindowsItemImagePath</param-name>
+		<param-value>
+			C:\development\stock-foro11\app-images
 		</param-value>
 	</context-param>
 </web-app>

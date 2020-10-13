@@ -3,6 +3,8 @@
 	<name>stock-foro11</name>
 	<comment></comment>
 	<projects>
+		<project>Servers</project>
+		<project>web-f</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
