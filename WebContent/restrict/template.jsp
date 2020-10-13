@@ -16,6 +16,7 @@
 
 <c:url var="listOrdersURL" value="/restrict/order/List.action"/>
 <c:url var="listUserURL" value="/restrict/user/List.action"/>
+<c:url var="printPdfURL" value="restrict/item/Print.action" />
 
 <!DOCTYPE html>
 <html>
@@ -144,7 +145,7 @@
 					<input id="searchInput" placeholder="Pesquisar..."  name="search" type="text" data-fields="all"/>
 				</form>
 				<div id="tableOptions">
-					<button class="ui-button ui-widget ui-corner-all">
+					<button class="ui-button ui-widget ui-corner-all printPdfBtn">
 						<img src="static/images/pdf-icon-512x512.png">
 					</button>
 					<button class="ui-button ui-widget ui-corner-all">
@@ -161,5 +162,15 @@
 			
 			</div>
 		</div>
-	</body>		
+	</body>
+	
+	
+	<script>
+		$(document).ready(function(){
+			$(".printPdfBtn").on("click", function(){
+				window.open('${printPdfURL}');
+				
+			});
+		});
+	</script>		
 </html>

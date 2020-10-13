@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import domain.LoggedUser;
 import domain.PermissionRoles;
 
-@WebFilter( urlPatterns = {"/restrict/*", "/index.jsp"})
+//@WebFilter( urlPatterns = {"/restrict/*", "/index.jsp"})
 public class AuthFilter implements Filter {
 
 	@Override

@@ -1,8 +1,10 @@
 package entity;
 
+import java.io.Serializable;
+
 import dao.Search;
 
-public class Packet extends Entity {
+public class Packet extends Entity implements Serializable {
 	
 	public Packet() {}
 	
