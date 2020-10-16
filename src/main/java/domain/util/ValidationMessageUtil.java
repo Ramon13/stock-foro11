@@ -49,4 +49,15 @@ public class ValidationMessageUtil {
 	
 	public static final String EMPTY_STOCK = "Quantidade não disponível em estoque";
 	
+	public static final String USER_NAME_MAX_LEN = "O nome de usuário não pode ter mais do que 255 caracteres.";
+	public static final String USER_NAME_EMPTY = "O nome de usuário não pode ser vazio.";
+	public static final String INVALID_USERNAME = "Usuário Inválido.";
+	public static final String USER_NAME_ALREADY_EXISTS = "O nome de usuário já cadastrado no sistema.";
+	public static final String INVALID_PASSWORD = "Senha inválida.";
+	
+	public static final String LOCALE_NAME_MAX_LEN = "O nome do local não pode ter mais do que 255 caracteres.";
+	public static final String LOCALE_NAME_EMPTY = "O nome do local não pode ser vazio.";
+	public static final String LOCALE_NAME_ALREADY_EXISTS = "O nome do local já encontra-se cadastrado no sistema.";
+	public static final String INVALID_LOCALE = "Local Inválido.";
+	
 }

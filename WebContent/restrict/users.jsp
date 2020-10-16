@@ -15,7 +15,7 @@
 <c:url var="listUsersURL" value="/restrict/user/List.action">
 	<c:param name="listAll" value="true"/>
 </c:url>
-<c:url var="newUserURL" value="/restrict/user/NewUser.action"/>
+<c:url var="newUserURL" value="/restrict/user/New.action"/>
 
 <div id="tabs">
 	<ul>

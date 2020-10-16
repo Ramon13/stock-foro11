@@ -122,13 +122,6 @@
 		      width: 350,
 		      modal: true,
 		      open: originalContent = dialog.html(),
-		      buttons: {
-		    	"Salvar": submitFunction,
-		    	
-		        Cancel: function() {
-		          dialog.dialog( "close" );
-		        }
-		      },
 		      close: function() {
 		        dialog.find("form")[ 0 ].reset();
 		      }

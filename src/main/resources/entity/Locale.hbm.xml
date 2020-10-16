@@ -11,6 +11,8 @@
 			<generator class="identity" />		
 		</id>
 		
-		<property name="name" column="description" type="java.lang.String"/>
+		<property name="name" type="java.lang.String" length="255" unique="true">
+			<column name="description" not-null="true"/>
+		</property>
 	</class>
 </hibernate-mapping>

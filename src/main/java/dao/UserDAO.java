@@ -20,5 +20,10 @@ public class UserDAO extends ApplicationDAO<User>{
 		return query.uniqueResult();
 	}
 	
-	
+	public User findByUserName(String username) throws DAOException{
+		String hql = "from User u where u.name like :userName";
+		Query<User> query = createQuery(hql, User.class);
+		query.setParameter("userName", username);
+		return query.uniqueResult();
+	}
 }

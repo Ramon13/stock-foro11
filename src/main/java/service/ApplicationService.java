@@ -47,9 +47,13 @@ public class ApplicationService<R, T extends ApplicationDAO<R>> extends Service{
 		return getDaoFactory().getDAO(clazz);
 	}
 	
+	protected T getDAO() throws DAOException{
+		return getDaoFactory().getDAO(clazz);
+	}
+	
 	public void save(R r) throws ServiceException {
 		try {
-			getDAO(clazz).save(r);
+			getDAO().save(r);
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE);
@@ -102,4 +106,5 @@ public class ApplicationService<R, T extends ApplicationDAO<R>> extends Service{
 	public Integer getMaxItemsByPage() {
 		return maxItemsByPage;
 	}
+	
 }
