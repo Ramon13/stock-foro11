@@ -51,9 +51,9 @@ public class ApplicationService<R, T extends ApplicationDAO<R>> extends Service{
 		return getDaoFactory().getDAO(clazz);
 	}
 	
-	public void save(R r) throws ServiceException {
+	public Long save(R r) throws ServiceException {
 		try {
-			getDAO().save(r);
+			return (Long) getDAO().save(r);
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE);

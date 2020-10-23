@@ -3,6 +3,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="ccvt" uri="/WEB-INF/tag/custom-convert.tld" %>
 
+<c:url var="newPacketURL" value="/restrict/packet/New.action" />
+<c:url var="newCategoryURL" value="/restrict/category/New.action" />
+
 <c:url var="saveItemURL" value="/restrict/item/Save.action" />
 <c:url var="itemInfoURL" value="/restrict/item/ItemInfo.action" />
 <c:url var="listByCategoryURL" value="/restrict/subcategory/ListByCategory.action" />
@@ -48,7 +51,7 @@
 					</c:forEach>
 				</select>
 				<button id="addPacketBtn" type="button" class="ui-button ui-widget ui-corner-all">
-					<span class="ui-icon ui-icon-plusthick"></span> adicionar
+					<span class="ui-icon ui-icon-plusthick"></span>
 				</button>
 			</div>
 			<br /><br />
@@ -65,7 +68,7 @@
 					</c:forEach>
 				</select>
 				<button id="addCategoryBtn" type="button" class="ui-button ui-widget ui-corner-all">
-					<span class="ui-icon ui-icon-plusthick"></span> adicionar
+					<span class="ui-icon ui-icon-plusthick"></span>
 				</button>
 			</div>
 			<br /><br />
@@ -81,7 +84,7 @@
 					</c:forEach>
 				</select>
 				<button id="addSubCategoryBtn" type="button" class="ui-button ui-widget ui-corner-all">
-					<span class="ui-icon ui-icon-plusthick"></span> adicionar
+					<span class="ui-icon ui-icon-plusthick"></span>
 				</button>
 			</div>
 			<br /><br />
@@ -108,6 +111,8 @@
 <jsp:include page="dialogs.jsp" />
 
 <script>
+	var dialog;
+
 	$(document).ready(function(){
 		//print the successful message if the server return success as true on url
 		const queryString = window.location.href;
@@ -116,6 +121,20 @@
 			$(".saveSuccess").show();
 		
 		$("textarea").jqte();
+		
+		$("#addPacketBtn").on("click", function(){
+			ajaxCall("get", '${newPacketURL}', null, function(data, textStatus, xhr){
+				dialog = dialogForm($(data), null);
+				dialog.dialog("open");
+			});
+		});
+		
+		$("#addCategoryBtn").on("click", function(){
+			ajaxCall("get", '${newCategoryURL}', null, function(data, textStatus, xhr){
+				dialog = dialogForm($(data), null);
+				dialog.dialog("open");
+			});
+		});
 	});
 
 	function saveItem(saveURL, successURL){

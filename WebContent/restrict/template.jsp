@@ -49,6 +49,7 @@
 		<style>
 			#tableOptions{
 				float: right;
+				margin-right: 100px;
 			}
 			
 			button img{
@@ -58,6 +59,11 @@
 			.ui-button{
 				padding: 5px;
 				border: none;
+			}
+			
+			form#searchForm {
+			    width: 70%;
+			    float: left;
 			}
 		</style>
 	</head>
@@ -151,9 +157,20 @@
 					<button class="ui-button ui-widget ui-corner-all">
 						<img src="static/images/printer-icon-512x512.png">
 					</button>
-					<button class="ui-button ui-widget ui-corner-all">
-						<img src="static/images/details-icon-512x512.png">
-					</button>
+					
+					<div id="details" class="dropdown">
+						<button class="ui-button ui-widget ui-corner-all dropdown-btn">
+							<img src="static/images/details-icon-512x512.png">
+						</button>
+						<div class="dropdown-content">
+							<button class="ui-button ui-widget ui-corner-all close-dropdown">
+								<img class="ui-icon ui-icon-closethick"></img>
+							</button>
+							<br />
+							
+						</div>
+					</div>
+					
 					
 				</div>
 			</div>

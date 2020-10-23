@@ -1,13 +1,10 @@
 package action.restrict.packet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.gson.Gson;
 
 import action.ApplicationAction;
 import action.FormValidateJSON;
+import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import br.com.javamon.validation.StringValidator;
 import domain.util.ValidationMessageUtil;
@@ -16,32 +13,34 @@ import service.PacketService;
 
 public class SavePacket extends ApplicationAction{
 
+	PacketService packetSvc;
+	
 	@Override
 	public void processAction() throws Exception {
+		packetSvc = getServiceFactory().getService(PacketService.class);
+		Packet packet = validateFields();	
+		Long packetId = packetSvc.save(packet);
+		packet = packetSvc.findById(packetId);
 		
-		Packet packet = validateFields();
-		try {
-			packet = getServiceFactory().getService(PacketService.class).save(packet);		
-			responseToClient(200, new Gson().toJson(packet));
-		} catch (ValidationException e) {
-			getRequest().setAttribute("formValidationList", Arrays.asList(new FormValidateJSON("pgeneral", e.getMessage())));
-			throw new ValidationException();
-		}
+		responseToClient(200, new Gson().toJson(packet));
 	}
 
-	private Packet validateFields() throws ValidationException{
+	private Packet validateFields() throws ValidationException, ServiceException{
+		
 		Packet packet = new Packet();
-		List<FormValidateJSON> formValidateJSONs = new ArrayList<FormValidateJSON>(0);
 		
 		packet.setName(getRequest().getParameter("pname"));
+		
 		if (StringValidator.isEmpty(packet.getName()))
-			formValidateJSONs.add(new FormValidateJSON("pname", ValidationMessageUtil.EMPTY_PACKET_NAME));
+			formValidationList.add(new FormValidateJSON("pname", ValidationMessageUtil.EMPTY_PACKET_NAME));
 		
 		if (!StringValidator.isValidLen(255, packet.getName()))
-			formValidateJSONs.add(new FormValidateJSON("pname", ValidationMessageUtil.PACKET_MAX_LEN));
+			formValidationList.add(new FormValidateJSON("pname", ValidationMessageUtil.PACKET_MAX_LEN));
 		
-		if (formValidateJSONs.size() != 0) {
-			getRequest().setAttribute("formValidationList", formValidateJSONs);
+		if (!packetSvc.isValidPacketName(packet.getName()))
+			formValidationList.add(new FormValidateJSON("pname", ValidationMessageUtil.PACKET_NAME_EXISTS));
+		
+		if (!formValidationList.isEmpty()) {
 			throw new ValidationException();
 		}
 		

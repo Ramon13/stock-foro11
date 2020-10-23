@@ -254,3 +254,37 @@ function saveNewLocale(url){
 		}
 	});
 }
+
+function saveNewPacket(url){
+	ajaxCall("post", url, $("#newPacketForm").serialize(), function(data, textStatus, xhr){
+		var JSONData = jQuery.parseJSON(data);
+		
+		if (hasCallbackErrors(xhr)){
+			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+		else if (xhr.status == SUCCESS_200){
+			var option = $("<option />").attr("value", JSONData.id).html(JSONData.name);
+			option.attr("selected", "selected");
+			$("#packet").append(option);
+			dialog.dialog("destroy");
+		}
+	});
+}
+
+function saveNewCategory(url){
+	ajaxCall("post", url, $("#newCategoryForm").serialize(), function(data, textStatus, xhr){
+		var JSONData = jQuery.parseJSON(data);
+		
+		if (hasCallbackErrors(xhr)){
+			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+		else if (xhr.status == SUCCESS_200){
+			var option = $("<option />").attr("value", JSONData.id).html(JSONData.name);
+			option.attr("selected", "selected");
+			$("#category, #scCategory").append(option);
+			dialog.dialog("destroy");
+		}
+	});
+}

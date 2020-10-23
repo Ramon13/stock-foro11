@@ -110,6 +110,6 @@
 				var dialog = dialogForm($(data), null);
 				dialog.dialog("open");
 			});
-		})
+		});
 	});
 </script>

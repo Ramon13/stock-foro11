@@ -4,31 +4,7 @@
 
 <c:url var="loadSubCategoryURL" 
 	value="/restrict/subcategory/ListByCategory.action" />
-<c:url var="savePacketURL" value="/restrict/packet/Save.action" />
-<c:url var="saveCategoryURL" value="/restrict/category/Save.action" />
 <c:url var="saveSubCategoryURL" value="/restrict/subcategory/Save.action" />
-
-<div id="createPacketDlg" class="jqDialog" hidden="hidden"
-	title="Criar nova unidade">
-	<form id="newPacketForm">
-		<div id="pgeneralErrorDiv"></div> 
-		<label for="pname">Nome</label> <br />
-		<div id="pnameErrorDiv"></div>
-		<input type="text" name="pname" id="pname" class="text ui-widget-content ui-corner-all">
-	</form>
-</div>
-
-<div id="createCategoryDlg" class="jqDialog" hidden="hidden"
-	title="Criar novo subitem">
-	<form id="newCategoryForm">
-		<div id="cgeneralErrorDiv"></div>
-		 
-		<label for="cname">Nome</label> <br />
-		<div id="cnameErrorDiv"></div>
-		<input type="text" name="cname" id="cname" class="text ui-widget-content ui-corner-all">
-		<input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-	</form>
-</div>
 
 <div id="createSubCategoryDlg" class="jqDialog" hidden="hidden"
 	title="Criar nova categoria">
@@ -60,8 +36,6 @@
 </div>
 
 <script>
-	var savePacketURL = '${savePacketURL}';
-	var saveCategoryURL = '${saveCategoryURL}';
 	var saveSubCategoryURL = '${saveSubCategoryURL}';
 	var loadSubCategoryURL = '${loadSubCategoryURL}';
 	
@@ -124,6 +98,7 @@
 		      open: originalContent = dialog.html(),
 		      close: function() {
 		        dialog.find("form")[ 0 ].reset();
+		        dialog.dialog("destroy");
 		      }
 		    });
 		
@@ -148,29 +123,6 @@
 	}
 	
 	$(function() {
-
-		$("#addPacketBtn").button().on("click", function() {
-			dialog = smallDialogForm($("#createPacketDlg"), addPacket, $("#newPacketForm"));
-			
-			form = dialog.find("#newPacketForm").on("submit", function(event) {
-				event.preventDefault();
-				addPacket();
-			});
-			
-			dialog.dialog("open");
-		});
-
-		$("#addCategoryBtn").button().on("click", function() {
-			
-			dialog = smallDialogForm($("#createCategoryDlg"), addCategory, $("#newCategoryForm"));
-
-			form = dialog.find("#newCategoryForm").on("submit", function(event) {
-				event.preventDefault();
-				addCategory();
-			});
-
-			dialog.dialog("open");
-		});
 
 		$("#addSubCategoryBtn").button().on("click", function() {
 			dialog = smallDialogForm($("#createSubCategoryDlg"), addSubCategory, $("#newSubCategoryForm"));
