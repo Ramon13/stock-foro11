@@ -170,7 +170,7 @@
 		        "Continuar": function(){
 		        	ajaxCall("get", blockUsersURL, param, function(data, textStatus, xhr){
 						if (isSuccessRequest(xhr)){
-							simpleModalDialog("Sucesso", successMsg);
+							simpleModalDialog("Sucesso", "usuário bloqueado");
 						}
 						
 						if (hasCallbackErrors(xhr)){

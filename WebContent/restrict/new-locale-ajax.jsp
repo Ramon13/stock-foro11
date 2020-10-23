@@ -16,27 +16,10 @@
 		<div id="lnameErrorDiv"></div>
 		<input type="text" name="name" id="lname" class="text ui-widget-content ui-corner-all"><br />
 		
-		<button type="button" id="saveLocaleBtn" class="ui-button ui-widget ui-corner-all saveBtn"
+		<button type="button" onclick="saveNewLocale('${saveLocaleURL}')" 
+			class="ui-button ui-widget ui-corner-all saveBtn"
 			style="margin-top: 30px">
 			Salvar
 		</button>
 	</form>
-	
-	<script>
-		$(document).ready(function(){
-			$("#saveLocaleBtn").on("click", function(){
-				ajaxCall("post", '${saveLocaleURL}', $("#newLocaleForm").serialize(),
-						function(data, textStatus, xhr){
-					
-					if (hasCallbackErrors(xhr)){
-						var JSONData = jQuery.parseJSON(data);
-						console.log(JSONData);	
-		  	   			showInputErrors(JSONData);
-		  	   			showDivErrors(JSONData);
-		  	   		
-					}
-				});
-			})
-		});
-	</script>
 </div>

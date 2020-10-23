@@ -28,7 +28,7 @@ public class LocaleDAO extends ApplicationDAO<Locale>{
 	public Locale findByName(String name) throws DAOException{
 		String hql = "from Locale l where l.name like :name";
 		Query<Locale> query = createQuery(hql, Locale.class);
-		query.setParameter("name", "%" + name + "%");
+		query.setParameter("name", name);
 		
 		return query.uniqueResult();
 	}

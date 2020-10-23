@@ -43,20 +43,23 @@ $(document).ready(function(){
 			
         	var tbodyCount = $(this).find("table tbody").length;
 			var url = $(this).attr("data-pagination-url");
-			var param = [
-				{name: "sortBy", value: sortBy},
-				{name: "order", value: order},
-				{name: "firstResultPage", value: tbodyCount}];
 			
-			ajaxCall("get", url, param, function(data, textStatus, xhr){
-				if (isSuccessRequest(xhr)){
-					var tbodyList = $(data).find("tbody");
-    				$.each(tbodyList, function(){
-    					$("table").append($(this));	
-    				});
-					scrolled = false;
-				}
-			});
+			if (url != ""){
+				var param = [
+					{name: "sortBy", value: sortBy},
+					{name: "order", value: order},
+					{name: "firstResultPage", value: tbodyCount}];
+				
+				ajaxCall("get", url, param, function(data, textStatus, xhr){
+					if (isSuccessRequest(xhr)){
+						var tbodyList = $(data).find("tbody");
+	    				$.each(tbodyList, function(){
+	    					$("table").append($(this));	
+	    				});
+						scrolled = false;
+					}
+				});
+			}
         }
     });
 
@@ -238,4 +241,16 @@ function openView(element){
 	var spanIcon = element.find(".open-fold");
 	flag == true ? spanIcon.attr("class", "ui-icon ui-icon-triangle-1-n") : spanIcon.attr("class", "ui-icon ui-icon-triangle-1-s");
 	flag = !flag;
+}
+
+function saveNewLocale(url){
+	ajaxCall("post", url, $("#newLocaleForm").serialize(),
+			function(data, textStatus, xhr){
+		
+		if (hasCallbackErrors(xhr)){
+			var JSONData = jQuery.parseJSON(data);	
+   			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+	});
 }

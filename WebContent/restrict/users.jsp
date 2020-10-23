@@ -25,7 +25,7 @@
 	
 	<div id="tabUsers" data-url="${listUsersURL}"></div>
 	
-	<div id="tabNewEntry"></div>
+	<div id="tabNewUser"></div>
 </div>
 <script>
 	$(document).ready(function(){
@@ -52,7 +52,9 @@
 	function loadNewUserPage(url){
 		
 		ajaxCall("get", url, null, function(data, textStatus, xhr){
-			$("#tabNewEntry").html(data);
+			$("#tabNewUser").html(data);
+			$("#searchForm").attr("action", "");
+			$("#dinamicContent").attr("data-pagination-url", "");
 		});
 		return false;
 	}
