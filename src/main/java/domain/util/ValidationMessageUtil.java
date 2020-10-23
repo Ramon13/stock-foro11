@@ -46,6 +46,7 @@ public class ValidationMessageUtil {
 	public static final String GENERIC_EMPTY_FIELD = "O campo não pode ser vazio.";
 	public static final String GENERIC_MAX_LEN_255 = "O campo não pode conter mais que 255 caracteres.";
 	public static final String ILLEGAL_CREDENTIALS = "Usuário e/ou senha incorretos.";
+	public static final String BLOCKED_USER = "Usuário bloqueado.";
 	
 	public static final String EMPTY_STOCK = "Quantidade não disponível em estoque";
 	

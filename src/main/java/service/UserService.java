@@ -30,6 +30,8 @@ public class UserService extends ApplicationService<User, UserDAO>{
 			User user = getDAO().findByNameAndPassword(username, password);
 			if (user == null)
 				throw new ValidationException(ValidationMessageUtil.ILLEGAL_CREDENTIALS);
+			else if (user.getActive() == false)
+				throw new ValidationException(ValidationMessageUtil.BLOCKED_USER);
 			
 			return user;
 		} catch (DAOException e) {
