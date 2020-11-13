@@ -4,21 +4,20 @@ import java.util.List;
 
 import org.hibernate.query.Query;
 
-import br.com.javamon.dao.DAO;
 import br.com.javamon.exception.DAOException;
 import entity.Category;
 import entity.SubCategory;
 
-public class SubCategoryDAO extends DAO<SubCategory>{
+public class SubCategoryDAO extends ApplicationDAO<SubCategory>{
 
 	public SubCategoryDAO() {
 		super(SubCategory.class);
 	}
 	
 	public SubCategory findByName(String name) throws DAOException{
-		String hql = "from SubCategory sc where lower(sc.name) like :name";
+		String hql = "from SubCategory sc where sc.name like :name";
 		Query<SubCategory> query = createQuery(hql, SubCategory.class);
-		query.setParameter("name", name.toLowerCase());
+		query.setParameter("name", name);
 		return query.uniqueResult();
 	}
 	

@@ -2,29 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:url var="loadSubCategoryURL" 
-	value="/restrict/subcategory/ListByCategory.action" />
-<c:url var="saveSubCategoryURL" value="/restrict/subcategory/Save.action" />
-
-<div id="createSubCategoryDlg" class="jqDialog" hidden="hidden"
-	title="Criar nova categoria">
-	<form id="newSubCategoryForm">
-		<div id="scgeneralErrorDiv"></div>
-		 
-		<label for="scname">Nome</label> <br />
-		<div id="scNameErrorDiv"></div>
-		<input type="text" name="scName" id="scName" class="text ui-widget-content ui-corner-all"><br />
-		
-		<label for="icategory">Subitem *</label>
-		<div id="scCategoryErrorDiv"></div>
-		<select id="scCategory" name="scCategory">
-			<option selected="selected">Selecione...</option>
-			<c:forEach items="${categories}" var="category">
-				<option value="${category.id}">${category.name }</option>
-			</c:forEach>
-		</select>
-	</form>
-</div>
 
 <div id="simpleModalDialog" hidden="hidden" title="">
 	<p></p>
@@ -36,9 +13,6 @@
 </div>
 
 <script>
-	var saveSubCategoryURL = '${saveSubCategoryURL}';
-	var loadSubCategoryURL = '${loadSubCategoryURL}';
-	
 	var dialog, form;
 	
 	function simpleConfirmationDialog(title, messageBody, ajaxSubmitFunction){
@@ -135,41 +109,6 @@
 			dialog.dialog("open");
 		});
 	});
-	
-	function addPacket(){
-		
-		clearErrorDivs();
-		ajaxCall("post", savePacketURL, $("#newPacketForm").serialize(), function(data, textStatus, xhr){
-			var JSONData = jQuery.parseJSON(data);
-			
-			if (hasCallbackErrors(xhr)){
-				showErrors(JSONData)
-			}
-			else if (xhr.status == SUCCESS_200){
-				var option = $("<option />").attr("value", JSONData.id).html(JSONData.name);
-				option.attr("selected", "selected");
-				$("#packet").append(option);
-				dialog.dialog("close");
-			}
-		});
-	}
-
-	function addCategory(){
-		clearErrorDivs();
-		ajaxCall("post", saveCategoryURL, $("#newCategoryForm").serialize(), function(data, textStatus, xhr){
-			var JSONData = jQuery.parseJSON(data);
-			
-			if (hasCallbackErrors(xhr)){
-				showErrors(JSONData);
-			}
-			else if (xhr.status == SUCCESS_200){
-				var option = $("<option />").attr("value", JSONData.id).html(JSONData.name);
-				option.attr("selected", "selected");
-				$("#category, #scCategory").append(option);
-				dialog.dialog("close");
-			}
-		});
-	}
 
 	function addSubCategory(){
 		clearErrorDivs();

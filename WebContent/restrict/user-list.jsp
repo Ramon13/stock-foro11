@@ -117,7 +117,8 @@
 							
 						</c:when>
 						<c:otherwise>
-							<input type="checkbox" disabled="disabled"/>
+							<input type="checkbox" disabled="disabled"
+							<c:if test="${user.active eq false}">checked="checked"</c:if>/>
 						</c:otherwise>
 					</c:choose>
 				</td>

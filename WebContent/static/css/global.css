@@ -84,7 +84,7 @@ div#contentMenuBar{
 }
 
 #dinamicContent{
-	height: 90vh;
+	height: 85vh;
 	width: 91%;
 	float: right;
 	overflow: auto;
@@ -354,3 +354,4 @@ div.gallery{
 .jqte{
 	margin: 0px !important;
 }
+

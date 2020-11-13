@@ -25,7 +25,7 @@ public class ValidationMessageUtil {
 	
 	public static final String ITEM_NAME_EXISTS = "Esta descrição já está cadastrada no sistema.";
 	public static final String PACKET_NAME_EXISTS = "Esta unidade já está cadastrada no sistema.";
-	public static final String CATEGORY_NAME_EXISTS = "Este subitem já está cadastrada no sistema.";
+	public static final String CATEGORY_NAME_EXISTS = "Este subitem já está cadastrado no sistema.";
 	public static final String SUBCATEGORY_NAME_EXISTS = "Esta categoria já está cadastrada no sistema.";
 	
 	public static final String ID_NOT_FOUND = "A propriedade enviada não existe ou não é reconhecida pelo sistema.";

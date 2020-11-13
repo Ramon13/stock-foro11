@@ -28,7 +28,6 @@
 	}
 </style>
 
-<c:url var="newItemURL" value="/restrict/item/New.action" />
 <c:url var="searchItemsURL" value="/restrict/item/List.action" />
 <c:url var="changeFilterDate" value="/restrict/date/ChangeHomeFilterDate.action"/>
 <c:url var="homeURL" value="/restrict/item/List.action" />
@@ -182,7 +181,6 @@
 		initContent();
 		$("#dinamicContent").attr("data-pagination-url", '${homeURL}');
 		$("#searchForm").attr("action", '${homeURL}');
-		addNewItemLinkOnDetails();
 		
 		$(".date").on("change", function(){
 			var date = formatDate($(this).datepicker("getDate"));
@@ -204,15 +202,6 @@
 			});
 		});
 	});
-	
-	function addNewItemLinkOnDetails(){
-		var span = $('<span />').html("Novo item");
-		$("#tableOptions #details .dropdown-content").append(span);
-		
-		span.on("click", function(){
-			loadPage('${newItemURL}');
-		});
-	}
 	
 	function initContent(){
 		ajaxCall("get", '${homeURL}', null, function(data, textStatus, xhr){

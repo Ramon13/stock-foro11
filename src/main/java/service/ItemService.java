@@ -22,15 +22,12 @@ import domain.ItemLocales;
 import domain.OrderStatus;
 import domain.util.ExceptionMessageUtil;
 import domain.util.ValidationMessageUtil;
-import entity.Category;
 import entity.EntryItem;
 import entity.Image;
 import entity.Item;
 import entity.Locale;
 import entity.Order;
 import entity.OrderItem;
-import entity.Packet;
-import entity.SubCategory;
 
 public class ItemService extends ApplicationService<Item, ItemDAO>{
 
@@ -53,38 +50,23 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		}
 	}
 	
-	public void save(Item item, Path imagePath) throws ServiceException, ValidationException{
-		if (!isValidName(item.getName(), item.getId()))
-			throw new ValidationException(ValidationMessageUtil.ITEM_NAME_EXISTS);
-		
-		Packet packet = ServiceUtil.findPacketById(item.getPacket().getId());
-		
-		Category category = getServiceFactory()
-			.getService(CategoryService.class)
-			.findById(item.getCategory().getId());
-		
-		SubCategory subCategory = getServiceFactory()
-			.getService(SubCategoryService.class)
-			.findById(item.getSubCategory().getId());
-		
-		if (packet == null || category == null || subCategory == null)
-			throw new ValidationException(ValidationMessageUtil.ID_NOT_FOUND);
-		
-		item.setPacket(packet);
-		item.setCategory(category);
-		item.setSubCategory(subCategory);
+	public void edit(Item item, Path imagePath) throws ServiceException {
 		try {
-			if (isUpdate(item)) {
-				if (!isValidId(item.getId()))
-					throw new ValidationException(ValidationMessageUtil.ID_NOT_FOUND);
-				Item itemDB = findById(item.getId());
-				item.setImages(itemDB.getImages());
-				item.setMainImage(itemDB.getMainImage());
-				getDaoFactory().getDAO(ItemDAO.class).merge(item);
+			Path itemImagePath = imagePath.resolve(item.getId().toString());
 			
-			}else {
-				getDaoFactory().getDAO(ItemDAO.class).save(item);
-			}
+			getServiceFactory().getService(ImageService.class)
+				.saveImages(item, Files.createDirectories(itemImagePath));
+			
+			getDaoFactory().getDAO(ItemDAO.class).merge(item);
+		} catch (DAOException | IOException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void save(Item item, Path imagePath) throws ServiceException, ValidationException{
+		try {
+		
+			getDaoFactory().getDAO(ItemDAO.class).save(item);
 			
 			Path itemImagePath = imagePath.resolve(item.getId().toString());
 			Long mainImageId = getServiceFactory().getService(ImageService.class)
@@ -96,32 +78,31 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE);
 		}
 	}
-	
-	private boolean isUpdate(Item item){
-		return item.getId() != null;
-	}
-	
-	private boolean isValidId(Long id) throws ServiceException {
-		return findById(id) != null;
-	}
-	
-	private boolean isValidName(String name, Long id) throws ServiceException{
+
+	public Item findByName(String name) throws ServiceException{
 		try {
-			Item itemByName = getDaoFactory().getDAO(ItemDAO.class).findItemByName(name);
-			
-			if (itemByName != null) {
-				if (id == null)
-					return false;
-				
-				if (!itemByName.getId().equals(id))
-					return false;
-			}
-				
-			return true;
+			return getDaoFactory().getDAO(ItemDAO.class).findItemByName(name);
 		} catch (DAOException e) {
-			e.printStackTrace();
-			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE);
+			throw new ServiceException(e);
 		}
+	}
+	
+	public boolean isValidNewItemName(String name) throws ServiceException{
+		return findByName(name) == null;
+	}
+	
+	public boolean isValidNewItemName(String name, Item item) throws ServiceException{
+		Item foundItem = findByName(name);
+		
+		if (foundItem != null) {
+			if (item.getId() == null)
+				return false;
+			
+			else if (foundItem.getId() != item.getId())
+				return false;
+		}
+		
+		return true;
 	}
 	
 	public List<Item> list() throws ServiceException{

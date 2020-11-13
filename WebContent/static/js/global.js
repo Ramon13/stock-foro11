@@ -256,6 +256,7 @@ function saveNewLocale(url){
 }
 
 function saveNewPacket(url){
+	clearErrorDivs();
 	ajaxCall("post", url, $("#newPacketForm").serialize(), function(data, textStatus, xhr){
 		var JSONData = jQuery.parseJSON(data);
 		
@@ -268,11 +269,13 @@ function saveNewPacket(url){
 			option.attr("selected", "selected");
 			$("#packet").append(option);
 			dialog.dialog("destroy");
+			simpleModalDialog("Sucesso", "Unidade criada com sucesso.");
 		}
 	});
 }
 
 function saveNewCategory(url){
+	clearErrorDivs();
 	ajaxCall("post", url, $("#newCategoryForm").serialize(), function(data, textStatus, xhr){
 		var JSONData = jQuery.parseJSON(data);
 		
@@ -285,6 +288,24 @@ function saveNewCategory(url){
 			option.attr("selected", "selected");
 			$("#category, #scCategory").append(option);
 			dialog.dialog("destroy");
+			simpleModalDialog("Sucesso", "Subitem criado com sucesso.");
+		}
+	});
+}
+
+function saveNewSubCategory(url){
+	clearErrorDivs();
+	ajaxCall("post", url, $("#newSubCategoryForm").serialize(), function(data, textStatus, xhr){
+		
+		if (hasCallbackErrors(xhr)){
+			var JSONData = jQuery.parseJSON(data);
+			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+		
+		if (isSuccessRequest(xhr)){
+			dialog.dialog("destroy");
+			simpleModalDialog("Sucesso", "Categoria criada com sucesso.");
 		}
 	});
 }

@@ -10,7 +10,7 @@ public class NewItem extends Action{
 	public void process() throws Exception {
 		getRequest().setAttribute("packets", getServiceFactory().getService(PacketService.class).list());
 		getRequest().setAttribute("categories", getServiceFactory().getService(CategoryService.class).list());
-		foward("/restrict/saveItem.jsp");	
+		foward("/restrict/save-edit-item.jsp");	
 	}
 
 }

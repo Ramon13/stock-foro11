@@ -1,58 +1,54 @@
 package action.restrict.sub_category;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.google.gson.Gson;
-
 import action.ApplicationAction;
 import action.FormValidateJSON;
-import br.com.javamon.convert.NumberConvert;
+import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import br.com.javamon.validation.StringValidator;
 import domain.util.ValidationMessageUtil;
 import entity.Category;
 import entity.SubCategory;
+import service.CategoryService;
 import service.SubCategoryService;
 
 public class SaveSubCategory extends ApplicationAction{
 
+	private SubCategoryService subCategorySvc;
+	
 	@Override
 	public void processAction() throws Exception {
-		
+		subCategorySvc = getServiceFactory().getService(SubCategoryService.class);
 		SubCategory subCategory = validateFields();
-		try {
-			subCategory = getServiceFactory().getService(SubCategoryService.class).save(subCategory);
-			responseToClient(200, new Gson().toJson(subCategory));
-		}catch(ValidationException ex) {
-			getRequest().setAttribute("formValidationList", Arrays.asList(new FormValidateJSON("scgeneral", ex.getMessage())));
-			throw new ValidationException();
-		}
+		
+		subCategorySvc.save(subCategory);
 	}
 
-	private SubCategory validateFields() throws ValidationException{
+	private SubCategory validateFields() throws ValidationException, ServiceException{
 		SubCategory subCategory = new SubCategory();
-		List<FormValidateJSON> formValidateJSONs = new ArrayList<FormValidateJSON>(0);
 		
-		subCategory.setName(getRequest().getParameter("scName"));
-		String categoryId = getRequest().getParameter("scCategory");
+		subCategory.setName(getRequest().getParameter("name"));
+		String categoryId = getRequest().getParameter("category");
 		
 		if (StringValidator.isEmpty(subCategory.getName()))
-			formValidateJSONs.add(new FormValidateJSON("scName", ValidationMessageUtil.EMPTY_SUBCATEGORY_NAME));
+			formValidationList.add(new FormValidateJSON("scName", ValidationMessageUtil.EMPTY_SUBCATEGORY_NAME));
 		
-		if (!StringValidator.isValidLen(255, subCategory.getName()))
-			formValidateJSONs.add(new FormValidateJSON("scName", ValidationMessageUtil.SUBCATEGORY_MAX_LEN));
+		else if (!StringValidator.isValidLen(255, subCategory.getName()))
+			formValidationList.add(new FormValidateJSON("scName", ValidationMessageUtil.SUBCATEGORY_MAX_LEN));
 		
-		if (!StringValidator.isValidLongParse(categoryId))
-			formValidateJSONs.add(new FormValidateJSON("scCategory", ValidationMessageUtil.INVALID_CATEGORY_ID));
-		
-		if (formValidateJSONs.size() != 0) {
-			getRequest().setAttribute("formValidationList", formValidateJSONs);
-			throw new ValidationException();
+		else if (!subCategorySvc.isValidNewSubCategoryName(subCategory.getName()))
+			formValidationList.add(new FormValidateJSON("scName", ValidationMessageUtil.SUBCATEGORY_NAME_EXISTS));
+				
+		Category category = null;
+		try {
+			category = getServiceFactory().getService(CategoryService.class).validateAndFindById(categoryId);
+		} catch (ValidationException e) {
+			formValidationList.add(new FormValidateJSON("scCategory", ValidationMessageUtil.INVALID_CATEGORY_ID));
 		}
 		
-		subCategory.setCategory(new Category(NumberConvert.stringToLong(categoryId)));
+		if (!formValidationList.isEmpty()) 
+			throw new ValidationException();
+		
+		subCategory.setCategory(category);
 		return subCategory;
 	}
 }

@@ -7,25 +7,6 @@ table tbody:hover{
 }
 
 
-#newItemForm{
-	width: 40%;
-	background-color: #ffffff;
-	margin: auto;
-}
-
-#newItemForm fieldset{
-	border: none;
-	padding: 15px;
-}
-
-#newItemForm label{
-	font-size: 14px;
-    font-weight: 600;
-    line-height: 1.5;
-    color: #24292e;
-    font-family: sans-serif;
-}
-
 .selectBtn{
 	display: inline;
 }

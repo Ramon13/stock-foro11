@@ -19,9 +19,9 @@ public class ItemDAO extends ApplicationDAO<Item>{
 	}
 	
 	public Item findItemByName(String name) throws DAOException{
-		String hql = "from Item i where lower(i.name) like :name";
+		String hql = "from Item i where i.name like :name";
 		Query<Item> query = createQuery(hql, Item.class);
-		query.setParameter("name", name.toLowerCase());
+		query.setParameter("name", name);
 		
 		return query.uniqueResult();
 	}
