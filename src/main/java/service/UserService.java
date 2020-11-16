@@ -19,11 +19,19 @@ public class UserService extends ApplicationService<User, UserDAO>{
 		super(UserDAO.class);
 	}
 	
+	public void saveUser(User user) throws ServiceException{
+		user.setActive(true);
+		user.setResetPassword(true);
+		save(user);
+	}
+	
 	public User validateCredentials(String username, String password) throws ValidationException, ServiceException {
 		try {
-			User user = getDAO(UserDAO.class).findByNameAndPassword(username, password);
+			User user = getDAO().findByNameAndPassword(username, password);
 			if (user == null)
 				throw new ValidationException(ValidationMessageUtil.ILLEGAL_CREDENTIALS);
+			else if (user.getActive() == false)
+				throw new ValidationException(ValidationMessageUtil.BLOCKED_USER);
 			
 			return user;
 		} catch (DAOException e) {
@@ -63,5 +71,17 @@ public class UserService extends ApplicationService<User, UserDAO>{
 	public void blockUser(User user) throws ServiceException {
 		user.setActive(!user.getActive());
 		update(user);
+	}
+	
+	public User findByUserName(String userName) throws ServiceException{
+		try {
+			return getDAO().findByUserName(userName);
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public boolean isValidNewUserName(String userName) throws ServiceException {
+		return findByUserName(userName) == null;
 	}
 }

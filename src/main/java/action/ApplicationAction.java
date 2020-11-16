@@ -32,10 +32,8 @@ public abstract class ApplicationAction extends Action{
 			processAction();
 		}catch(ValidationException ex) {
 			ex.printStackTrace();
-			List<FormValidateJSON> formValidationList = 
-					(List<FormValidateJSON>) getRequest().getAttribute("formValidationList");
 			
-			if (formValidationList == null) 
+			if (formValidationList.isEmpty()) 
 				formValidationList = Arrays.asList(new FormValidateJSON("general", ex.getMessage()));
 			
 			responseToClient(230, new Gson().toJson(formValidationList));

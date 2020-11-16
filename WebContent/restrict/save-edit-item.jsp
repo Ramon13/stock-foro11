@@ -3,15 +3,44 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="ccvt" uri="/WEB-INF/tag/custom-convert.tld" %>
 
+<c:url var="newPacketURL" value="/restrict/packet/New.action" />
+<c:url var="newCategoryURL" value="/restrict/category/New.action" />
+<c:url var="newSubCategoryURL" value="/restrict/subcategory/New.action" />
+
 <c:url var="saveItemURL" value="/restrict/item/Save.action" />
 <c:url var="itemInfoURL" value="/restrict/item/ItemInfo.action" />
 <c:url var="listByCategoryURL" value="/restrict/subcategory/ListByCategory.action" />
+
+<style>
+	
+	#newItemForm{
+		width: 40%;
+		background-color: #ffffff;
+		margin: auto;
+	}
+	
+	#newItemForm fieldset{
+		padding: 15px;
+		text-align: center;
+	}
+	
+	#newItemForm label{
+		font-size: 14px;
+	    font-weight: 600;
+	    line-height: 1.5;
+	    color: #24292e;
+	    font-family: sans-serif;
+	}
+</style>
 
 <div id="newItemForm">
 	<form id="saveItemForm" onsubmit="return false" enctype="multipart/form-data">
 
 		<fieldset>
 			<input type="hidden" name="save" value="true" />
+			<c:if test="${editMode}">
+				<input type="hidden" name="item" value="${item.id}" />
+			</c:if>
 
 			<legend>
 				<c:choose>
@@ -48,7 +77,7 @@
 					</c:forEach>
 				</select>
 				<button id="addPacketBtn" type="button" class="ui-button ui-widget ui-corner-all">
-					<span class="ui-icon ui-icon-plusthick"></span> adicionar
+					<span class="ui-icon ui-icon-plusthick"></span>
 				</button>
 			</div>
 			<br /><br />
@@ -65,7 +94,7 @@
 					</c:forEach>
 				</select>
 				<button id="addCategoryBtn" type="button" class="ui-button ui-widget ui-corner-all">
-					<span class="ui-icon ui-icon-plusthick"></span> adicionar
+					<span class="ui-icon ui-icon-plusthick"></span>
 				</button>
 			</div>
 			<br /><br />
@@ -81,7 +110,7 @@
 					</c:forEach>
 				</select>
 				<button id="addSubCategoryBtn" type="button" class="ui-button ui-widget ui-corner-all">
-					<span class="ui-icon ui-icon-plusthick"></span> adicionar
+					<span class="ui-icon ui-icon-plusthick"></span>
 				</button>
 			</div>
 			<br /><br />
@@ -92,11 +121,11 @@
 				<ccvt:blob-to-string value="${item.description}"/>
 			</textarea>
 			<br /><br />
-
+	
 			<label for="name">Imagens</label> <br />
 			<input type="file" multiple="multiple" id="images" name="images"
 				placeholder="enviar imagens...">
-			<br /><br /><br />
+			<br /><br /><br />	
 			
 			<button type="button" onclick="saveItem('${saveItemURL}', '${itemInfoURL }')"
 			 class="ui-button ui-widget ui-corner-all saveBtn">
@@ -108,6 +137,8 @@
 <jsp:include page="dialogs.jsp" />
 
 <script>
+	var dialog;
+
 	$(document).ready(function(){
 		//print the successful message if the server return success as true on url
 		const queryString = window.location.href;
@@ -116,6 +147,28 @@
 			$(".saveSuccess").show();
 		
 		$("textarea").jqte();
+		
+		$("#addPacketBtn").on("click", function(){
+			ajaxCall("get", '${newPacketURL}', null, function(data, textStatus, xhr){
+				dialog = dialogForm($(data), null);
+				dialog.dialog("open");
+			});
+		});
+		
+		$("#addCategoryBtn").on("click", function(){
+			ajaxCall("get", '${newCategoryURL}', null, function(data, textStatus, xhr){
+				dialog = dialogForm($(data), null);
+				dialog.dialog("open");
+			});
+		});
+		
+		$("#addSubCategoryBtn").on("click", function(){
+			ajaxCall("get", '${newSubCategoryURL}', null, function(data, textStatus, xhr){
+				dialog = dialogForm($(data), null);
+				dialog.dialog("open");
+			});
+		});
+		
 	});
 
 	function saveItem(saveURL, successURL){
@@ -142,7 +195,8 @@
 	  	   			$(":input[type='submit']").prop("disabled", false);
 	  	   		}
 	  	   		else{
-	  	   			window.location.href = successURL + "?itemId=" + JSONData.id;
+	  	   			loadPage(successURL + "?itemId=" + JSONData.id);
+	  	   			simpleModalDialog("Sucesso", "Produto criado no estoque.");
 	  	   		}
 	        }
 		});

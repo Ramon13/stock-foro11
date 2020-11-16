@@ -25,7 +25,7 @@ public class ValidationMessageUtil {
 	
 	public static final String ITEM_NAME_EXISTS = "Esta descrição já está cadastrada no sistema.";
 	public static final String PACKET_NAME_EXISTS = "Esta unidade já está cadastrada no sistema.";
-	public static final String CATEGORY_NAME_EXISTS = "Este subitem já está cadastrada no sistema.";
+	public static final String CATEGORY_NAME_EXISTS = "Este subitem já está cadastrado no sistema.";
 	public static final String SUBCATEGORY_NAME_EXISTS = "Esta categoria já está cadastrada no sistema.";
 	
 	public static final String ID_NOT_FOUND = "A propriedade enviada não existe ou não é reconhecida pelo sistema.";
@@ -46,7 +46,19 @@ public class ValidationMessageUtil {
 	public static final String GENERIC_EMPTY_FIELD = "O campo não pode ser vazio.";
 	public static final String GENERIC_MAX_LEN_255 = "O campo não pode conter mais que 255 caracteres.";
 	public static final String ILLEGAL_CREDENTIALS = "Usuário e/ou senha incorretos.";
+	public static final String BLOCKED_USER = "Usuário bloqueado.";
 	
 	public static final String EMPTY_STOCK = "Quantidade não disponível em estoque";
+	
+	public static final String USER_NAME_MAX_LEN = "O nome de usuário não pode ter mais do que 255 caracteres.";
+	public static final String USER_NAME_EMPTY = "O nome de usuário não pode ser vazio.";
+	public static final String INVALID_USERNAME = "Usuário Inválido.";
+	public static final String USER_NAME_ALREADY_EXISTS = "O nome de usuário já cadastrado no sistema.";
+	public static final String INVALID_PASSWORD = "Senha inválida.";
+	
+	public static final String LOCALE_NAME_MAX_LEN = "O nome do local não pode ter mais do que 255 caracteres.";
+	public static final String LOCALE_NAME_EMPTY = "O nome do local não pode ser vazio.";
+	public static final String LOCALE_NAME_ALREADY_EXISTS = "O nome do local já encontra-se cadastrado no sistema.";
+	public static final String INVALID_LOCALE = "Local Inválido.";
 	
 }

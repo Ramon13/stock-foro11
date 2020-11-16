@@ -43,20 +43,23 @@ $(document).ready(function(){
 			
         	var tbodyCount = $(this).find("table tbody").length;
 			var url = $(this).attr("data-pagination-url");
-			var param = [
-				{name: "sortBy", value: sortBy},
-				{name: "order", value: order},
-				{name: "firstResultPage", value: tbodyCount}];
 			
-			ajaxCall("get", url, param, function(data, textStatus, xhr){
-				if (isSuccessRequest(xhr)){
-					var tbodyList = $(data).find("tbody");
-    				$.each(tbodyList, function(){
-    					$("table").append($(this));	
-    				});
-					scrolled = false;
-				}
-			});
+			if (url != ""){
+				var param = [
+					{name: "sortBy", value: sortBy},
+					{name: "order", value: order},
+					{name: "firstResultPage", value: tbodyCount}];
+				
+				ajaxCall("get", url, param, function(data, textStatus, xhr){
+					if (isSuccessRequest(xhr)){
+						var tbodyList = $(data).find("tbody");
+	    				$.each(tbodyList, function(){
+	    					$("table").append($(this));	
+	    				});
+						scrolled = false;
+					}
+				});
+			}
         }
     });
 
@@ -238,4 +241,71 @@ function openView(element){
 	var spanIcon = element.find(".open-fold");
 	flag == true ? spanIcon.attr("class", "ui-icon ui-icon-triangle-1-n") : spanIcon.attr("class", "ui-icon ui-icon-triangle-1-s");
 	flag = !flag;
+}
+
+function saveNewLocale(url){
+	ajaxCall("post", url, $("#newLocaleForm").serialize(),
+			function(data, textStatus, xhr){
+		
+		if (hasCallbackErrors(xhr)){
+			var JSONData = jQuery.parseJSON(data);	
+   			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+	});
+}
+
+function saveNewPacket(url){
+	clearErrorDivs();
+	ajaxCall("post", url, $("#newPacketForm").serialize(), function(data, textStatus, xhr){
+		var JSONData = jQuery.parseJSON(data);
+		
+		if (hasCallbackErrors(xhr)){
+			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+		else if (xhr.status == SUCCESS_200){
+			var option = $("<option />").attr("value", JSONData.id).html(JSONData.name);
+			option.attr("selected", "selected");
+			$("#packet").append(option);
+			dialog.dialog("destroy");
+			simpleModalDialog("Sucesso", "Unidade criada com sucesso.");
+		}
+	});
+}
+
+function saveNewCategory(url){
+	clearErrorDivs();
+	ajaxCall("post", url, $("#newCategoryForm").serialize(), function(data, textStatus, xhr){
+		var JSONData = jQuery.parseJSON(data);
+		
+		if (hasCallbackErrors(xhr)){
+			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+		else if (xhr.status == SUCCESS_200){
+			var option = $("<option />").attr("value", JSONData.id).html(JSONData.name);
+			option.attr("selected", "selected");
+			$("#category, #scCategory").append(option);
+			dialog.dialog("destroy");
+			simpleModalDialog("Sucesso", "Subitem criado com sucesso.");
+		}
+	});
+}
+
+function saveNewSubCategory(url){
+	clearErrorDivs();
+	ajaxCall("post", url, $("#newSubCategoryForm").serialize(), function(data, textStatus, xhr){
+		
+		if (hasCallbackErrors(xhr)){
+			var JSONData = jQuery.parseJSON(data);
+			showInputErrors(JSONData);
+   			showDivErrors(JSONData);
+		}
+		
+		if (isSuccessRequest(xhr)){
+			dialog.dialog("destroy");
+			simpleModalDialog("Sucesso", "Categoria criada com sucesso.");
+		}
+	});
 }

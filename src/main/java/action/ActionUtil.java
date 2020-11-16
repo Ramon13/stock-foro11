@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import br.com.javamon.exception.ServiceException;
 import domain.LoggedUser;
 import entity.Order;
@@ -90,6 +92,14 @@ public class ActionUtil{
 			return 0;
 		
 		return firstResult;
+	}
+	
+	public static String getimagesPath(HttpServletRequest request) {
+		String imagesPath = "UnixItemImagePath";
+		if (SystemUtils.IS_OS_WINDOWS)
+			imagesPath = "WindowsItemImagePath";
+		
+		return request.getServletContext().getInitParameter(imagesPath);
 	}
 
 }

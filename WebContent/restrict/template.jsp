@@ -17,7 +17,11 @@
 <c:url var="listOrdersURL" value="/restrict/order/List.action"/>
 <c:url var="listUserURL" value="/restrict/user/List.action"/>
 <c:url var="printPdfURL" value="restrict/item/Print.action" />
+<<<<<<< HEAD
 <c:url var="listStockForecastURL" value="/restrict/stockForecast/List.action"></c:url>
+=======
+<c:url var="newItemURL" value="/restrict/item/New.action" />
+>>>>>>> 136a227bb66281d521d59c5c022c412ac5a4d1ad
 
 <!DOCTYPE html>
 <html>
@@ -50,15 +54,23 @@
 		<style>
 			#tableOptions{
 				float: right;
+				margin-right: 50px;
 			}
 			
-			button img{
-				width: 25px; 
+			#tableOptions img{
+				width: 20px !important;
+				height: 20px !important;
 			}
 			
-			.ui-button{
-				padding: 5px;
+			#tableOptions button{
 				border: none;
+				padding: 5px;
+				width: 30px;
+			}
+			
+			form#searchForm {
+			    width: 70%;
+			    float: left;
 			}
 		</style>
 	</head>
@@ -152,9 +164,18 @@
 					<button class="ui-button ui-widget ui-corner-all">
 						<img src="static/images/printer-icon-512x512.png">
 					</button>
-					<button class="ui-button ui-widget ui-corner-all">
-						<img src="static/images/details-icon-512x512.png">
-					</button>
+					
+					<div id="details" class="dropdown">
+						<button class="ui-button ui-widget ui-corner-all dropdown-btn">
+							<img src="static/images/details-icon-512x512.png">
+						</button>
+						<div class="dropdown-content">
+							<span id="newItemBtn">Novo Item</span>
+							
+							
+						</div>
+					</div>
+					
 					
 				</div>
 			</div>
@@ -171,6 +192,10 @@
 			$(".printPdfBtn").on("click", function(){
 				window.open('${printPdfURL}');
 				
+			});
+			
+			$("#newItemBtn").on("click", function(){
+				loadPage('${newItemURL}');
 			});
 		});
 	</script>		

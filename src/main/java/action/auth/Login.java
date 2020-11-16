@@ -1,8 +1,5 @@
 package action.auth;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import action.ApplicationAction;
 import action.FormValidateJSON;
 import br.com.javamon.exception.ValidationException;
@@ -28,7 +25,6 @@ public class Login extends ApplicationAction {
 	
 	private User validateFields() throws ValidationException{
 		User user = new User();
-		List<FormValidateJSON> formValidationList = new ArrayList<FormValidateJSON>();
 		
 		String username = getRequest().getParameter("username");
 		String password = getRequest().getParameter("password");
@@ -50,7 +46,6 @@ public class Login extends ApplicationAction {
 					new FormValidateJSON("password", ValidationMessageUtil.GENERIC_MAX_LEN_255));
 		
 		if (!formValidationList.isEmpty()) {
-			getRequest().setAttribute("formValidationList", formValidationList);
 			throw new ValidationException();
 		}
 		

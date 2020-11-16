@@ -117,7 +117,8 @@
 							
 						</c:when>
 						<c:otherwise>
-							<input type="checkbox" disabled="disabled"/>
+							<input type="checkbox" disabled="disabled"
+							<c:if test="${user.active eq false}">checked="checked"</c:if>/>
 						</c:otherwise>
 					</c:choose>
 				</td>
@@ -170,7 +171,7 @@
 		        "Continuar": function(){
 		        	ajaxCall("get", blockUsersURL, param, function(data, textStatus, xhr){
 						if (isSuccessRequest(xhr)){
-							simpleModalDialog("Sucesso", successMsg);
+							simpleModalDialog("Sucesso", "usuário bloqueado");
 						}
 						
 						if (hasCallbackErrors(xhr)){

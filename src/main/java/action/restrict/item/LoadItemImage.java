@@ -3,8 +3,7 @@ package action.restrict.item;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.SystemUtils;
-
+import action.ActionUtil;
 import br.com.javamon.action.Action;
 import br.com.javamon.convert.NumberConvert;
 import entity.Item;
@@ -34,11 +33,7 @@ public class LoadItemImage extends Action {
 	}
 
 	private Path getAppImagesPath(Item item, Long imageId) {
-		String imagesPath = "UnixItemImagePath";
-		if (SystemUtils.IS_OS_WINDOWS)
-			imagesPath = "WindowsItemImagePath";
-
-		return Paths.get(getRequest().getServletContext().getInitParameter(imagesPath), item.getId().toString(),
+		return Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString(),
 				imageId.toString());
 	}
 }

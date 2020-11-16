@@ -16,20 +16,26 @@ public class EditItem extends Action{
 	public void process() throws Exception {
 		
 		try {
-			Long itemId = StringConvert.stringToLong(getRequest().getParameter("item"));
-			Item item = getServiceFactory().getService(ItemService.class).findById(itemId);
+			String itemId = getRequest().getParameter("item");
+			Item item = getServiceFactory()
+					.getService(ItemService.class)
+					.validateAndFindById(itemId);
+					
 			getRequest().setAttribute("item", item);
 			ActionUtil.setEditMode(getRequest(), true);
+			
 			ActionUtil.addPacketsToRequest(getRequest(),
 					getServiceFactory().getService(PacketService.class));
+			
 			ActionUtil.addCategoryToRequest(getRequest(), 
 					getServiceFactory().getService(CategoryService.class));
+			
 			getRequest().setAttribute("subCategories", 
 					getServiceFactory().
 					getService(SubCategoryService.class)
 					.listByCategory(item.getCategory().getId()));
 
-			foward("/restrict/saveItem.jsp");
+			foward("/restrict/save-edit-item.jsp");
 		} catch (ConvertException e) {
 			e.printStackTrace();
 		}
