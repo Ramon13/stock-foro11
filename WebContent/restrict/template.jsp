@@ -12,11 +12,12 @@
 <c:url var="css" value="/static/css"/>
 <c:url var="js" value="/static/js"/>
 <c:url var="jqteCss" value="/jquery-te-1.4.0.css"/>
-<c:url var="chosenCss" value="/js/chosen.css"/>
+<c:url var="chosenCs	s" value="/js/chosen.css"/>
 
 <c:url var="listOrdersURL" value="/restrict/order/List.action"/>
 <c:url var="listUserURL" value="/restrict/user/List.action"/>
 <c:url var="printPdfURL" value="restrict/item/Print.action" />
+<c:url var="listStockForecastURL" value="/restrict/stockForecast/List.action"></c:url>
 
 <!DOCTYPE html>
 <html>
@@ -123,7 +124,7 @@
 							<div><span class="ui-icon ui-icon-document"></span>Relatórios</div>
 							<ul>
 								<li>
-									<div>		
+									<div onclick="loadPage('${listStockForecastURL}')">		
 										Necessidade de Aquisição
 									</div>
 								</li>
