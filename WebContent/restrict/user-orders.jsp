@@ -28,12 +28,6 @@
 		text-decoration: none;
 	}
 	
-	.itemImage img{
-		width: 50px;
-	    height: 50px;
-	    border: 1px solid #d2d2d2;
-	}
-	
 	h3{
 		text-align: center;
 	    color: gray;
@@ -65,24 +59,19 @@
 
 <c:url var="listOrders" value="/restrict/order/List.action" />
 
-
 <div id="statusPath">
 	<a href="#" onclick="loadPage('${listOrders}?status=P')" 
-		<c:if test="${status == PENDING}">class="highlight"</c:if> >Pendente</a> 
+		class = "${status eq PENDING ? 'highlight' : ''}">Pendente</a> 
 	
 	<span>></span>
 	 
 	<a href="#" onclick="loadPage('${listOrders}?status=R')" 
-		<c:if test="${status == RELEASED}">
-			class="highlight"
-		</c:if> >
-		Liberado
-	</a>
+		${status eq RELEASED ? "class='highlight'" : ''}>Liberado</a>
 	 
 	<span>></span>
 	
 	<a href="#" onclick="loadPage('${listOrders}?status=F')" 
-	<c:if test="${status == FINALIZED}">class="highlight"</c:if> >Finalizado</a>	
+		${status eq FINALIZED ? "class='highlight'" : ''}>Finalizado</a>	
 </div>
 
 <div id="ordersDiv">
@@ -128,8 +117,11 @@
 						<c:url var="loadItemImageURL" value="/restrict/orderItem/ListByOrder.action" >
 							<c:param name="order" value="${order.id}"/>
 						</c:url>
-			
-						<tr class="view" onclick="openView(this)" data-url="${loadItemImageURL}">
+						<c:url var="listOrderItemByOrderURL" value="/restrict/orderItem/ListByOrder.action" >
+							<c:param name="order" value="${order.id}"/>
+						</c:url>
+						
+						<tr class="view" onclick="openView(this)" data-url="${listOrderItemByOrderURL}">
 							<td>
 								<span class="open-fold ui-icon ui-icon-triangle-1-s"></span>
 								<span class="orderId">

@@ -6,8 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import action.AdminHomeDateType;
 import br.com.javamon.exception.DAOException;
@@ -15,7 +17,6 @@ import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import br.com.javamon.validation.DateValidator;
 import dao.ItemDAO;
-import domain.DateUtil;
 import domain.ItemLocale;
 import domain.ItemLocaleFilter;
 import domain.ItemLocales;
@@ -232,26 +233,59 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 	
 	
 	public void setItemsCurrentAmount(Collection<OrderItem> orderItems) throws ServiceException{
+		OrderItemService orderItemSvc = getServiceFactory().getService(OrderItemService.class);
+		Item item;
+		
 		for (OrderItem oi : orderItems) {
-			setItemCurrentAmount(oi.getItem());
+			item = oi.getItem();
+			
+			item.setCurrentYearAmount(orderItemSvc
+					.getItemOrderAmountByYear(oi.getItem(), LocalDate.now().getYear()));
+			
+			item.setSumByMonth(getPreviousMonthsAmount(12, item));
+			
+			item.setAmount(getItemCurrentAmount(item));
 		}
 	}
 	
+	public List<Integer> getPreviousMonthsAmount(int numOfMonths, Item item) throws ServiceException {
+		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
+		Order order;
+		
+		int[] sumByMonth = new int[numOfMonths + 1];
+				
+		LocalDate oneYearBefore = LocalDate.now().withDayOfMonth(1).minusMonths(numOfMonths);
+		
+		for (OrderItem orderItem : item.getOrderItems()) {
+			order = orderItem.getOrder();
+			
+			//If the order is finished or released then plus orderSum
+			if (orderSvc.isValidOrder(order) && OrderStatus.isFinalizedOrder(order)) {
+				
+				if (order.getFinalDate().isAfter(oneYearBefore)) {
+					int monthValue = order.getFinalDate().getMonthValue();
+					sumByMonth[monthValue] += orderItem.getAmount();
+				
+				}
+			}
+		}
+		
+		List<Integer> sum = new ArrayList<Integer>();
+		LocalDate today = LocalDate.now();
+		for (int i = 1; i <= numOfMonths; i++) {
+			sum.add(sumByMonth[today.minusMonths(i).getMonthValue()]);
+		}
+		
+		return sum;
+	}
 	
-	public void setItemCurrentAmount(Item item) {
+	public BigDecimal getItemCurrentAmount(Item item) throws ServiceException {
+		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
+		
 		int entrySum = 0;
 		int orderSum = 0;
 		Order order;
-		
-		final int numOfMonths = 12;
-		int currentYearAmount = 0;
-		
-		//represents the sum of last twelve months.
-		//does not use index zero so add an index more
-		int[] sumByMonth = new int[numOfMonths + 1];
-		
-		LocalDate oneYearBefore = LocalDate.now().withDayOfMonth(1).minusMonths(numOfMonths);
-		
+	
 		for (EntryItem entryItem : item.getEntryItems()) {
 			entrySum += entryItem.getAmount();
 		}
@@ -259,32 +293,13 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		for (OrderItem orderItem : item.getOrderItems()) {
 			order = orderItem.getOrder();
 			
-			//If the order is finished or released then plus orderSum
-			if (isValidOrder(order) &&	
-					(OrderStatus.isFinalizedOrder(order) || OrderStatus.isReleazedOrder(order))) {
-				
+			if (orderSvc.isValidOrder(order) && OrderStatus.isFinalizedOrReleased(order)) {
 				orderSum += orderItem.getAmount();
-				
-				//If order.finalDate is greather than oneYearBefore, plus sumByMonth in the respective
-				//month index.
-				if (OrderStatus.isFinalizedOrder(order)) {
-					
-					if (order.getFinalDate().isAfter(oneYearBefore)) {
-						int monthValue = order.getFinalDate().getMonthValue();
-						sumByMonth[monthValue] += orderItem.getAmount();
-					
-						
-					}else if (order.getFinalDate().isAfter(DateUtil.firstDayOfCurrentYear().minusDays(1))) {
-						currentYearAmount += orderItem.getAmount();
-					}
-				}
-				
 			}
+				
 		}
 		
-		item.setCurrentYearAmount(currentYearAmount);
-		item.setSumByMonth(sortSums(sumByMonth));
-		item.setAmount(new BigDecimal(entrySum - orderSum));
+		return new BigDecimal(entrySum - orderSum);
 	}
 	
 	
@@ -306,10 +321,6 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		}
 		
 		return sorted;
-	}
-	
-	private boolean isValidOrder(Order order) {
-		return order != null && order.getStatus() != null;
 	}
 	
 	public List<Item> searchOnItems(String word) throws ServiceException{

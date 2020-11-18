@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import action.ApplicationAction;
+import domain.OrderStatus;
 import entity.Item;
 import entity.Order;
 import service.ItemService;
@@ -17,17 +18,24 @@ public class ListOrder extends ApplicationAction{
 	@Override
 	public void processAction() throws Exception {
 		 orderSvc = getServiceFactory().getService(OrderService.class);
+		 String strStatus = getRequest().getParameter("status");
 		 
-		 if (!StringUtils.isAllBlank(getRequest().getParameter("listAll"))) {
-			 sendOrders();
+		 if (!StringUtils.isAllBlank(strStatus)) {
+			 sendOrders(OrderStatus.getByValue(strStatus.charAt(0)));
 		 
 		 }else {
 			 sendOrdersByItem();
 		 }
 	}
 	
-	private void sendOrders() throws Exception{
+	private void sendOrders(OrderStatus status) throws Exception{
+		List<Order> orders = getServiceFactory()
+				.getService(OrderService.class)
+				.listByStatus(status);
 		
+		getRequest().setAttribute("status", status.getValue().toString());
+		getRequest().setAttribute("orders", orders);
+		foward("/restrict/user-orders.jsp");
 	}
 
 	private void sendOrdersByItem() throws Exception{

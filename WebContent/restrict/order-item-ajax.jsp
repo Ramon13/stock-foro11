@@ -92,6 +92,16 @@
 	div#orderInfo span{
 		margin-right: 80px;
 	}
+	
+	img{
+		width: 50px;
+	    height: 50px;
+	    border: 1px solid #d2d2d2;
+	}
+	
+	.fold-table thead tr th{
+		background-color: #000000;
+	}
 </style>
 
 <c:set var="FINALIZED" value="F" />

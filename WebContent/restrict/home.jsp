@@ -2,50 +2,27 @@
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="cfmt" uri="/WEB-INF/tag/custom-fmt.tld" %>
-<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <style>
-	input.date {
-    	font-size: 12px;
-    	width: 120px;
-	}
 	
-	thead tr th{
-		background-color: #ffffff;
-		padding-bottom: 20px;
-	}
-<<<<<<< HEAD
-=======
 	
-	#myHeader tr th{
-		top: 0;
-	    position: sticky;
-	}
-	
-	#myHeader2 tr th{
-		top: 20px;
-	    position: sticky;
-	    padding-top: 50px;
-	    padding-bottom: 2px;
-	}
->>>>>>> 136a227bb66281d521d59c5c022c412ac5a4d1ad
 </style>
 
 <c:url var="searchItemsURL" value="/restrict/item/List.action" />
 <c:url var="changeFilterDate" value="/restrict/date/ChangeHomeFilterDate.action"/>
 <c:url var="homeURL" value="/restrict/item/List.action" />
 
-<<<<<<< HEAD
 
-<table id="tableHome">
+<table id="tableHome" >
 	<thead class="myHeader">
 		<tr>
 			<th colspan="5"></th>
-			<th colspan="7">
+			<th colspan="${fn:length(locales)}">
 				<span>Consumo por seção - ${lastYear}</span>
 			</th>
 			<th></th>
-			<th colspan="7">
+			<th colspan="${fn:length(locales)}">
 				<span>Consumo entre datas</span>
 			</th>
 			 
@@ -58,6 +35,7 @@
 			 
 		</tr>
 	</thead>
+
 	<thead  class="myHeader2">
 		<tr>
 			<th>
@@ -68,146 +46,109 @@
 					<div class="dropdown-content" data-sortURL="${homeURL}">
 						<button class="ui-button ui-widget ui-corner-all close-dropdown">
 							<img class="ui-icon ui-icon-closethick"></img>
-=======
-<div>
-	<table id="tableHome">
-		<thead id="myHeader">
-			<tr>
-				<th colspan="5"></th>
-				<th colspan="${fn:length(locales)}">
-					<span>Consumo por seção - ${lastYear}</span>
-				</th>
-				<th></th>
-				<th colspan="${fn:length(locales)}">
-					<span>Consumo entre datas</span>
-				</th>
-				<th></th>
-				<!--  
-				<th>
-				
-					<input type="button" value="Novo Item" 
-						onclick="window.location.href='${newItemURL}'">
-					
-				</th>
-				 	-->
-			</tr>
-		</thead>
-		<thead  id="myHeader2">
-			<tr>
-				<th>
-					<div class="dropdown">
-						<button class="dropdown-btn">
-							<span class="ui-icon ui-icon-caret-1-s"></span>
->>>>>>> 136a227bb66281d521d59c5c022c412ac5a4d1ad
 						</button>
-						<div class="dropdown-content" data-sortURL="${homeURL}">
-							<button class="ui-button ui-widget ui-corner-all close-dropdown">
-								<img class="ui-icon ui-icon-closethick"></img>
-							</button>
-							<br />
-							<span class="sortBy" data-property="id" data-order="asc">Classificar em ordem crescente</span>
-							<span class="sortBy" data-property="id" data-order="desc">Classificar em ordem decrescente</span>
-						</div>
+						<br />
+						<span class="sortBy" data-property="id" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="id" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
-					<span>Código</span>
-				</th>
-				<th>
-					<div class="dropdown">
-						<button class="dropdown-btn">
-							<span class="ui-icon ui-icon-caret-1-s"></span>
+				</div>
+				<span>Código</span>
+			</th>
+			<th>
+				<div class="dropdown">
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
 						</button>
-						<div class="dropdown-content" data-sortURL="${homeURL}">
-							<button class="ui-button ui-widget ui-corner-all close-dropdown">
-								<img class="ui-icon ui-icon-closethick"></img>
-							</button>
-							<br />
-							<span class="sortBy" data-property="name" data-order="asc">Classificar em ordem crescente</span>
-							<span class="sortBy" data-property="name" data-order="desc">Classificar em ordem decrescente</span>
-						</div>
+						<br />
+						<span class="sortBy" data-property="name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="name" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
-					<span>Descrição</span>
-				</th>
-				<th>
-					<div class="dropdown">
-						<button class="dropdown-btn">
-							<span class="ui-icon ui-icon-caret-1-s"></span>
+				</div>
+				<span>Descrição</span>
+			</th>
+			<th>
+				<div class="dropdown">
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
 						</button>
-						<div class="dropdown-content" data-sortURL="${homeURL}">
-							<button class="ui-button ui-widget ui-corner-all close-dropdown">
-								<img class="ui-icon ui-icon-closethick"></img>
-							</button>
-							<br />
-							<span class="sortBy" data-property="packet.name" data-order="asc">Classificar em ordem crescente</span>
-							<span class="sortBy" data-property="packet.name" data-order="desc">Classificar em ordem decrescente</span>
-						</div>
+						<br />
+						<span class="sortBy" data-property="packet.name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="packet.name" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
-					<span>Unidade</span>
-				</th>
-				<th>
-					<div class="dropdown">
-						<button class="dropdown-btn">
-							<span class="ui-icon ui-icon-caret-1-s"></span>
+				</div>
+				<span>Unidade</span>
+			</th>
+			<th>
+				<div class="dropdown">
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
 						</button>
-						<div class="dropdown-content" data-sortURL="${homeURL}">
-							<button class="ui-button ui-widget ui-corner-all close-dropdown">
-								<img class="ui-icon ui-icon-closethick"></img>
-							</button>
-							<br />
-							<span class="sortBy" data-property="category.name" data-order="asc">Classificar em ordem crescente</span>
-							<span class="sortBy" data-property="category.name" data-order="desc">Classificar em ordem decrescente</span>
-						</div>
+						<br />
+						<span class="sortBy" data-property="category.name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="category.name" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
-					<span>Subitem</span>
-				</th>
-				<th>
-					<div class="dropdown">
-						<button class="dropdown-btn">
-							<span class="ui-icon ui-icon-caret-1-s"></span>
+				</div>
+				<span>Subitem</span>
+			</th>
+			<th>
+				<div class="dropdown">
+					<button class="dropdown-btn">
+						<span class="ui-icon ui-icon-caret-1-s"></span>
+					</button>
+					<div class="dropdown-content" data-sortURL="${homeURL}">
+						<button class="ui-button ui-widget ui-corner-all close-dropdown">
+							<img class="ui-icon ui-icon-closethick"></img>
 						</button>
-						<div class="dropdown-content" data-sortURL="${homeURL}">
-							<button class="ui-button ui-widget ui-corner-all close-dropdown">
-								<img class="ui-icon ui-icon-closethick"></img>
-							</button>
-							<br />
-							<span class="sortBy" data-property="subCategory.name" data-order="asc">Classificar em ordem crescente</span>
-							<span class="sortBy" data-property="subCategory.name" data-order="desc">Classificar em ordem decrescente</span>
-						</div>
+						<br />
+						<span class="sortBy" data-property="subCategory.name" data-order="asc">Classificar em ordem crescente</span>
+						<span class="sortBy" data-property="subCategory.name" data-order="desc">Classificar em ordem decrescente</span>
 					</div>
-					<span>Categoria</span>
-				</th>
-				
-				<c:forEach items="${locales}" var="locale">
-					<th><div  class="verticalTableHeader"><c:out value="${locale.name}" /></div></th>
-				</c:forEach>
-				
-				<th>
-					<span class="dateErrorMsg"></span>
-					<div id="dateErrorDiv"></div>
-					<span>Estoque em:</span>
-					<br />
-					<input type="text" id="primaryDate" class="date" name="date" 
-								value="<cfmt:formatDate value="${primaryDate}" locale="ptBR"/>" 
-								data-url="${changeFilterDate}"/>
-				</th>
-				
-				<c:forEach items="${locales}" var="locale">
-					<th><div  class="verticalTableHeader"><c:out value="${locale.name}" /></div></th>
-				</c:forEach>
-				
-				<th>
-					<span>Estoque em:</span>
-					<br />
-					<input type="text" id="secondDate" class="date" name="date" 
-								value="<cfmt:formatDate value="${secondDate}" locale="ptBR"/>" 
-								data-url="${changeFilterDate}"/>
-				</th>
-			</tr>
-		</thead>
+				</div>
+				<span>Categoria</span>
+			</th>
+			
+			<c:forEach items="${locales}" var="locale">
+				<th><div  class="verticalTableHeader"><c:out value="${locale.name}" /></div></th>
+			</c:forEach>
+			
+			<th>
+				<span class="dateErrorMsg"></span>
+				<div id="dateErrorDiv"></div>
+				<span>Estoque em:</span>
+				<br />
+				<input type="text" id="primaryDate" class="date" name="date" 
+							value="<cfmt:formatDate value="${primaryDate}" locale="ptBR"/>" 
+							data-url="${changeFilterDate}"/>
+			</th>
+			
+			<c:forEach items="${locales}" var="locale">
+				<th><div  class="verticalTableHeader"><c:out value="${locale.name}" /></div></th>
+			</c:forEach>
+			
+			<th>
+				<span>Estoque em:</span>
+				<br />
+				<input type="text" id="secondDate" class="date" name="date" 
+							value="<cfmt:formatDate value="${secondDate}" locale="ptBR"/>" 
+							data-url="${changeFilterDate}"/>
+			</th>
+		</tr>
+	</thead>
 		
 	</table>
 	
-</div>
-
 <script>
 	$(document).ready(function(){	
 		const PRIMARY_DATE = "primaryDate";

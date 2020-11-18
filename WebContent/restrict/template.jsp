@@ -17,11 +17,9 @@
 <c:url var="listOrdersURL" value="/restrict/order/List.action"/>
 <c:url var="listUserURL" value="/restrict/user/List.action"/>
 <c:url var="printPdfURL" value="restrict/item/Print.action" />
-<<<<<<< HEAD
 <c:url var="listStockForecastURL" value="/restrict/stockForecast/List.action"></c:url>
-=======
 <c:url var="newItemURL" value="/restrict/item/New.action" />
->>>>>>> 136a227bb66281d521d59c5c022c412ac5a4d1ad
+
 
 <!DOCTYPE html>
 <html>

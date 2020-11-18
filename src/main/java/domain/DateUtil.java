@@ -22,6 +22,10 @@ public class DateUtil {
 		return LocalDate.now();
 	}
 	
+	public static LocalDate firstDayOfYear(int year) {
+		return LocalDate.of(year, 1, 1);
+	}
+	
 	/**
 	 * Gets the names of last months
 	 * @param monthsNum The number of months

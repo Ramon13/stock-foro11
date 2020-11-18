@@ -20,11 +20,26 @@ public enum OrderStatus {
 		return value;
 	}
 	
+	public static OrderStatus getByValue(Character value) {
+		for (OrderStatus status : OrderStatus.values()) {
+			if (status.getValue() == value)
+				return status;
+		}
+		
+		return PENDING;
+	}
+	
 	public static boolean isFinalizedOrder(Order order) {
 		return order.getStatus().equals(FINALIZED.getValue());
 	}
 	
-	public static boolean isReleazedOrder(Order order) {
+	public static boolean isReleasedOrder(Order order) {
 		return order.getStatus().equals(RELEASED.getValue());
 	}
+	
+	public static boolean isFinalizedOrReleased(Order order) {
+		return isFinalizedOrder(order) || isReleasedOrder(order);
+	}
+	
+	
 }

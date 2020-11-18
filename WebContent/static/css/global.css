@@ -355,7 +355,6 @@ div.gallery{
 	margin: 0px !important;
 }
 
-<<<<<<< HEAD
 .myHeader tr th{
 	top: 0;
    position: sticky;
@@ -366,5 +365,13 @@ div.gallery{
    	position: sticky;
    	padding-top: 50px;
 }
-=======
->>>>>>> 136a227bb66281d521d59c5c022c412ac5a4d1ad
+
+thead tr th{
+	background-color: #ffffff;
+}
+
+input.date {
+   	font-size: 12px;
+   	width: 120px;
+}
+	

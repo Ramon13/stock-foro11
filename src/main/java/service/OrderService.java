@@ -129,4 +129,8 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 		
 		return listOrderFromOrderItems(orderItems);
 	}
+	
+	public boolean isValidOrder(Order order) {
+		return order != null && order.getStatus() != null;
+	}
 }

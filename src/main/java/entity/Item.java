@@ -41,7 +41,7 @@ public class Item extends Entity{
 	
 	private transient List<FileItem> multipartFiles;
 	
-	private transient int currentYearAmount;
+	private transient long currentYearAmount;
 	
 	public String getName() {
 		return name;
@@ -139,11 +139,11 @@ public class Item extends Entity{
 		this.sumByMonth = sumByMonth;
 	}
 
-	public int getCurrentYearAmount() {
+	public long getCurrentYearAmount() {
 		return currentYearAmount;
 	}
 
-	public void setCurrentYearAmount(int currentYearAmount) {
+	public void setCurrentYearAmount(long currentYearAmount) {
 		this.currentYearAmount = currentYearAmount;
 	}
 }
