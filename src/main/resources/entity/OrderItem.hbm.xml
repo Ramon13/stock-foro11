@@ -18,7 +18,12 @@
 		</many-to-one> 
 		
 		<many-to-one name="order" class="Order">
-			<column name="order_id" not-null="true"/>
+			<column name="order_id" not-null="false"/>
 		</many-to-one>
+		 
+		<many-to-one name="cart" class="ShoppingCart" fetch="select">
+			<column name="shopping_cart_id" not-null="false"/>
+		</many-to-one>
+	 	
 	</class>
 </hibernate-mapping>

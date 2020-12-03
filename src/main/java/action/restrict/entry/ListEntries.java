@@ -18,23 +18,22 @@ public class ListEntries extends ApplicationAction{
 	public void processAction() throws Exception {
 		entrySvc = getServiceFactory().getService(EntryService.class);
 		
-		if (!StringUtils.isAllBlank(getRequest().getParameter("listAll"))) 
-			sendEntries();
-		else
+		if (!StringUtils.isAllBlank(getRequest().getParameter("item")))
 			sendEntriesByItem();
-		
+		else
+			sendEntries();
 	}
 
 	private void sendEntries() throws Exception{
 		List<Entry> entries;
 		
 		if (isSearchAction())
-			entries = entrySvc.searchOnEntry(paginationFilter.getSearchWord());
+			entries = entrySvc.searchOnEntry(paginationFilter);
 		else
 			entries = entrySvc.list(paginationFilter);
 		
 		getRequest().setAttribute("entries", entries);
-		foward("/restrict/entries-ajax.jsp");
+		foward("/restrict/entries-table.jsp");
 	}
 	
 	private void sendEntriesByItem() throws Exception {
@@ -51,7 +50,7 @@ public class ListEntries extends ApplicationAction{
 		
 		getRequest().setAttribute("item", item);
 		getRequest().setAttribute("entries", entries);
-		foward("/restrict/item-info-entries.jsp");
+		foward("/restrict/entries-table.jsp");
 	}
 	
 }

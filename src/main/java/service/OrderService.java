@@ -10,6 +10,7 @@ import br.com.javamon.exception.ValidationException;
 import dao.OrderDAO;
 import domain.LoggedUser;
 import domain.OrderStatus;
+import domain.PermissionRoles;
 import domain.util.ExceptionMessageUtil;
 import domain.util.ValidationMessageUtil;
 import entity.Item;
@@ -24,9 +25,9 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 		super(OrderDAO.class);
 	}
 
-	public List<Order> listByStatus(OrderStatus status) throws ServiceException{
+	public List<Order> listByStatus(OrderStatus status, PaginationFilter filter) throws ServiceException{
 		try {
-			return getDaoFactory().getDAO(OrderDAO.class).listByStatus(status);
+			return getDaoFactory().getDAO(OrderDAO.class).listByStatus(status, filter);
 		}catch(DAOException ex) {
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_LIST);
 		}
@@ -35,9 +36,17 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 	public List<Order> listByItem(Item item, PaginationFilter filter) throws ServiceException{
 		List<OrderItem> orderItems = getServiceFactory()
 				.getService(OrderItemService.class)
-				.listByItem(item, filter);
+				.listByItem(item, filter, OrderStatus.FINALIZED);
 		
 		return listOrderFromOrderItems(orderItems);
+	}
+	
+	public List<Order> listByUser(User user, PaginationFilter filter) throws ServiceException{
+		try {
+			return getDAO().listByUser(user, filter);
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
 	}
 	
 	public void cancelOrder(Order order) throws ServiceException{
@@ -47,35 +56,31 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 	
 	public boolean isValidCancelationOrder(Order order, LoggedUser loggedUser) throws ServiceException{
 		return isValidForCancellation(order) 
-				&& getServiceFactory()
-					.getService(UserService.class).isAnyAdmin(loggedUser);
+				&& PermissionRoles.isAnyAdmin(loggedUser.getUser().getPermission());
 	}
 	
 	public boolean isValidForRelease(Order order, LoggedUser loggedUser) throws ServiceException, ValidationException{
 		OrderItemService orderItemSvc = getServiceFactory().getService(OrderItemService.class);
 		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
 		
-		itemSvc.setItemsCurrentAmount(order.getOrderItems());
 		for (OrderItem orderItem : order.getOrderItems()) {
+			itemSvc.getItemCurrentAmount(orderItem.getItem());
 			if (!orderItemSvc.isValidForRelease(orderItem))
 				throw new ValidationException(ValidationMessageUtil.EMPTY_STOCK);
 		}
 		
 		return order.getStatus() == OrderStatus.PENDING.getValue() 
-				&& getServiceFactory()
-					.getService(UserService.class).isSuperAdminLoggedUser(loggedUser);
+				&& PermissionRoles.isSuperAdmin(loggedUser.getUser().getPermission());
 	}
 	
 	public boolean isValidForFinish(Order order, LoggedUser loggedUser) throws ServiceException{
 		return order.getStatus() == OrderStatus.RELEASED.getValue() 
-				&& getServiceFactory()
-					.getService(UserService.class).isAnyAdmin(loggedUser);
+				&& PermissionRoles.isAnyAdmin(loggedUser.getUser().getPermission());
 	}
 	
 	public boolean isValidForPending(Order order, LoggedUser loggedUser) throws ServiceException{
 		return order.getStatus() == OrderStatus.RELEASED.getValue() 
-				&& getServiceFactory()
-					.getService(UserService.class).isAnyAdmin(loggedUser);
+				&& PermissionRoles.isAnyAdmin(loggedUser.getUser().getPermission());
 	}
 	
 	public boolean isValidForCancellation(Order order) {
@@ -85,6 +90,7 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 	
 	public void finishOrder(Order order) throws ServiceException {
 		order.setStatus(OrderStatus.FINALIZED.getValue());
+		order.setFinalDate(LocalDate.now());
 		update(order);
 	}
 	
@@ -95,6 +101,7 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 				.getService(UserService.class)
 				.findById(loggedUser.getUser().getId());
 		order.setReleaseAdministrator(persistentUser);
+		order.setReleaseDate(LocalDate.now());
 		update(order);
 	}
 	
@@ -115,22 +122,31 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 	
 	private List<Order> listOrderFromOrderItems(List<OrderItem> orderItems){ 
 		List<Order> orders = new ArrayList<Order>();
+
 		for (OrderItem oi : orderItems) {
 			orders.add(oi.getOrder());
 		}
 		
-		return orders;
+		return orders;	
 	}
 	
-	public List<Order> searchOrdersByItem(Item item, String word) throws ServiceException{
+	public List<Order> searchOrdersByItem(Item item, PaginationFilter filter) throws ServiceException{
 		List<OrderItem> orderItems = getServiceFactory()
 				.getService(OrderItemService.class)
-				.searchOnOrderItem(item, word);
+				.searchOnOrderItem(item, filter);
 		
 		return listOrderFromOrderItems(orderItems);
 	}
 	
 	public boolean isValidOrder(Order order) {
 		return order != null && order.getStatus() != null;
+	}
+	
+	public List<Order> searchOnOrders(PaginationFilter filter) throws ServiceException{
+		try {
+			return getDaoFactory().getDAO(OrderDAO.class).search(filter);
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
 	}
 }

@@ -60,6 +60,14 @@ public class ApplicationService<R, T extends ApplicationDAO<R>> extends Service{
 		}
 	}
 	
+	public void delete(R r) throws ServiceException{
+		try {
+			getDAO().delete(r);
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	public R findById(Long id) throws ServiceException {
 		try {
 			R r = daoFactory.getDAO(clazz).load(id);

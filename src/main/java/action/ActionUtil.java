@@ -9,10 +9,11 @@ import org.apache.commons.lang3.SystemUtils;
 
 import br.com.javamon.exception.ServiceException;
 import domain.LoggedUser;
+import domain.PermissionRoles;
 import entity.Order;
+import entity.User;
 import service.CategoryService;
 import service.PacketService;
-import service.UserService;
 
 public class ActionUtil{
 
@@ -28,8 +29,9 @@ public class ActionUtil{
 		request.setAttribute("editMode", mode);
 	}
 	
-	public static void setSuperAdminUser(HttpServletRequest request, UserService loginSvc) {
-		if (loginSvc.isSuperAdminLoggedUser(getSessionLoggedUser(request))) {
+	public static void setSuperAdminUser(HttpServletRequest request) {
+		User user = ((LoggedUser) getSessionLoggedUser(request)).getUser();
+		if (PermissionRoles.isSuperAdmin(user.getPermission())) {
 			request.setAttribute("superAdmin", true);
 		}
 	}

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+      "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+              
+<hibernate-mapping package="entity">
+	
+	<class name="ShoppingCart" table="shopping_cart">
+		
+		<id name="id">
+			<generator class="foreign">
+				<param name="property">customer</param>
+			</generator>
+		</id>
+	  
+		<set name="orderItems" inverse="true" lazy="true" fetch="select">
+			<key column="shopping_cart_id" not-null="true"/>
+			<one-to-many class="OrderItem"/>
+		</set>
+	
+		<one-to-one constrained="true" name="customer" class="entity.User"/>			
+	</class>
+	
+</hibernate-mapping>
+   

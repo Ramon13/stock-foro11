@@ -8,6 +8,7 @@ import action.ApplicationAction;
 import domain.OrderStatus;
 import entity.Item;
 import entity.Order;
+import entity.PaginationFilter.orders;
 import service.ItemService;
 import service.OrderService;
 
@@ -29,16 +30,29 @@ public class ListOrder extends ApplicationAction{
 	}
 	
 	private void sendOrders(OrderStatus status) throws Exception{
-		List<Order> orders = getServiceFactory()
-				.getService(OrderService.class)
-				.listByStatus(status);
+		 if (StringUtils.isAllBlank(getRequest().getParameter("sortBy"))) {
+			 paginationFilter.setSortProperty("id");
+			 paginationFilter.setOrder(orders.DESC);
+		 }	
+		List<Order> orders;
+		
+		if (StringUtils.isAllEmpty(paginationFilter.getSearchWord())) {
+			orders = orderSvc.listByStatus(status, paginationFilter);
+
+		}else {
+			orders = orderSvc.searchOnOrders(paginationFilter);
+		}
 		
 		getRequest().setAttribute("status", status.getValue().toString());
 		getRequest().setAttribute("orders", orders);
-		foward("/restrict/user-orders.jsp");
+		foward("/restrict/orders.jsp");
 	}
 
 	private void sendOrdersByItem() throws Exception{
+		if (StringUtils.isAllBlank(getRequest().getParameter("sortBy"))) {
+			 paginationFilter.setSortProperty("order.id");
+			 paginationFilter.setOrder(orders.DESC);
+		 }	
 		Item item = getServiceFactory().getService(ItemService.class)
 				.validateAndFindById(getRequest().getParameter("item"));
 		
@@ -47,11 +61,13 @@ public class ListOrder extends ApplicationAction{
 			orders = orderSvc.listByItem(item, paginationFilter);
 		
 		else
-			orders = orderSvc.searchOrdersByItem(item, paginationFilter.getSearchWord());
+			orders = orderSvc.searchOrdersByItem(item, paginationFilter);
 			
 		getRequest().setAttribute("orders", orders);
+		getRequest().setAttribute("fieldName", "order.");
 		getRequest().setAttribute("item", item);
-		foward("/restrict/item-info-orders.jsp");
+		foward("/restrict/orders.jsp");
 		
 	}
+	
 }

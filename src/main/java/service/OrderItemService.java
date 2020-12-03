@@ -7,7 +7,6 @@ import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import dao.OrderItemDAO;
-import domain.DateUtil;
 import domain.OrderStatus;
 import domain.util.ExceptionMessageUtil;
 import domain.util.ValidationMessageUtil;
@@ -15,6 +14,7 @@ import entity.Item;
 import entity.Order;
 import entity.OrderItem;
 import entity.PaginationFilter;
+import entity.ShoppingCart;
 
 public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO>{
 
@@ -34,6 +34,15 @@ public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO
 		try {
 			return getDaoFactory().getDAO(OrderItemDAO.class)
 					.list(item, filter);
+		}catch(DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<OrderItem> listByItem(Item item, PaginationFilter filter, OrderStatus status) throws ServiceException{
+		try {
+			return getDaoFactory().getDAO(OrderItemDAO.class)
+					.list(item, filter, status);
 		}catch(DAOException e) {
 			throw new ServiceException(e);
 		}
@@ -67,30 +76,19 @@ public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO
 		throw new ValidationException(ValidationMessageUtil.EMPTY_STOCK);  
 	}
 	
-	public List<OrderItem> searchOnOrderItem(Item item, String word) throws ServiceException{
+	public List<OrderItem> searchOnOrderItem(Item item, PaginationFilter filter) throws ServiceException{
 		try {
-			return getDAO(OrderItemDAO.class).searchByItem(item, word);
+			return getDAO(OrderItemDAO.class).searchByItem(item, filter.getSearchWord(), filter, OrderStatus.FINALIZED);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
-	public Long getItemOrderAmountByYear(Item item, int year) throws ServiceException {
-		long orderSum = 0;
-		Order order = null;
-		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
-		
-		for (OrderItem orderItem : item.getOrderItems()) {
-			order = orderItem.getOrder();
-			
-			if (orderSvc.isValidOrder(order) &&
-					OrderStatus.isFinalizedOrReleased(order) &&
-					order.getFinalDate().isAfter(DateUtil.firstDayOfYear(year))) {
-				
-				orderSum += orderItem.getAmount();	
-			}
+	public List<OrderItem> listByShoppingCart(ShoppingCart cart) throws ServiceException{
+		try {
+			return getDAO().listByShoppingCart(cart);
+		} catch (DAOException e) {
+			throw new ServiceException(e);
 		}
-				
-		return orderSum;
 	}
 }

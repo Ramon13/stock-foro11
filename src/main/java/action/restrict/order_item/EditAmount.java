@@ -10,9 +10,9 @@ import br.com.javamon.convert.NumberConvert;
 import br.com.javamon.exception.ValidationException;
 import br.com.javamon.validation.StringValidator;
 import domain.LoggedUser;
+import domain.PermissionRoles;
 import domain.util.ValidationMessageUtil;
 import entity.OrderItem;
-import service.UserService;
 import service.OrderItemService;
 
 public class EditAmount extends ApplicationAction{
@@ -20,7 +20,6 @@ public class EditAmount extends ApplicationAction{
 	@Override
 	public void processAction() throws Exception {	
 		OrderItemService orderItemSvc = getServiceFactory().getService(OrderItemService.class);
-		UserService loginSvc = getServiceFactory().getService(UserService.class);
 		
 		int newAmount = validateField();
 		OrderItem orderItem = orderItemSvc.validateAndFindById(getRequest().getParameter("orderItem"));
@@ -28,7 +27,7 @@ public class EditAmount extends ApplicationAction{
 		LoggedUser loggedUser = ActionUtil.getSessionLoggedUser(getRequest());
 		
 		if (orderItemSvc.isValidForChangeAmount(orderItem, newAmount) &&
-				loginSvc.isSuperAdminLoggedUser(loggedUser)) {
+				PermissionRoles.isSuperAdmin(loggedUser.getUser().getPermission())) {
 			
 			orderItemSvc.editAmount(orderItem, newAmount);
 		}

@@ -9,7 +9,7 @@ public class PaginationFilter {
 	private String searchWord;
 	private String sortProperty;
 	private orders order = orders.ASC;
-	private Integer firstResultPage;
+	private Integer firstResultPage = 1;
 	private Integer maxResults = 50;
 	
 	public PaginationFilter(String searchWord, String sortProperty, orders order, 
@@ -18,6 +18,10 @@ public class PaginationFilter {
 		this.sortProperty = sortProperty;
 		this.order = order;
 		this.firstResultPage = firsResultPage;
+	}
+	
+	public PaginationFilter() {
+	
 	}
 
 	public String getSearchWord() {

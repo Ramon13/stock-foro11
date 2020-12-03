@@ -10,6 +10,8 @@ public class OrderItem extends Entity{
 	
 	@Search (getMarckedFields = true)
 	private Order order;
+	
+	private ShoppingCart cart;
 
 	public Integer getAmount() {
 		return amount;
@@ -33,6 +35,14 @@ public class OrderItem extends Entity{
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public ShoppingCart getCart() {
+		return cart;
+	}
+
+	public void setCart(ShoppingCart cart) {
+		this.cart = cart;
 	}
 	
 	

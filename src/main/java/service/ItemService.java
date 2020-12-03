@@ -6,10 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import action.AdminHomeDateType;
 import br.com.javamon.exception.DAOException;
@@ -17,6 +15,7 @@ import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import br.com.javamon.validation.DateValidator;
 import dao.ItemDAO;
+import domain.DateUtil;
 import domain.ItemLocale;
 import domain.ItemLocaleFilter;
 import domain.ItemLocales;
@@ -29,6 +28,8 @@ import entity.Item;
 import entity.Locale;
 import entity.Order;
 import entity.OrderItem;
+import entity.PaginationFilter;
+import entity.SubCategory;
 
 public class ItemService extends ApplicationService<Item, ItemDAO>{
 
@@ -104,6 +105,10 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		}
 		
 		return true;
+	}
+	
+	public List<Item> listBySubCategory(PaginationFilter filter, SubCategory...subCategories) throws DAOException{
+		return getDAO().listBySubCategory(filter, subCategories);
 	}
 	
 	public List<Item> list() throws ServiceException{
@@ -232,23 +237,42 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 	}
 	
 	
-	public void setItemsCurrentAmount(Collection<OrderItem> orderItems) throws ServiceException{
-		OrderItemService orderItemSvc = getServiceFactory().getService(OrderItemService.class);
+	public void setItemAmountByLocale(Collection<OrderItem> orderItems, Locale locale) throws ServiceException{
 		Item item;
 		
 		for (OrderItem oi : orderItems) {
 			item = oi.getItem();
 			
-			item.setCurrentYearAmount(orderItemSvc
-					.getItemOrderAmountByYear(oi.getItem(), LocalDate.now().getYear()));
+			item.setCurrentYearAmount(
+					getItemAmountByLocaleAndYear(locale, LocalDate.now().getYear(), item));
 			
-			item.setSumByMonth(getPreviousMonthsAmount(12, item));
+			item.setSumByMonth(getPreviousMonthsAmount(item, 12, locale));
 			
 			item.setAmount(getItemCurrentAmount(item));
 		}
 	}
 	
-	public List<Integer> getPreviousMonthsAmount(int numOfMonths, Item item) throws ServiceException {
+	public long getItemAmountByLocaleAndYear(Locale locale, int year, Item item) throws ServiceException{
+		long orderSum = 0;
+		Order order = null;
+		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
+		
+		for (OrderItem orderItem : item.getOrderItems()) {
+			order = orderItem.getOrder();
+			
+			if (orderSvc.isValidOrder(order) &&
+					OrderStatus.isFinalizedOrder(order) &&
+					order.getCustomer().getLocale().getId() == locale.getId() &&
+					order.getFinalDate().isAfter(DateUtil.firstDayOfYear(year))) {
+				
+				orderSum += orderItem.getAmount();	
+			}
+		}
+				
+		return orderSum;
+	}
+	
+	public List<Integer> getPreviousMonthsAmount(Item item, int numOfMonths, Locale locale) throws ServiceException {
 		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
 		Order order;
 		
@@ -259,14 +283,14 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		for (OrderItem orderItem : item.getOrderItems()) {
 			order = orderItem.getOrder();
 			
-			//If the order is finished or released then plus orderSum
-			if (orderSvc.isValidOrder(order) && OrderStatus.isFinalizedOrder(order)) {
+			if (orderSvc.isValidOrder(order) &&
+					OrderStatus.isFinalizedOrder(order) &&
+					order.getCustomer().getLocale().getId() == locale.getId() &&
+					order.getFinalDate().isAfter(oneYearBefore)) {
 				
-				if (order.getFinalDate().isAfter(oneYearBefore)) {
 					int monthValue = order.getFinalDate().getMonthValue();
 					sumByMonth[monthValue] += orderItem.getAmount();
 				
-				}
 			}
 		}
 		
@@ -323,9 +347,9 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		return sorted;
 	}
 	
-	public List<Item> searchOnItems(String word) throws ServiceException{
+	public List<Item> searchOnItems(PaginationFilter filter) throws ServiceException{
 		try {
-			return getDaoFactory().getDAO(ItemDAO.class).search(word);
+			return getDaoFactory().getDAO(ItemDAO.class).search(filter);
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new ServiceException(e);

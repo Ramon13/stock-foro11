@@ -50,6 +50,6 @@
 	<mapping resource="entity/User.hbm.xml"/>
 	<mapping resource="entity/Invoice.hbm.xml"/>
 	<mapping resource="entity/Provider.hbm.xml"/>
-	
+	<mapping resource="entity/ShoppingCart.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

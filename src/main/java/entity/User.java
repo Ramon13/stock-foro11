@@ -1,5 +1,8 @@
 package entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import dao.Search;
 
 public class User extends Entity {
@@ -13,11 +16,15 @@ public class User extends Entity {
 	
 	private Boolean active;
 	
-	@Search (getMarckedFields = true)
+	@Search (getMarckedFields = true) 
 	private Permission permission;
 	
 	@Search (getMarckedFields = true)
 	private Locale locale;
+	
+	private ShoppingCart cart;
+	
+	private Set<Order> orders = new HashSet<Order>(0);
 
 	public String getName() {
 		return name;
@@ -65,5 +72,21 @@ public class User extends Entity {
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	public ShoppingCart getCart() {
+		return cart;
+	}
+
+	public void setCart(ShoppingCart cart) {
+		this.cart = cart;
+	}
+
+	public Set<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(Set<Order> orders) {
+		this.orders = orders;
 	}
 }

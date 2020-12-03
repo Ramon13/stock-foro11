@@ -92,9 +92,9 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 			throw new ValidationException(ValidationMessageUtil.INVOICE_NUMBER_EXISTS);
 	}
 	
-	public List<Entry> searchOnEntry(String word) throws ServiceException{
+	public List<Entry> searchOnEntry(PaginationFilter filter) throws ServiceException{
 		try {
-			return getDaoFactory().getDAO(EntryDAO.class).search(word);
+			return getDaoFactory().getDAO(EntryDAO.class).search(filter);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
 		}
@@ -102,8 +102,10 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 	
 	private List<Entry> listFromEntryItems(List<EntryItem> entryItems){
 		List<Entry> entries = new ArrayList<Entry>(0);
-		for (EntryItem ei : entryItems)
+
+		for (EntryItem ei : entryItems) {
 			entries.add(ei.getEntry());
+		}
 		
 		return entries;
 	}

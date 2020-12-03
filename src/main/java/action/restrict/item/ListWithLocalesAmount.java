@@ -20,14 +20,16 @@ public class ListWithLocalesAmount extends ApplicationAction{
 
 	@Override
 	public void processAction() throws Exception {
-		if (!StringUtils.isAllBlank(getRequest().getParameter("loadHomePage")))
-			sendHomePage();
-		else
+		if (!StringUtils.isAllBlank(getRequest().getParameter("loadTableContent")))
 			sendAjaxContent();
+		else
+			sendHomePage();
 	}
 	
 	private void sendHomePage() throws Exception {
 		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
+		ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.PRIMARY_DATE, null, getRequest().getSession()); 
+		ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.SECOND_DATE, null, getRequest().getSession());
 		getRequest().setAttribute("lastYear", DateUtil.firstDayOfPreviousYear().getYear());
 		getRequest().setAttribute("locales", locales);
 		foward("/restrict/home.jsp");
@@ -56,7 +58,7 @@ public class ListWithLocalesAmount extends ApplicationAction{
 			return itemSvc.list(paginationFilter);
 		}
 		
-		return itemSvc.searchOnItems(paginationFilter.getSearchWord());
+		return itemSvc.searchOnItems(paginationFilter);
 	}
 	
 	private ItemLocales getItemLocalesFromPreviousYear() {

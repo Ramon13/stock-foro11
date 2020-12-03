@@ -2,11 +2,20 @@ package dao;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
 import br.com.javamon.exception.DAOException;
 import domain.OrderStatus;
 import entity.Order;
+import entity.PaginationFilter;
+import entity.User;
 
 public class OrderDAO extends ApplicationDAO<Order>{
 
@@ -14,10 +23,30 @@ public class OrderDAO extends ApplicationDAO<Order>{
 		super(Order.class);
 	}
 
-	public List<Order> listByStatus(OrderStatus status) throws DAOException{
-		String hql = "from Order o where o.status like :status order by o.id desc";
-		Query<Order> query = createQuery(hql, Order.class);
-		query.setParameter("status", status.getValue());
-		return query.list();
+	@SuppressWarnings(value = {"deprecation", "unchecked"})
+	public List<Order> listByStatus(OrderStatus status, PaginationFilter filter) throws DAOException{
+		Criteria criteria = getSession().createCriteria(Order.class);
+		criteria.add(Restrictions.eq("status", status.getValue()));
+		setSortProperties(criteria, filter);
+		
+		return criteria.setMaxResults(filter.getMaxResults())
+			.setFirstResult(filter.getFirstResultPage())
+			.list();
+	}
+	
+	public List<Order> listByUser(User user, PaginationFilter filter) throws DAOException{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery<Order> criteriaQuery = builder.createQuery(Order.class);
+		
+		Root<Order> root = criteriaQuery.from(Order.class);
+		Predicate predicateForCustomerID = builder.equal(root.get("customer").get("id"), user.getId());
+		setSortProperties(builder, criteriaQuery, root, filter);
+		criteriaQuery.where(predicateForCustomerID);
+		
+		Query<Order> query = getSession().createQuery(criteriaQuery);
+		query.setMaxResults(filter.getMaxResults());
+		query.setFirstResult(filter.getFirstResultPage());
+		
+		return query.getResultList();
 	}
 }

@@ -7,7 +7,6 @@ import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import dao.UserDAO;
 import domain.LoggedUser;
-import domain.PermissionRoles;
 import domain.util.ExceptionMessageUtil;
 import domain.util.ValidationMessageUtil;
 import entity.PaginationFilter;
@@ -25,44 +24,21 @@ public class UserService extends ApplicationService<User, UserDAO>{
 		save(user);
 	}
 	
-	public User validateCredentials(String username, String password) throws ValidationException, ServiceException {
+	public boolean isValidLogin(User user) throws ServiceException{
 		try {
-			User user = getDAO().findByNameAndPassword(username, password);
-			if (user == null)
-				throw new ValidationException(ValidationMessageUtil.ILLEGAL_CREDENTIALS);
-			else if (user.getActive() == false)
-				throw new ValidationException(ValidationMessageUtil.BLOCKED_USER);
-			
-			return user;
+			return getDAO().findByNameAndPassword(user.getName(), user.getPassword()) != null;
 		} catch (DAOException e) {
-			e.printStackTrace();
-			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_LOAD);
+			throw new ServiceException(e);
 		}
-	}
-
-	public boolean isAdminLoggedUser(LoggedUser loggedUser) {
-		return loggedUser.getUser().getPermission().getLevel() == PermissionRoles.ADMIN.getValue(); 
-	}
-	
-	public boolean isSuperAdminLoggedUser(LoggedUser loggedUser) {
-		return loggedUser.getUser().getPermission().getLevel() == PermissionRoles.SUPER_ADMIN.getValue(); 
-	}
-	
-	public boolean isUserLoggedUser(LoggedUser loggedUser) {
-		return loggedUser.getUser().getPermission().getLevel() == PermissionRoles.USER.getValue(); 
 	}
 	
 	public boolean isValidToBlock(LoggedUser loggedUser, User userToBlock) {
 		return loggedUser.getUser().getPermission().getLevel() >= userToBlock.getPermission().getLevel();
 	}
 	
-	public boolean isAnyAdmin(LoggedUser loggedUser) {
-		return isSuperAdminLoggedUser(loggedUser) || isAdminLoggedUser(loggedUser);
-	}
-	
 	public List<User> searchOnUser(PaginationFilter filter) throws ServiceException{
 		try {
-			return getDaoFactory().getDAO(UserDAO.class).search(filter.getSearchWord());
+			return getDaoFactory().getDAO(UserDAO.class).search(filter);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
 		}
@@ -83,5 +59,9 @@ public class UserService extends ApplicationService<User, UserDAO>{
 	
 	public boolean isValidNewUserName(String userName) throws ServiceException {
 		return findByUserName(userName) == null;
+	}
+	
+	public boolean hasCart(User user) throws ServiceException{
+		return user.getCart() != null;
 	}
 }

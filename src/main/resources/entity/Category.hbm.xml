@@ -12,5 +12,10 @@
 		</id>
 		
 		<property name="name" column="description" type="java.lang.Integer"/>
+		
+		<set name="subCategories" lazy="true" table="item_type">
+			<key column="subitem_id" />
+			<one-to-many class="SubCategory"/>
+		</set>
 	</class>
 </hibernate-mapping>

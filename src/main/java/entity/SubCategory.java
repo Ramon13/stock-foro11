@@ -1,5 +1,8 @@
 package entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import dao.Search;
 
 public class SubCategory extends Entity{
@@ -14,6 +17,16 @@ public class SubCategory extends Entity{
 	private String name;
 	
 	private Category category;
+
+	private Set<Item> items = new HashSet<Item>(0);
+	
+	public Set<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<Item> items) {
+		this.items = items;
+	}
 
 	public String getName() {
 		return name;

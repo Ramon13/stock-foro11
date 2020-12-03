@@ -7,7 +7,5 @@ import entity.ItemStockForecast;
 
 public class ItemStockForecastService extends Service {
 
-	public List<ItemStockForecast> list(){
-		
-	}
+	
 }

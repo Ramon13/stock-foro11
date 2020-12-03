@@ -8,6 +8,8 @@ import dao.Search;
 
 public class Order extends Entity{
 
+	private LocalDate requestDate;
+	
 	@Search
 	private LocalDate finalDate;
 	
@@ -80,5 +82,12 @@ public class Order extends Entity{
 	public void setReleaseAdministrator(User releaseAdministrator) {
 		this.releaseAdministrator = releaseAdministrator;
 	}
-	
+
+	public LocalDate getRequestDate() {
+		return requestDate;
+	}
+
+	public void setRequestDate(LocalDate requestDate) {
+		this.requestDate = requestDate;
+	}
 }

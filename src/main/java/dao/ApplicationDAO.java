@@ -7,6 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.query.Query;
@@ -31,17 +36,19 @@ public class ApplicationDAO<T> extends DAO<T>{
 		this.clazz = clazz;
 	}
 
-	/**
+	/** 
 	 * Search the word pattern on fields annotated with @Search
 	 * @param word the pattern to be search
 	 */
-	public List<T> search(String word) throws DAOException{
+	public List<T> search(PaginationFilter filter) throws DAOException{
 		StringBuilder hql = new StringBuilder();
 		hql.append(String.format("from %s o where o.id < 0 ", clazz.getSimpleName()));
 		bfsFields(hql, getAllFields());
 		Query<T> query = createQuery(hql.toString(), clazz);	
-		setParams(word, query);
+		setParams(filter.getSearchWord(), query);
 		
+		query.setMaxResults(filter.getMaxResults());
+		query.setFirstResult(filter.getFirstResultPage());
 		return query.list();
 	}
 	
@@ -191,4 +198,26 @@ public class ApplicationDAO<T> extends DAO<T>{
 		c1.addOrder(order);
 	}
 
+	protected void setSortProperties(CriteriaBuilder builder,CriteriaQuery<T> query, Root<T> root, PaginationFilter filter) {
+		String sortProperty = filter.getSortProperty();
+		
+		String[] properties = sortProperty.split("\\.");
+		Path<Object> path = root.get(properties[0]);
+		
+		if (properties.length >= 2) {
+			
+			for (int i = 1; i < properties.length -1; i++) {
+				path = path.get(properties[i]);
+			}
+			
+		}
+		
+		if (filter.getOrder().toString() == orders.ASC.toString()) {
+			query.orderBy(builder.asc(path));
+		
+		}else {
+			query.orderBy(builder.desc(path));
+		}
+	}
 }
+

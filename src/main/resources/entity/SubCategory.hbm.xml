@@ -19,5 +19,9 @@
 			<column name="subitem_id" not-null="true" />
 		</many-to-one>
 		
+		<set name="items" inverse="true" cascade="all">
+			<key column="type_id" not-null="true"/>
+			<one-to-many class="Item"/>
+		</set>
 	</class>
 </hibernate-mapping>
