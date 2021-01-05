@@ -4,6 +4,7 @@
 
 <%@include file="header.jsp" %>
 
+<c:url var="staticImages" value="/static/images"/>
 <c:url var="homeURL" value="/common/home.action" />
 <c:url var="addToCartURL" value="/common/cart/add.action" />
 <c:url var="cartCountURL" value="/common/cart/count.action"></c:url>
@@ -86,7 +87,7 @@
 					<c:param name="item" value="${item.id}"/>
 					<c:param name="image" value="${item.mainImage}" />
 				</c:url>			
-				<img src="${loadItemImageURL}">
+				<img src="${empty item.mainImage ? '../static/images/no-image-icon.jpg' : loadItemImageURL}">
 				
 				<div class="cardOptions">
 					<span class="item-name">${item.name}</span>

@@ -24,7 +24,7 @@
 		<description>Location to store uploaded product images</description>
 		<param-name>UnixItemImagePath</param-name>
 		<param-value>
-			/home/ramon/Imagens/app-images
+			/home/ramon/tmp/app-images
 		</param-value>
 	</context-param>
 	

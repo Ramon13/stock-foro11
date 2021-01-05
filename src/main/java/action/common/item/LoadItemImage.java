@@ -6,6 +6,9 @@ import java.nio.file.Paths;
 import action.ActionUtil;
 import br.com.javamon.action.Action;
 import br.com.javamon.convert.NumberConvert;
+import br.com.javamon.exception.ValidationException;
+import domain.ValidImageExtensions;
+import domain.util.ValidationMessageUtil;
 import entity.Item;
 import service.ImageService;
 import service.ItemService;
@@ -32,8 +35,14 @@ public class LoadItemImage extends Action {
 		}
 	}
 
-	private Path getAppImagesPath(Item item, Long imageId) {
-		return Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString(),
-				imageId.toString());
+	private Path getAppImagesPath(Item item, Long imageId) throws ValidationException {
+		Path path;
+		for (ValidImageExtensions vie : ValidImageExtensions.values()) {
+			path = Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString(), imageId.toString() + vie.getValue());
+			if (path.toFile().exists())
+				return path;
+		}
+		
+		throw new ValidationException(ValidationMessageUtil.INVALID_IMAGE_ID);
 	}
 }
