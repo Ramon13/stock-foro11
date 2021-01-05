@@ -71,6 +71,7 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 			getDaoFactory().getDAO(ItemDAO.class).save(item);
 			
 			Path itemImagePath = imagePath.resolve(item.getId().toString());
+			
 			Long mainImageId = getServiceFactory().getService(ImageService.class)
 					.saveImages(item, Files.createDirectories(itemImagePath));
 			

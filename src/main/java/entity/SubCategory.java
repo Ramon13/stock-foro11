@@ -17,7 +17,7 @@ public class SubCategory extends Entity{
 	private String name;
 	
 	private Category category;
-
+	
 	private Set<Item> items = new HashSet<Item>(0);
 	
 	public Set<Item> getItems() {

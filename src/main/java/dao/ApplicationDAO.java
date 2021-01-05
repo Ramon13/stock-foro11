@@ -143,29 +143,30 @@ public class ApplicationDAO<T> extends DAO<T>{
 	 * @param query
 	 * @throws DAOException
 	 */
-	protected void bindParameter(String paramName, String paramValue, Class<?> type, Query<T> query) throws DAOException {
-		if (type.equals(LocalDate.class)) {
-			try {
-				LocalDate date = DateConvert.stringToLocalDate(paramValue, "dd/MM/yyyy");
-				query.setParameter(paramName, date);
-			} catch (ConvertException e) {
-				query.setParameter(paramName, null);
+	protected void bindParameter(String paramName, String paramValue, Class<?> type, Query<T> query){
+		try {
+			if (type.equals(LocalDate.class)) {
+				try {
+					LocalDate date = DateConvert.stringToLocalDate(paramValue, "dd/MM/yyyy");
+					query.setParameter(paramName, date);
+				} catch (ConvertException e) {
+					query.setParameter(paramName, null);
+				}
+			
+			}else if (type.equals(Long.class)) {
+				if (StringValidator.isValidLongParse(paramValue))
+					query.setParameter(paramName, Long.parseLong(paramValue));
+				
+			}else if (type.equals(Integer.class)) {
+				if (StringValidator.isValidIntegerParse(paramValue))
+					query.setParameter(paramName, Integer.parseInt(paramValue));
+				
+			}else if (type.equals(String.class)) {
+				query.setParameter(paramName, "%" + paramValue + "%");
+			
 			}
-		}else if (type.equals(Integer.class)) {
-			if (StringValidator.isValidIntegerParse(paramValue))
-				query.setParameter(paramName, Integer.parseInt(paramValue));
-			else
-				query.setParameter(paramName, -1);
-		}else if (type.equals(Long.class) || type.equals(Integer.class)) {
-			if (StringValidator.isValidLongParse(paramValue))
-				query.setParameter(paramName, Long.parseLong(paramValue));
-			else
-				query.setParameter(paramName, -1L);
-		
-		}else if (type.equals(String.class)) {
-			query.setParameter(paramName, "%" + paramValue + "%");
-		
-		}
+			
+		} catch (Exception e) {}
 	}
 	
 	@SuppressWarnings({ "deprecation", "unchecked" })

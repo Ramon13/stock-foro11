@@ -127,7 +127,7 @@
 	</c:forEach>
 </table>
 
-<c:import url="dialogs.jsp" />
+<c:import url="/public/dialogs.jsp" />
 
 <script>
 	$(document).ready(function(){

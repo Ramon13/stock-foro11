@@ -2,7 +2,6 @@ package action.restrict.item;
 
 import action.ActionUtil;
 import br.com.javamon.action.Action;
-import br.com.javamon.convert.StringConvert;
 import br.com.javamon.exception.ConvertException;
 import entity.Item;
 import service.CategoryService;

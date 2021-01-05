@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -15,9 +16,10 @@ import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import action.ActionUtil;
 import action.ApplicationAction;
@@ -45,20 +47,21 @@ public class SaveItem extends ApplicationAction{
 	@Override
 	public void processAction() throws Exception {
 		itemSvc = getServiceFactory().getService(ItemService.class);
-		this.fileItems = getMultipartFormData();
-		
-		Item item = validateFields();
-		item.setMultipartFiles(fileItems);
-		
 		Path imagePath = Paths.get(ActionUtil.getimagesPath(getRequest()));
 		
+		List<FileItem> images = validateFormImages();
+		
+		Item item = validateFields();
+		item.setFormImages(images);
+	
 		if (item.getId() != null)
 			itemSvc.edit(item, imagePath);
 		else
 			itemSvc.save(item, imagePath);
 		
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		responseToClient(200, gson.toJson(item));
+		JsonObject jObj = new JsonObject();
+		jObj.addProperty("itemId", item.getId());
+		responseToClient(200, new Gson().toJson(jObj));
 	}
 		
 	private Item validateFields() throws ValidationException, ServiceException, UnsupportedEncodingException, SerialException, SQLException{
@@ -139,14 +142,16 @@ public class SaveItem extends ApplicationAction{
 		return "";
 	}
 	
-	private List<FileItem> getMultipartFormData() throws FileUploadException, ValidationException, ServiceException{
+	private List<FileItem> validateFormImages() throws FileUploadException, ValidationException, ServiceException{
 		ImageService imgService = getServiceFactory().getService(ImageService.class);
+		List<FileItem> images = new ArrayList<>();
+		
 		try {
 			String imagePath = ActionUtil.getimagesPath(getRequest());
 			
 			boolean isMultipart = ServletFileUpload.isMultipartContent(getRequest());
 			if (!isMultipart)
-				throw new ValidationException("Error to process images. Incorrect enctype");
+				throw new ValidationException(ValidationMessageUtil.INCORRECT_ENCTYPE);
 			
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			
@@ -155,11 +160,26 @@ public class SaveItem extends ApplicationAction{
 			
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			upload.setSizeMax(imgService.MAX_FILE_SIZE);
-			return upload.parseRequest(getRequest());
+			
+			setFileItems(upload.parseRequest(getRequest()));
+			
+			String fileName = null;
+			for (FileItem requestFile : this.fileItems) {
+				fileName = requestFile.getName();
+				if (!requestFile.isFormField() && requestFile.getFieldName().equals("images") && !StringUtils.isEmpty(fileName)) {
+					images.add(requestFile);
+				}
+			}
+			
+			return images;
 		} catch (SizeLimitExceededException e) {
 			e.printStackTrace();
 			throw new ValidationException(
 					String.format("Tamanho limite da imagem excedido. Tamanho máximo de imagem: %.2f MB" , (imgService.MAX_FILE_SIZE / 1024 / 1024.0)));
 		}
+	}
+	
+	public void setFileItems(List<FileItem> fileItems) {
+		this.fileItems = fileItems;
 	}
 }

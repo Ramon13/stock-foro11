@@ -6,7 +6,7 @@ public class LoadEntryPage extends Action{
 
 	@Override
 	public void process() throws Exception {
-		foward("/restrict/entries.jsp");
+		foward("/restrict/entries-page.jsp");
 	}
 
 

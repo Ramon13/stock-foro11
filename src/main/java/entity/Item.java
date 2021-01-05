@@ -39,7 +39,7 @@ public class Item extends Entity{
 	
 	private transient List<Integer> sumByMonth = new ArrayList<Integer>();
 	
-	private transient List<FileItem> multipartFiles;
+	private transient List<FileItem> formImages;
 	
 	private transient long currentYearAmount;
 	
@@ -115,14 +115,6 @@ public class Item extends Entity{
 		this.description = description;
 	}
 
-	public List<FileItem> getMultipartFiles() {
-		return multipartFiles;
-	}
-
-	public void setMultipartFiles(List<FileItem> multipartFiles) {
-		this.multipartFiles = multipartFiles;
-	}
-
 	public Set<EntryItem> getEntryItems() {
 		return entryItems;
 	}
@@ -145,5 +137,13 @@ public class Item extends Entity{
 
 	public void setCurrentYearAmount(long currentYearAmount) {
 		this.currentYearAmount = currentYearAmount;
+	}
+
+	public List<FileItem> getFormImages() {
+		return formImages;
+	}
+
+	public void setFormImages(List<FileItem> formImages) {
+		this.formImages = formImages;
 	}
 }

@@ -148,6 +148,10 @@ table th span{
 	padding-bottom: 15px;
 }
 
+table tbody:hover{
+	background-color: #babdb6 !important;
+}
+
 table tbody:nth-child(even) {
 	background-color: #d3d7cf;
 }
@@ -393,4 +397,8 @@ input.date {
 .fold-content table thead tr th{
 	background-color: #000000;
 	padding: 3px !important;
+}
+
+span.ui-icon.ui-icon-caret-1-s {
+    height: 0px;
 }

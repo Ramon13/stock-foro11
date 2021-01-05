@@ -20,23 +20,20 @@ public class ListWithLocalesAmount extends ApplicationAction{
 
 	@Override
 	public void processAction() throws Exception {
+		putContentOnRequest();
+		
 		if (!StringUtils.isAllBlank(getRequest().getParameter("loadTableContent")))
-			sendAjaxContent();
+			foward("/restrict/home-table-ajax.jsp");
 		else
-			sendHomePage();
+			foward("/restrict/home.jsp");
 	}
 	
-	private void sendHomePage() throws Exception {
-		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
+	private void putContentOnRequest() throws Exception {
+		
 		ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.PRIMARY_DATE, null, getRequest().getSession()); 
 		ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.SECOND_DATE, null, getRequest().getSession());
-		getRequest().setAttribute("lastYear", DateUtil.firstDayOfPreviousYear().getYear());
-		getRequest().setAttribute("locales", locales);
-		foward("/restrict/home.jsp");
-	}
-	
-	private void sendAjaxContent() throws Exception {
 		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
+		
 		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
 		
 		List<Item> items = getItems();
@@ -44,11 +41,11 @@ public class ListWithLocalesAmount extends ApplicationAction{
 		ItemLocales itemLocalesBetweenDates = getItemLocalesBetweenDates();
 		itemSvc.sumLocales(items, itemLocalesFromPreviousYear, itemLocalesBetweenDates);
 		
+		getRequest().setAttribute("lastYear", DateUtil.firstDayOfPreviousYear().getYear());
 		getRequest().setAttribute("locales", locales);
 		getRequest().setAttribute("items", items);
 		getRequest().setAttribute("itemLocaleFromPreviousYear", itemLocalesFromPreviousYear);
 		getRequest().setAttribute("itemLocaleBetweenDates", itemLocalesBetweenDates);
-		foward("/restrict/home-table-ajax.jsp");
 	}
 	
 	private List<Item> getItems() throws ServiceException{

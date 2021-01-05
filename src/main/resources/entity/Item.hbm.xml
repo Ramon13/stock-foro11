@@ -13,10 +13,6 @@
 			<column name="description" not-null="true" unique="true" length="255"/>
 		</property>
 		
-		<property name="amount" type="java.math.BigDecimal">
-			<column name="currentAmount" not-null="false" default="0" />
-		</property>
-		
 		<property name="mainImage" type="java.lang.Long">
 			<column name="main_image" not-null="false" />
 		</property>

@@ -123,11 +123,11 @@
 						</ul>
 					</li>
 					<li>
-						<div onclick="loadPage('${loadEntryPage}')">
+						<div onclick="location.href = '${loadEntryPage}'">
 						<span class="ui-icon ui-icon-circle-arrow-s"></span>Entradas</div>
 					</li>
 					<li>
-						<div onclick="loadPage('${listUserURL}')">
+						<div onclick="location.href = '${listUserURL}'">
 							<span class="ui-icon ui-icon-person"></span>Usuários do sistema
 						</div>
 					</li>
@@ -169,9 +169,7 @@
 						<img src="${staticImages}/details-icon-512x512.png">
 					</button>
 					<div class="dropdown-content">
-						<span id="newItemBtn">Novo Item</span>
-						
-						
+						<span id="newItemBtn" onclick="location.href='${newItemURL}'">Novo Item</span>
 					</div>
 				</div>
 				

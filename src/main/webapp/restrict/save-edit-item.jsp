@@ -11,6 +11,8 @@
 <c:url var="itemInfoURL" value="/restrict/item/ItemInfo.action" />
 <c:url var="listByCategoryURL" value="/restrict/subcategory/ListByCategory.action" />
 
+<%@ include file="header.jsp" %>
+
 <style>
 	
 	#newItemForm{
@@ -57,7 +59,7 @@
 
 			<div id="generalErrorDiv"></div>
 			
-			<input type="hidden" name="id" value="${item.id}">
+			<input type="hidden" class="itemId" name="id" value="${item.id}">
 			
 			<label for="name">Descrição *</label> <br />
 			<div id="nameErrorDiv"></div>
@@ -187,7 +189,7 @@
 	        contentType: false,
 	        data: data,
 	        success: function(data, textStatus, xhr){
-
+	        	
 	        	var JSONData = jQuery.parseJSON(data);
 				if (hasCallbackErrors(xhr)){
 	  	   			showInputErrors(JSONData);
@@ -195,12 +197,33 @@
 	  	   			$(":input[type='submit']").prop("disabled", false);
 	  	   		}
 	  	   		else{
-	  	   			loadPage(successURL + "?itemId=" + JSONData.id);
-	  	   			simpleModalDialog("Sucesso", "Produto criado no estoque.");
+	  	   			var message = "Modificações aplicadas com sucesso";
+	  	   			
+		  	   		if ($(".itemId").attr("value") === ""){
+		  				message = "Produto criado no estoque.";
+		  	 		}
+	  	   			simpleModalDialog("Sucesso", message, function(){
+	  	   				var param = [{name:"itemId", value:JSONData.itemId}];
+	  	   				location.href = '${itemInfoURL}' + '?' + $.param(param);
+	  	   			});
 	  	   		}
 	        }
 		});
 
 		return false;
+	}
+	
+	function loadSubCategory(url){
+		
+		//gets the isubcategory options based on icategory id
+		ajaxCall("get", url, $("#category").serialize(), function(data, textStatus, xhr){
+			//clear all options
+			$("#subCategory").empty();
+			
+			//adds subcategory name and value to option
+			$.each(jQuery.parseJSON(data), function(){
+				$("#subCategory").append(new Option(this.name, this.id));
+			});
+		});
 	}
 </script>

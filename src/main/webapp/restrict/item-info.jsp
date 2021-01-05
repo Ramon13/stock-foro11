@@ -61,7 +61,7 @@
 	<div id="info">
 		<div id="itemAttr">
 			<div>
-				<button type="button" onclick="loadPage('${editItemURL}')"
+				<button type="button" onclick="location.href = '${editItemURL}'"
 					 class="ui-button ui-widget ui-corner-all editBtn">
 					<span class="ui-icon ui-icon-pencil"></span> Editar
 				</button><br /><br /><br />

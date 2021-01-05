@@ -96,6 +96,28 @@
 		return dialog;
 	}
 	
+	function simpleModalDialog(title, message, action){
+		var dialogDiv = $("#simpleModalDialog");
+		dialogDiv.attr("title", title);
+		dialogDiv.find("p").html(message);
+		
+		var dialog = dialogDiv.dialog({
+			modal: true,
+			buttons: {
+				OK: function(){
+					action();
+					dialog.dialog("close");
+				}
+			},
+			close: function(){
+				action();
+				dialog.dialog("close");
+			}
+		}).dialog("open");
+		
+		return dialog;
+	}
+	
 	$(function() {
 
 		$("#addSubCategoryBtn").button().on("click", function() {

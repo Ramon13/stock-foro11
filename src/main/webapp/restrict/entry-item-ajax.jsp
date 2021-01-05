@@ -6,7 +6,6 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <div class="fold-content">						
-	<h3></h3>
 	<table>
 		<thead>
 			<tr>

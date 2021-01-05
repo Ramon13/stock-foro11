@@ -4,6 +4,8 @@
 <%@taglib prefix="cfmt" uri="/WEB-INF/tag/custom-fmt.tld" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<%@ include file="header.jsp"%>
+
 <script type="text/javascript">
 	$( function() {$( "#tabs" ).tabs(); });
 </script>
@@ -38,10 +40,7 @@
 </style>
 
 <c:url var="newEntryURL" value="/restrict/entry/New.action" />
-
-<c:url var="listEntriesURL" value="/restrict/entry/List.action">
-	<c:param name="listAll" value="true" />
-</c:url>
+<c:url var="listEntriesURL" value="/restrict/entries.action" />
 
 <fmt:setLocale value="pt_BR"/>
 
@@ -56,11 +55,10 @@
 	<div id="tabNewEntry"></div>
 </div>
 <script>
-	$(document).ready(function(){
-		
+	$(function(){
 		var listEntriesURL = $("#tabEntries").attr("data-url");
 		loadEntries(listEntriesURL);
-	});
+	})
 	
 	function loadEntries(url){
 		ajaxCall("get", url, null, function(data, textStatus, xhr){

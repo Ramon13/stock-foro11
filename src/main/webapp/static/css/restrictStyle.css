@@ -2,11 +2,6 @@
 	width: 99%%;
 }
 
-table tbody:hover{
-	background-color: #babdb6 !important;
-}
-
-
 .selectBtn{
 	display: inline;
 }

@@ -4,13 +4,11 @@
 <%@taglib prefix="cfmt" uri="/WEB-INF/tag/custom-fmt.tld" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<%@ include file="header.jsp" %>
+
 <script type="text/javascript">
 	$( function() {$( "#tabs" ).tabs(); });
 </script>
-
-<style>
-	
-</style>
 
 <c:url var="listUsersURL" value="/restrict/user/List.action">
 	<c:param name="listAll" value="true"/>

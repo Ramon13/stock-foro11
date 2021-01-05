@@ -17,7 +17,6 @@ public class ValidationMessageUtil {
 	
 	public static final String INVALID_ITEM_ID = "Item inválido ou inexistente";
 	public static final String INVALID_ORDER_ID = "Pedido inválido ou inexistente";
-	public static final String INVALID_IMAGE_ID = "Imagem inválida ou inexistente";
 	public static final String INVALID_PACKET_ID = "Unidade inválida ou inexistente";
 	public static final String INVALID_PROVIDER_ID = "Fornecedor inválido ou inexistente";
 	public static final String INVALID_CATEGORY_ID = "Subitem inválido ou inexistente";
@@ -61,4 +60,6 @@ public class ValidationMessageUtil {
 	public static final String LOCALE_NAME_ALREADY_EXISTS = "O nome do local já encontra-se cadastrado no sistema.";
 	public static final String INVALID_LOCALE = "Local Inválido.";
 	
+	public static final String INVALID_IMAGE_ID = "Imagem inválida ou inexistente";
+	public static final String INCORRECT_ENCTYPE = "Error to process images. Incorrect enctype";
 }
