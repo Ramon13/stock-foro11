@@ -11,7 +11,9 @@
 			<generator class="identity" />		
 		</id>
 		
-		<property name="path" column="path" type="java.lang.String" />
+		<property name="name" type="java.lang.String">
+			<column name="name"/>
+		</property>
 		
 		<many-to-one name="item" class="Item">
 			<column name="item_id" not-null="false" />

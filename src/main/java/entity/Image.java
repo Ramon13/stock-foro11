@@ -2,16 +2,16 @@ package entity;
 
 public class Image extends Entity{
 
-	private String path;
+	private String name;
 	
 	private Item item;
 
-	public String getPath() {
-		return path;
+	public String getName() {
+		return name;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Item getItem() {

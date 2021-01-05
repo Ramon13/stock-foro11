@@ -1,23 +1,29 @@
 package service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang3.StringUtils;
 
 import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
-import br.com.javamon.service.Service;
+import br.com.javamon.exception.ValidationException;
 import dao.ImageDAO;
 import domain.util.ExceptionMessageUtil;
+import domain.util.FileType;
 import entity.Image;
 import entity.Item;
 
-public class ImageService extends Service{
+public class ImageService extends ApplicationService<Image, ImageDAO>{
+
+	public ImageService() {
+		super(ImageDAO.class);
+	}
 
 	public final long MAX_FILE_SIZE = 500 * 1024;
 	
@@ -25,17 +31,18 @@ public class ImageService extends Service{
 		try {
 			Image image;
 			Long mainImageId = null;
-			for (FileItem fi : item.getMultipartFiles()) {
-				if (!fi.isFormField() && fi.getFieldName().equalsIgnoreCase("images")
-						&& !StringUtils.isEmpty(fi.getName())) {
-					image = new Image();
-					image.setItem(item);
-					getDaoFactory().getDAO(ImageDAO.class).save(image);
-					
-					Path p = imagePath.resolve(image.getId().toString());
-					fi.write(Files.createFile(p).toFile());
-					mainImageId = image.getId();
-				}
+			
+			for (FileItem fi : item.getFormImages()) {
+				image = new Image();
+				getDaoFactory().getDAO(ImageDAO.class).save(image);
+				
+				image.setName(String.format("%04d.%s", image.getId(), FileType.of(fi.getContentType()).getExtension()));
+				
+				Path p = imagePath.resolve(image.getName());
+				fi.write(Files.createFile(p).toFile());
+				
+				image.setItem(item);
+				mainImageId = image.getId();
 			}
 			
 			return mainImageId;
@@ -70,6 +77,38 @@ public class ImageService extends Service{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public String fixImageName(Image image, Path imagesPath) throws ServiceException, ValidationException{
+		try {
+			Path p;
+			String name = null;
+			File file = null;
+			
+			for (FileType type : FileType.values()) {
+				p = Paths.get(imagesPath.toString(), String.format("%d.%s", image.getId(), type.getExtension()));
+				
+				if ((file = p.toFile()).exists()) {
+					name = String.format("%04d.%s", image.getId(), type.getExtension());
+					break;
+				}
+			}
+			
+			if (name == null) {
+				name = String.format("%04d.%s", image.getId(), FileType.WEBP.getExtension());
+				file = Paths.get(imagesPath.toString(), String.format("%d", image.getId())).toFile();
+			}
+			
+			image.setName(name);
+			getDAO().update(image);
+			
+			file.renameTo(Paths.get(imagesPath.toString(), name).toFile());
+			return name;
+			
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
 		}
 	}
 }

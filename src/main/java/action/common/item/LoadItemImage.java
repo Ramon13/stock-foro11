@@ -5,10 +5,9 @@ import java.nio.file.Paths;
 
 import action.ActionUtil;
 import br.com.javamon.action.Action;
-import br.com.javamon.convert.NumberConvert;
+import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
-import domain.ValidImageExtensions;
-import domain.util.ValidationMessageUtil;
+import entity.Image;
 import entity.Item;
 import service.ImageService;
 import service.ItemService;
@@ -19,12 +18,13 @@ public class LoadItemImage extends Action {
 	public void process() throws Exception {
 
 		try {
-			Long itemId = NumberConvert.stringToLong(getRequest().getParameter("item"));
-			Long imageId = NumberConvert.stringToLong(getRequest().getParameter("image"));
-
-			Item item = getServiceFactory().getService(ItemService.class).findById(itemId);
-
-			Path imgPath = getAppImagesPath(item, imageId);
+			String itemId = getRequest().getParameter("item");
+			String imageId = getRequest().getParameter("image");
+			
+			Item item = getServiceFactory().getService(ItemService.class).validateAndFindById(itemId);
+			Image image = getServiceFactory().getService(ImageService.class).validateAndFindById(imageId);
+			
+			Path imgPath = getAppImagesPath(item, image);
 			getResponse().setContentType("image/*");
 
 			getServiceFactory().getService(ImageService.class).loadImageStream(imgPath,
@@ -35,14 +35,12 @@ public class LoadItemImage extends Action {
 		}
 	}
 
-	private Path getAppImagesPath(Item item, Long imageId) throws ValidationException {
-		Path path;
-		for (ValidImageExtensions vie : ValidImageExtensions.values()) {
-			path = Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString(), imageId.toString() + vie.getValue());
-			if (path.toFile().exists())
-				return path;
+	private Path getAppImagesPath(Item item, Image image) throws ServiceException, ValidationException{
+		String name = image.getName();
+		if (image.getName() == null) {
+			name = getServiceFactory().getService(ImageService.class).fixImageName(image, Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString()));	
 		}
 		
-		throw new ValidationException(ValidationMessageUtil.INVALID_IMAGE_ID);
+		return Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString(), name);
 	}
 }
