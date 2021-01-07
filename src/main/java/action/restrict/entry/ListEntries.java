@@ -44,7 +44,7 @@ public class ListEntries extends ApplicationAction{
 		List<Entry> entries;
 		
 		if (isSearchAction())
-			entries = entrySvc.searchByItem(paginationFilter.getSearchWord(), item);
+			entries = entrySvc.searchByItem(item, paginationFilter);
 		else
 			entries = entrySvc.listByItem(item, paginationFilter);
 		

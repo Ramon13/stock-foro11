@@ -14,7 +14,7 @@ public class PaginationFilter {
 	
 	public PaginationFilter(String searchWord, String sortProperty, orders order, 
 			Integer firsResultPage) {
-		this.searchWord = searchWord;
+		setSearchWord(searchWord);
 		this.sortProperty = sortProperty;
 		this.order = order;
 		this.firstResultPage = firsResultPage;

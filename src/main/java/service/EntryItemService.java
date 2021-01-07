@@ -50,9 +50,9 @@ public class EntryItemService extends Service{
 		}
 	}
 	
-	public List<EntryItem> searchByItem(String word, Item item) throws ServiceException{
+	public List<EntryItem> searchByItem(PaginationFilter filter, Item item) throws ServiceException{
 		try {
-			return getDaoFactory().getDAO(EntryItemDAO.class).searchByItem(word, item);
+			return getDaoFactory().getDAO(EntryItemDAO.class).searchByItem(item, filter);
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new ServiceException(e);

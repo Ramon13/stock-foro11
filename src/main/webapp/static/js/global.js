@@ -2,7 +2,6 @@ const ERROR_230 = 230;
 const SUCCESS_200 = 200;
 
 var scrolled = false;
-var sortBy, order;
 
 $(document).ready(function(){
 	$.datepicker.setDefaults( $.datepicker.regional[ "pt-BR" ] );
@@ -22,32 +21,26 @@ $(document).ready(function(){
 	});
 	
 	$("#searchForm").on("submit", function(event){	
-		var url = $(this).attr("action");
-		var param = {search:$("#searchInput").val()};
 		
-		ajaxCall("get", url, param, function(data, textStatus, xhr){	
-			if (isSuccessRequest(xhr)){
-				$("table tbody").remove();
-				var tbodyList = $(data).find("tbody");
-				$.each(tbodyList, function(){
-					$("table").append($(this));	
-				});
-			}
-		});
+		var param = {search:$("#searchInput").val()};
+		var url = $(this).attr("action") + "?" + $.param(param);
+		
+		location.href = url;
 	});
 	
 	$('#content').on('scroll', function() {
 		var url = $(this).attr("data-pagination-url");
+		var search = getURLParameter('search');
 		
         if(scrolled == false && isMaxScrollHeight($(this)) && url != "") {
         	scrolled = true;
         	var tbodyCount = $(this).find("table tbody").length;
 			
 			var param = [
-				{name: "sortBy", value: sortBy},
-				{name: "order", value: order},
+				{name: "sortBy", value: getURLParameter('sortBy')},
+				{name: "order", value: getURLParameter('order')},
 				{name: "firstResultPage", value: tbodyCount},
-				{name: "search", value: $("#searchInput").val()}];
+				{name: "search", value: getURLParameter('search') }];
 			
 			ajaxCall("get", url, param, function(data, textStatus, xhr){
 				if (isSuccessRequest(xhr)){
@@ -64,26 +57,16 @@ $(document).ready(function(){
     });
 
 	$("body").on("click",".sortBy", function(){
-		sortBy = $(this).attr("data-property");
-		order = $(this).attr("data-order");
+		var search = getURLParameter('search');
 		
 		var sortParams = [
-			{name: "sortBy", value: sortBy},
-			{name: "search", value: $("#searchForm").find("#searchInput").val() },
-			{name: "order", value: order}];
+			{name: "sortBy", value: $(this).attr("data-property")},
+			{name: "search", value: search},
+			{name: "order", value: $(this).attr("data-order")}];
 		
-		var url = $(this).parent().attr("data-sortURL");
+		var url = $(this).parent().attr("data-sortURL") + "?" + $.param(sortParams);
 		
-		ajaxCall("get", url, sortParams, function(data, textStatus, xhr){
-			if (isSuccessRequest(xhr)){
-				$("table tbody").remove();
-				var tbodyList = $(data).find("tbody");
-				$.each(tbodyList, function(){
-					$("table").append($(this));	
-				});
-			}
-		});
-		$(this).parent().find(".close-dropdown").click();
+		location.href = url;
 	});
 });
 
@@ -306,4 +289,17 @@ function updateCartCount(url){
 			$("#cartCount").html(data);
 		}
 	});
+}
+
+function getURLParameter(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    
+    for (var i = 0; i < sURLVariables.length; i++) {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
 }

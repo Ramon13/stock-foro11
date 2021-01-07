@@ -22,10 +22,7 @@ public class ListWithLocalesAmount extends ApplicationAction{
 	public void processAction() throws Exception {
 		putContentOnRequest();
 		
-		if (!StringUtils.isAllBlank(getRequest().getParameter("loadTableContent")))
-			foward("/restrict/home-table-ajax.jsp");
-		else
-			foward("/restrict/home.jsp");
+		foward("/restrict/home.jsp");
 	}
 	
 	private void putContentOnRequest() throws Exception {

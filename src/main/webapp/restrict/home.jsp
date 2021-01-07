@@ -10,14 +10,10 @@
 	thead tr th{
 		padding-bottom: 0px;
 	}
-	
 </style>
 
 <c:url var="changeFilterDate" value="/restrict/date/ChangeHomeFilterDate.action"/>
-<c:url var="loadTableContentURL" value="/restrict/home.action">
-	<c:param name="loadTableContent" value="true" />
-</c:url>
-
+<c:url var="homeActionURL" value="/restrict/home.action"/>
 
 <table id="tableHome" >
 	<thead class="myHeader">
@@ -186,8 +182,8 @@
 		$(".date").datepicker();
 		$(".date").datepicker("option", "altFormat", "(dd/mm/yyyy)");
 		
-		$("#content").attr("data-pagination-url", '${loadTableContentURL}');
-		$("#searchForm").attr("action", '${loadTableContentURL}');
+		$("#content").attr("data-pagination-url", '${homeActionURL}');
+		$("#searchForm").attr("action", '${homeActionURL}');
 		
 		$(".date").on("change", function(){
 			var date = formatDate($(this).datepicker("getDate"));

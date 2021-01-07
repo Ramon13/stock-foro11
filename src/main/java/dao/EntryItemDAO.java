@@ -2,6 +2,11 @@ package dao;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
@@ -44,21 +49,29 @@ public class EntryItemDAO extends ApplicationDAO<EntryItem>{
 			.list();
 	}
 	
-
-	public List<EntryItem> searchByItem(String word, Item item) throws DAOException{
-		StringBuilder hql = new StringBuilder();
-		hql.append("from EntryItem o where o.item.id = :itemId and ( o.id < 0 ");
+	public List<EntryItem> searchByItem(Item item, PaginationFilter filter) throws DAOException{
+		getSearchableFields(clazz.getSimpleName(), getClassFields(clazz));
 		
-		bfsFields(hql, getAllFields());
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery<EntryItem> criteriaQuery = builder.createQuery(clazz);
 		
-		hql.append(" )");
-		System.out.println(hql.toString());
-		Query<EntryItem> query = createQuery(hql.toString(), EntryItem.class);
-		query.setParameter("itemId", item.getId());
+		Root<EntryItem> root = criteriaQuery.from(clazz);
 		
-		setParams(word, query);
+		Predicate predicateForItemId = builder.equal(root.get("item").get("id"), item.getId());
+		Predicate[] predicates = getSearchPredicates(builder, root, filter);
 		
-		return query.list();
+		Predicate andPredicate = builder.and(predicateForItemId);
+		Predicate orPredicate = builder.or(predicates);
+		
+		criteriaQuery.where(andPredicate, orPredicate);
+		
+		setSortProperties(builder, criteriaQuery, root, filter);
+		
+		Query<EntryItem> query = getSession().createQuery(criteriaQuery);
+		query.setMaxResults(filter.getMaxResults());
+		query.setFirstResult(filter.getFirstResultPage());
+		
+		return query.getResultList();
 	}
 }
 	

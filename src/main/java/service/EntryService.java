@@ -110,9 +110,9 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 		return entries;
 	}
 	
-	public List<Entry> searchByItem(String word, Item item) throws ServiceException{
+	public List<Entry> searchByItem(Item item, PaginationFilter filter) throws ServiceException{
 		return listFromEntryItems(getServiceFactory()
 				.getService(EntryItemService.class)
-				.searchByItem(word, item));
+				.searchByItem(filter, item));
 	}
 }

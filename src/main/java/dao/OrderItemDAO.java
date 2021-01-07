@@ -73,19 +73,29 @@ public class OrderItemDAO extends ApplicationDAO<OrderItem>{
 		return query.list();
 	}
 	
-	public List<OrderItem> searchByItem(Item item, String word, PaginationFilter filter, OrderStatus status) throws DAOException{
-		StringBuilder hql = new StringBuilder("from OrderItem o where o.item.id = :itemId and "
-				+ "o.order.status = :status and (o.id < 0 ");
-		bfsFields(hql, getAllFields());
-		hql.append(")");
-		Query<OrderItem> query = createQuery(hql.toString(), OrderItem.class);
-		setParams(word, query);
-		query.setParameter("itemId", item.getId());
-		query.setParameter("status", status.getValue());
+	public List<OrderItem> searchByItem(Item item, PaginationFilter filter) throws DAOException{
+		getSearchableFields(clazz.getSimpleName(), getClassFields(clazz));
 		
-		query.setFirstResult(filter.getFirstResultPage());
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery<OrderItem> criteriaQuery = builder.createQuery(clazz);
+		
+		Root<OrderItem> root = criteriaQuery.from(clazz);
+		
+		Predicate predicateForItemId = builder.equal(root.get("item").get("id"), item.getId());
+		Predicate[] predicates = getSearchPredicates(builder, root, filter);
+		
+		Predicate andPredicate = builder.and(predicateForItemId);
+		Predicate orPredicate = builder.or(predicates);
+		
+		criteriaQuery.where(andPredicate, orPredicate);
+		
+		setSortProperties(builder, criteriaQuery, root, filter);
+		
+		Query<OrderItem> query = getSession().createQuery(criteriaQuery);
 		query.setMaxResults(filter.getMaxResults());
-		return query.list();
+		query.setFirstResult(filter.getFirstResultPage());
+		
+		return query.getResultList();
 	}
 	
 	

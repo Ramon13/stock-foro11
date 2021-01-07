@@ -1,56 +1,31 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import dao.Search;
+import entity.Item;
+import entity.OrderItem;
 
 public class Main {
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		String sourceFileName = Main.class.getResource("jrreport.jrxml").getPath();
-		String compiledFile = "jrreport.jasper";
+	
+	public static void main(String[] args){
 		
-		String printFileName = null;
-		DataBeanList DataBeanList = new DataBeanList();
-		ArrayList<DataBean> dataList = DataBeanList.getDataBeanList();
-		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
-
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("ReportTitle", "List of Contacts");
-		parameters.put("Author", "Prepared By Ramonny  (>:3)>");
+	}
+	
+	
+	private static void getSearchableFields(String fieldName, Field[] fields) {
 		
-		try {
-			JasperCompileManager.compileReportToFile(sourceFileName, compiledFile);
-			printFileName = JasperFillManager.fillReportToFile(compiledFile, parameters, beanColDataSource);
-			
-			if (printFileName != null) {
+		for (Field field : fields) {
+			if (field.isAnnotationPresent(Search.class)) {
 				
-				try(FileOutputStream fout = new FileOutputStream(new File("/home/ramon/tmp/sample_report.pdf"))){
-					JasperExportManager.exportReportToPdfStream(new FileInputStream(new File(printFileName)),
-							fout);
+				String s = String.format("%s.%s", fieldName, field.getName());
+				if (field.getAnnotation(Search.class).getMarckedFields()) {
+					getSearchableFields(s, field.getType().getDeclaredFields());
+				
+				}else {
+					System.out.println(s);
 				}
-				
-				//JasperExportManager.exportReportToPdfFile(printFileName, "/home/ramon/tmp/sample_report.pdf");
-				
-				
-//				JRXlsExporter jrXlsExporter = new JRXlsExporter();
-//				jrXlsExporter.setParameter(JRXlsExporterParameter.INPUT_FILE_NAME, printFileName);
-//				jrXlsExporter.setParameter(JRXlsExporterParameter.OUTPUT_FILE_NAME,
-//						"/home/ramon/tmp/sample_report.xsl");
-//				jrXlsExporter.exportReport();
-				// JasperPrintManager.printReport(printFileName, true);
 			}
-		} catch (JRException e) {
-			e.printStackTrace();
 		}
 	}
+	
 }
