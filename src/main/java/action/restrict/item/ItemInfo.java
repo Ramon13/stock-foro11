@@ -4,22 +4,27 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import action.ActionUtil;
 import action.ApplicationAction;
 import entity.Entry;
 import entity.Item;
+import entity.Order;
 import service.EntryService;
-import service.ItemService;
+import service.OrderService;
 
 public class ItemInfo extends ApplicationAction{
 
 	@Override
 	public void processAction() throws Exception {
-		Item item = getServiceFactory()
-				.getService(ItemService.class)
-				.validateAndFindById(getRequest().getParameter("itemId"));
+		Item item = ActionUtil.getRequestItem(getRequest());
 		
 		if (!StringUtils.isAllBlank(getRequest().getParameter("listProp"))) {
-			sendEntriesByItem(item);
+			if (getRequest().getParameter("listProp").equals("entries")) {
+				getRequest().setAttribute("entries", sendEntriesByItem(item));
+			
+			}else {
+				getRequest().setAttribute("orders", sendOrdersByItem(item));
+			}
 		}
 		
 		getRequest().setAttribute("item", item);
@@ -27,17 +32,20 @@ public class ItemInfo extends ApplicationAction{
 		
 	}
 	
-	private void sendEntriesByItem(Item item) throws Exception {
-		if (getRequest().getParameter("listProp").equals("entry")) {
-			EntryService entrySvc = getServiceFactory().getService(EntryService.class);
-			List<Entry> entries;
-			
-			if (isSearchAction())
-				entries = entrySvc.searchByItem(item, paginationFilter);
-			else
-				entries = entrySvc.listByItem(item, paginationFilter);
-			
-			getRequest().setAttribute("entries", entries);
-		}
+	private List<Entry> sendEntriesByItem(Item item) throws Exception {	
+		EntryService entrySvc = getServiceFactory().getService(EntryService.class);
+		
+		if (isSearchAction())
+			return entrySvc.searchByItem(item, paginationFilter);
+		
+		return entrySvc.listByItem(item, paginationFilter);
+	}
+	
+	private List<Order> sendOrdersByItem(Item item) throws Exception {	
+		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
+		if (isSearchAction())
+			return orderSvc.searchOrdersByItem(item, paginationFilter);
+		
+		return orderSvc.listByItem(item, paginationFilter);
 	} 
 }

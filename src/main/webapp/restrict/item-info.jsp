@@ -24,17 +24,6 @@
 <c:url var="itemInfoURL" value="/restrict/item/ItemInfo.action">
 	<c:param name="itemId" value="${item.id}"/>
 </c:url>
-<c:url var="entriesURL" value="/restrict/entries.action">
-	<c:param name="item" value="${item.id}"/>
-</c:url>
-
-<c:url var="ordersURL" value="/restrict/orders.action">
-	<c:param name="item" value="${item.id}"/>
-</c:url>
-
-<c:url var="searchEntryByItemURL" value="/restrict/entry/List.action">
-	<c:param name="item" value="${item.id}" />
-</c:url>
 
 <script type="text/javascript">
 	$( function() {
@@ -121,8 +110,8 @@
 									<img class="ui-icon ui-icon-closethick"></img>
 								</button>
 								<br />
-								<span class="sortBy" data-property="${fieldName}id" data-order="asc">Classificar em ordem crescente</span>
-								<span class="sortBy" data-property="${fieldName}id" data-order="desc">Classificar em ordem decrescente</span>
+								<span class="sortBy" data-property="entry.id" data-order="asc">Classificar em ordem crescente</span>
+								<span class="sortBy" data-property="entry.id" data-order="desc">Classificar em ordem decrescente</span>
 							</div>
 						</div>
 					</th>
@@ -137,8 +126,8 @@
 									<img class="ui-icon ui-icon-closethick"></img>
 								</button>
 								<br />
-								<span class="sortBy" data-property="${fieldName}date" data-order="asc">Classificar em ordem crescente</span>
-								<span class="sortBy" data-property="${fieldName}date" data-order="desc">Classificar em ordem decrescente</span>
+								<span class="sortBy" data-property="entry.date" data-order="asc">Classificar em ordem crescente</span>
+								<span class="sortBy" data-property="entry.date" data-order="desc">Classificar em ordem decrescente</span>
 							</div>
 						</div>
 					</th>
@@ -153,8 +142,8 @@
 									<img class="ui-icon ui-icon-closethick"></img>
 								</button>
 								<br />
-								<span class="sortBy" data-property="${fieldName}provider.name" data-order="asc">Classificar em ordem crescente</span>
-								<span class="sortBy" data-property="${fieldName}provider.name" data-order="desc">Classificar em ordem decrescente</span>
+								<span class="sortBy" data-property="entry.provider.name" data-order="asc">Classificar em ordem crescente</span>
+								<span class="sortBy" data-property="entry.provider.name" data-order="desc">Classificar em ordem decrescente</span>
 							</div>
 						</div>
 					</th>
@@ -169,8 +158,8 @@
 									<img class="ui-icon ui-icon-closethick"></img>
 								</button>
 								<br />
-								<span class="sortBy" data-property="${fieldName}invoice.invoiceIdNumber" data-order="asc">Classificar em ordem crescente</span>
-								<span class="sortBy" data-property="${fieldName}invoice.invoiceIdNumber" data-order="desc">Classificar em ordem decrescente</span>
+								<span class="sortBy" data-property="entry.invoice.invoiceIdNumber" data-order="asc">Classificar em ordem crescente</span>
+								<span class="sortBy" data-property="entry.invoice.invoiceIdNumber" data-order="desc">Classificar em ordem decrescente</span>
 							</div>
 						</div>
 					</th>
@@ -213,7 +202,130 @@
 		</table>
 	</div>
 	
-	<div id="orders" data-url="${ordersURL}"></div>
+	<div id="orders">
+		<c:choose>
+			<c:when test="${empty orders}">
+				<h3>Não há saídas para serem exibidas</h3>
+			</c:when>
+			<c:otherwise>
+				<table>
+					<thead>
+						<tr>
+							<th>
+								<div class="dropdown">
+									<div class="dropdown-btn">
+										<img class="ui-icon ui-icon-triangle-1-s"></img>
+										<span>Código</span>
+									</div>
+									<div class="dropdown-content" data-sortURL="${selectedOrdersURL}">
+										<button class="ui-button ui-widget ui-corner-all close-dropdown">
+											<img class="ui-icon ui-icon-closethick"></img>
+										</button>
+										<br />
+										<span class="sortBy" data-property="order.id" data-order="asc">Classificar em ordem crescente</span>
+										<span class="sortBy" data-property="order.id" data-order="desc">Classificar em ordem decrescente</span>
+									</div>
+								</div>
+							</th>
+							<th>
+								<div class="dropdown">
+									<div class="dropdown-btn">
+										<img class="ui-icon ui-icon-triangle-1-s"></img>
+										<span>Data</span>
+									</div>
+									<div class="dropdown-content" data-sortURL="${selectedOrdersURL}">
+										<button class="ui-button ui-widget ui-corner-all close-dropdown">
+											<img class="ui-icon ui-icon-closethick"></img>
+										</button>
+										<br />
+										<span class="sortBy" data-property="order.finalDate" data-order="asc">Classificar em ordem crescente</span>
+										<span class="sortBy" data-property="order.finalDate" data-order="desc">Classificar em ordem decrescente</span>
+									</div>
+								</div>
+							</th>
+							<th>
+								<div class="dropdown">
+									<div class="dropdown-btn">
+										<img class="ui-icon ui-icon-triangle-1-s"></img>
+										<span>Local</span>
+									</div>
+									<div class="dropdown-content" data-sortURL="${selectedOrdersURL}">
+										<button class="ui-button ui-widget ui-corner-all close-dropdown">
+											<img class="ui-icon ui-icon-closethick"></img>
+										</button>
+										<br />
+										<span class="sortBy" data-property="order.customer.locale.name" 
+											data-order="asc">Classificar em ordem crescente</span>
+										
+										<span class="sortBy" data-property="order.customer.locale.name" 
+											data-order="desc">Classificar em ordem decrescente</span>
+									</div>
+								</div>
+							</th>
+							<th>
+								<div class="dropdown">
+									<div class="dropdown-btn">
+										<img class="ui-icon ui-icon-triangle-1-s"></img>
+										<span>Pedido por:</span>
+									</div>
+									<div class="dropdown-content" data-sortURL="${selectedOrdersURL}">
+										<button class="ui-button ui-widget ui-corner-all close-dropdown">
+											<img class="ui-icon ui-icon-closethick"></img>
+										</button>
+										<br />
+										<span class="sortBy" data-property="order.customer.name" 
+											data-order="asc">Classificar em ordem crescente</span>
+										
+										<span class="sortBy" data-property="order.customer.name" 
+											data-order="desc">Classificar em ordem decrescente</span>
+									</div>
+								</div>
+							</th>
+							
+						</tr>
+					</thead>
+					
+					<c:forEach items="${orders}" var="order">
+						<tbody>
+							<tr class="view" onclick="openView(this)" data-url="${listOrderItemByOrderURL}">
+								<td>
+									<span class="open-fold ui-icon ui-icon-triangle-1-s"></span>
+									<span class="orderId">
+										<c:out value="${order.id}"></c:out>
+									</span>
+									
+								</td>
+								<td>
+									<span>
+										<cfmt:formatDate locale="pt_BR" value="${order.finalDate}"/>
+									</span>
+								</td>
+								<td>
+									<span>
+										<c:out value="${order.customer.locale.name}"></c:out>
+									</span>
+								</td>
+								<td>
+									<span>
+										<c:out value="${order.customer.name}"></c:out>
+									</span>
+								</td>	
+								<td>
+									<span>
+										<c:out value="${order.receivedPersonName}"></c:out>
+									</span>
+								</td>
+							</tr>
+			  
+							<tr class="fold">
+								<td colspan="10"></td>
+							</tr>				
+						</tbody>
+					</c:forEach>
+				</table>
+			</c:otherwise>
+		</c:choose>
+	</div>
 	
 </div>
 
@@ -284,27 +396,29 @@
 	
 	function openSelectedTab(){
 		var prop = getURLParameter("listProp");
-		if (prop === "entry"){
+		if (prop === "entries"){
 			$("#tabs").tabs({active: 1});
-		}
+		
+		}else if (prop === "orders"){
+			$("#tabs").tabs({active: 2});
+		
+		} 
 	}
 	
 	function loadEntries(){
 		if ($("div#entries table tbody").html() == undefined){
-			var param = [{name:"listProp", value:"entry"}];
+			var param = [{name:"listProp", value:"entries"}];
 			var url = '${itemInfoURL}&' + $.param(param);
 			location.href = url;
 		}
 	}
 	
 	function loadOrders(){	
-		var url = $("#orders").attr("data-url");
-		ajaxCall("get", url, null, function(data, textStatus, xhr){
-			if (isSuccessRequest(xhr)){
-				$("#content").attr("data-pagination-url", '${ordersURL}');
-				$("#searchForm").attr("action", '${ordersURL}');
-				$("#orders").html($(data).find("table"));	
-			}
-		});
+		if ($("div#orders table tbody").html() == undefined){
+			var param = [{name:"listProp", value:"orders"}];
+			var url = '${itemInfoURL}&';
+			url = addParams(url, $.param(param));
+			location.href = url;
+		}
 	}
 </script>

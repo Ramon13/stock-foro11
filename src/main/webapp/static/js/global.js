@@ -21,26 +21,19 @@ $(document).ready(function(){
 	});
 	
 	$("#searchForm").on("submit", function(event){	
-		
-		var param = {search:$("#searchInput").val()};
-		var url = $(this).attr("action") + "?" + $.param(param);
-		
+		var url = window.location.href;
+		url = addParams(url, decodeURIComponent($("#searchForm").serialize()));
+	
 		location.href = url;
 	});
 	
 	$('#content').on('scroll', function() {
-		var url = $(this).attr("data-pagination-url");
-		var search = getURLParameter('search');
-		
         if(scrolled == false && isMaxScrollHeight($(this)) && url != "") {
         	scrolled = true;
-        	var tbodyCount = $(this).find("table tbody").length;
-			
-			var param = [
-				{name: "sortBy", value: getURLParameter('sortBy')},
-				{name: "order", value: getURLParameter('order')},
-				{name: "firstResultPage", value: tbodyCount},
-				{name: "search", value: getURLParameter('search') }];
+        
+			var url = window.location.href;
+			var tbodyCount = $(this).find("table tbody").length;
+			var param = [{name: "firstResultPage", value: tbodyCount}];
 			
 			ajaxCall("get", url, param, function(data, textStatus, xhr){
 				if (isSuccessRequest(xhr)){
@@ -56,15 +49,13 @@ $(document).ready(function(){
 		scrolled = false;
     });
 
-	$("body").on("click",".sortBy", function(){
-		var search = getURLParameter('search');
-		
+	$("body").on("click",".sortBy", function(){	
 		var sortParams = [
 			{name: "sortBy", value: $(this).attr("data-property")},
-			{name: "search", value: search},
 			{name: "order", value: $(this).attr("data-order")}];
 		
-		var url = $(this).parent().attr("data-sortURL") + "?" + $.param(sortParams);
+		var url = window.location.href;
+		url = addParams(url, decodeURIComponent($.param(sortParams)));
 		
 		location.href = url;
 	});
@@ -88,6 +79,35 @@ function loadPage(URL){
 
 function sessionHasEnded(data){
 	return $(data).find("#loginPage").val() === "true";
+}
+
+function addParams(url, param){
+	var urlArr = url.split("?");
+	
+	if (urlArr.length >= 2){
+		var treeMap = new TreeMap();
+		
+		var urlParams = urlArr[1].split("&");
+		for (var i = 0; i < urlParams.length; i++){
+			var urlParam = urlParams[i].split("=");
+			treeMap.set(urlParam[0], urlParam[1]);
+		}
+		
+		var paramArr = param.split("&");
+		for (var i = 0; i < paramArr.length; i++){
+			var urlParam = paramArr[i].split("=");
+			treeMap.set(urlParam[0], urlParam[1]);
+		}
+		
+		var params = "";
+		treeMap.each(function (value, key){
+			params += key + "=" + value + "&";
+		});
+		
+		return urlArr[0] + "?" + params;
+	}
+	
+	return urlArr[0] + "?" + param;
 }
 
 function addParam(url, data){

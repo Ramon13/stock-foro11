@@ -4,15 +4,17 @@ import java.time.LocalDate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.SystemUtils;
-
 import br.com.javamon.exception.ServiceException;
+import br.com.javamon.exception.ValidationException;
+import br.com.javamon.service.ServiceFactory;
 import domain.LoggedUser;
 import domain.PermissionRoles;
+import entity.Item;
 import entity.Order;
 import entity.User;
 import service.CategoryService;
+import service.ItemService;
 import service.PacketService;
 
 public class ActionUtil{
@@ -21,8 +23,11 @@ public class ActionUtil{
 		return request.getParameter("search");
 	}
 	
-	public static String getItemIdParam(HttpServletRequest request) {
-		return request.getParameter("item");
+	public static Item getRequestItem(HttpServletRequest request) throws ValidationException, ServiceException {
+		return ServiceFactory
+				.getInstance()
+				.getService(ItemService.class)
+				.validateAndFindById(request.getParameter("itemId"));
 	}
 	
 	public static void setEditMode(HttpServletRequest request, boolean mode) {

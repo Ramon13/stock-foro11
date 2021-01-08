@@ -78,7 +78,7 @@ public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO
 	
 	public List<OrderItem> searchOnOrderItem(Item item, PaginationFilter filter) throws ServiceException{
 		try {
-			return getDAO(OrderItemDAO.class).searchByItem(item, filter.getSearchWord(), filter, OrderStatus.FINALIZED);
+			return getDAO(OrderItemDAO.class).searchByItem(item, filter);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
 		}

@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import action.ActionUtil;
 import action.ApplicationAction;
 import entity.Entry;
 import entity.Item;
 import service.EntryService;
-import service.ItemService;
 
 public class ListEntries extends ApplicationAction{
 
@@ -17,40 +17,35 @@ public class ListEntries extends ApplicationAction{
 	@Override
 	public void processAction() throws Exception {
 		entrySvc = getServiceFactory().getService(EntryService.class);
+		List<Entry> entries;
 		
-		if (!StringUtils.isAllBlank(getRequest().getParameter("item")))
-			sendEntriesByItem();
-		else
-			sendEntries();
+		if (!StringUtils.isAllBlank(getRequest().getParameter("itemId"))) {
+			Item item = ActionUtil.getRequestItem(getRequest());
+			entries = getEntriesByItem(item);
+			getRequest().setAttribute("item", item);
+		
+		}else {
+			entries = getEntries();
+		}
+		
+		getRequest().setAttribute("entries", entries);
+		foward("/restrict/entries-table.jsp");
 	}
 
-	private void sendEntries() throws Exception{
-		List<Entry> entries;
-		
-		if (isSearchAction())
-			entries = entrySvc.searchOnEntry(paginationFilter);
-		else
-			entries = entrySvc.list(paginationFilter);
-		
-		getRequest().setAttribute("entries", entries);
-		foward("/restrict/entries-table.jsp");
+	private List<Entry> getEntries() throws Exception{
+		if (isSearchAction()) {
+			return entrySvc.searchOnEntry(paginationFilter);
+		}
+			
+		return entrySvc.list(paginationFilter);
 	}
 	
-	private void sendEntriesByItem() throws Exception {
-		String itemId = getRequest().getParameter("item");	
-		Item item = getServiceFactory()
-				.getService(ItemService.class)
-				.validateAndFindById(itemId);
-		List<Entry> entries;
+	private List<Entry> getEntriesByItem(Item item) throws Exception {
+		if (isSearchAction()) {
+			return entrySvc.searchByItem(item, paginationFilter);
+		}
 		
-		if (isSearchAction())
-			entries = entrySvc.searchByItem(item, paginationFilter);
-		else
-			entries = entrySvc.listByItem(item, paginationFilter);
-		
-		getRequest().setAttribute("item", item);
-		getRequest().setAttribute("entries", entries);
-		foward("/restrict/entries-table.jsp");
+		return entrySvc.listByItem(item, paginationFilter);
 	}
 	
 }

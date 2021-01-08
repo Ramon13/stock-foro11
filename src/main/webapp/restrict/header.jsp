@@ -38,7 +38,7 @@
 		<script src="${js}/chosen.jquery.js"></script>
 		<script src="${js}/init.js"></script>
 		<script src="${js}/jquery-te-1.4.0.min.js"></script>
-		
+		<script src="${js}/tree-map.js"></script>
 		
 		<script type="text/javascript">    
 			$(document).ready(function(){	

@@ -182,9 +182,6 @@
 		$(".date").datepicker();
 		$(".date").datepicker("option", "altFormat", "(dd/mm/yyyy)");
 		
-		$("#content").attr("data-pagination-url", '${homeActionURL}');
-		$("#searchForm").attr("action", '${homeActionURL}');
-		
 		$(".date").on("change", function(){
 			var date = formatDate($(this).datepicker("getDate"));
 			var url = $(this).attr("data-url");
