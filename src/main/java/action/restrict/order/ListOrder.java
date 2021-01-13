@@ -40,7 +40,7 @@ public class ListOrder extends ApplicationAction{
 			orders = orderSvc.listByStatus(status, paginationFilter);
 
 		}else {
-			orders = orderSvc.searchOnOrders(paginationFilter);
+			orders = orderSvc.searchOnOrders(status, paginationFilter);
 		}
 		
 		getRequest().setAttribute("status", status.getValue().toString());

@@ -70,8 +70,6 @@
 				</c:when>
 				<c:otherwise>
 					<img alt="imagem do produto" src="${loadItemImageURL}">
-					<br />
-					<a id="imageMngmt" href="#">Trocar/Deletar</a>
 				</c:otherwise>
 			</c:choose>
 			<br /> <br />
@@ -286,6 +284,9 @@
 					</thead>
 					
 					<c:forEach items="${orders}" var="order">
+						<c:url value="/restrict/orderItem/ListByOrder.action" var="listOrderItemByOrderURL">
+							<c:param name="order" value="${order.id}" />
+						</c:url>
 						<tbody>
 							<tr class="view" onclick="openView(this)" data-url="${listOrderItemByOrderURL}">
 								<td>
@@ -327,71 +328,12 @@
 		</c:choose>
 	</div>
 	
-</div>
-
-<div id="imageManagerDlg" title="Imagens" hidden="hidden">
-	<div id="generalErrorDiv"></div>
-	
-	<div class="gallery">
-		<c:forEach items="${item.images}" var="image">
-			<c:url var="loadImagesURL" value="/restrict/item/LoadImage.action">
-				<c:param name="item" value="${item.id}"/>
-				<c:param name="image" value="${image.id}"/>
-			</c:url>
-			
-			<img src="${loadImagesURL}"
-				<c:if test="${image.id eq item.mainImage }">class='selectedImage'</c:if>
-			>
-			<span hidden="hidden"><c:out value="${image.id}"/></span>
-			
-		</c:forEach>
-	</div>
-	
-	<div>
-		<button id="newMainImageBtn" type="button" data-url="${changeMainImageURL}"
-			data-success="${itemInfoURL}" class="ui-button ui-widget ui-corner-all saveBtn">
-			Salvar
-		</button><br /><br /><br />
-	</div>
 </div>    
 
 <script>
 	$(document).ready(function(){
-		$("#imageManagerDlg").hide();
 		$("#newMainImageBtn").hide();
 		var dialog;
-		
-		$("#imageMngmt").on("click", function(){
-			dialog = $("#imageManagerDlg").dialog();
-			dialog.dialog( "option", "minWidth", 450 );
-			dialog.dialog("open");
-		});
-		
-		$(".gallery img").on("click", function(){
-			$(".selectedImage").removeClass();
-			$(this).attr("class", "selectedImage");
-			$("#newMainImageBtn").show();
-		});
-		
-		$("#newMainImageBtn").on("click", function(){
-			var url = $(this).attr("data-url");
-			url += "&image=" + $(".selectedImage").next().text();
-			
-			var successUrl = $(this).attr("data-success");
-			
-			ajaxCall("POST", url, null, function(data, textStatus, xhr){
-				if (hasCallbackErrors(xhr)){
-					var JSONData = jQuery.parseJSON(data);
-	  	   			showDivErrors(JSONData);
-	  	   			$("#newMainImageBtn").prop("disabled", false);
-	  	   		}
-	  	   		else{
-	  	   			loadPage(successUrl);
-	  	   			dialog.dialog("destroy");
-	  	   		}	
-			});
-		});
-		
 	});
 	
 	function openSelectedTab(){

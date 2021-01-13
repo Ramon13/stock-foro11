@@ -52,12 +52,14 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		}
 	}
 	
-	public void edit(Item item, Path imagePath) throws ServiceException {
+	public void edit(Item item, Path imagePath, Image...removedImages) throws ServiceException {
 		try {
+			ImageService imgSvc = getServiceFactory().getService(ImageService.class);
+			imgSvc.removeImage(imagePath, item, removedImages);
+			
 			Path itemImagePath = imagePath.resolve(item.getId().toString());
 			
-			getServiceFactory().getService(ImageService.class)
-				.saveImages(item, Files.createDirectories(itemImagePath));
+			imgSvc.saveImages(item, Files.createDirectories(itemImagePath));
 			
 			getDaoFactory().getDAO(ItemDAO.class).merge(item);
 		} catch (DAOException | IOException e) {
@@ -108,8 +110,13 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		return true;
 	}
 	
-	public List<Item> listBySubCategory(PaginationFilter filter, SubCategory...subCategories) throws DAOException{
-		return getDAO().listBySubCategory(filter, subCategories);
+	public List<Item> listBySubCategory(PaginationFilter filter, SubCategory...subCategories) throws ServiceException{
+		try {
+			return getDAO().listBySubCategory(filter, subCategories);
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
+		}
 	}
 	
 	public List<Item> list() throws ServiceException{

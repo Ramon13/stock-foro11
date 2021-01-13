@@ -29,6 +29,7 @@ import br.com.javamon.exception.ValidationException;
 import br.com.javamon.validation.StringValidator;
 import domain.util.ValidationMessageUtil;
 import entity.Category;
+import entity.Image;
 import entity.Item;
 import entity.Packet;
 import entity.SubCategory;
@@ -53,9 +54,9 @@ public class SaveItem extends ApplicationAction{
 		
 		Item item = validateFields();
 		item.setFormImages(images);
-	
+		
 		if (item.getId() != null)
-			itemSvc.edit(item, imagePath);
+			itemSvc.edit(item, imagePath, getRemovedFormImages().toArray(new Image[0]));
 		else
 			itemSvc.save(item, imagePath);
 		
@@ -140,6 +141,19 @@ public class SaveItem extends ApplicationAction{
 		        return new String(fi.getString().getBytes("ISO-8859-1"),"UTF-8");
 	
 		return "";
+	}
+	
+	private List<Image> getRemovedFormImages() throws ValidationException, ServiceException, UnsupportedEncodingException {
+		List<Image> removedImages = new ArrayList<>();
+		String imageId;
+		for (FileItem fi : fileItems) {
+			if (fi.isFormField() && fi.getFieldName().equals("rmImg")) {
+				imageId = new String(fi.getString().getBytes("ISO-8859-1"),"UTF-8");
+				removedImages.add(getServiceFactory().getService(ImageService.class).validateAndFindById(imageId));
+			}
+		}    
+		
+		return removedImages;
 	}
 	
 	private List<FileItem> validateFormImages() throws FileUploadException, ValidationException, ServiceException{

@@ -149,4 +149,12 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 			throw new ServiceException(e);
 		}
 	}
+	
+	public List<Order> searchOnOrders(OrderStatus status, PaginationFilter filter) throws ServiceException{
+		try {
+			return getDaoFactory().getDAO(OrderDAO.class).search(status, filter);
+		} catch (DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

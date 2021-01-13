@@ -52,6 +52,20 @@ public class ImageService extends ApplicationService<Image, ImageDAO>{
 		}
 	}
 	
+	public void removeImage(Path imagePath, Item item, Image...images) throws ServiceException{
+		try {
+			for (Image image : images) {
+				imagePath = Paths.get(imagePath.toString(), item.getId().toString(), image.getName());
+				Files.delete(imagePath);
+				getDAO().delete(image);
+			}
+		} catch (DAOException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public Image findById(Long id) throws ServiceException{
 		try {
 			return getDaoFactory().getDAO(ImageDAO.class).load(id);

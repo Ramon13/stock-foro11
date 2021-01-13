@@ -200,17 +200,4 @@
 			});
 		});
 	});
-	
-	function loadContent(){
-		$("tbody").remove();
-		ajaxCall("get", '${loadTableContentURL}', null, function(data, textStatus, xhr){
-			if (isSuccessRequest(xhr)){
-				var tbodyList = $(data).find("tbody");
-				$.each(tbodyList, function(){
-					$("table").append($(this));	
-				});
-			}
-		});
-	}
-	
 </script>

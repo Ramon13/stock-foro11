@@ -105,12 +105,16 @@
 			modal: true,
 			buttons: {
 				OK: function(){
-					action();
+					if (action != undefined){
+						action();	
+					}
 					dialog.dialog("close");
 				}
 			},
 			close: function(){
-				action();
+				if (action != undefined){
+					action();	
+				}
 				dialog.dialog("close");
 			}
 		}).dialog("open");

@@ -29,7 +29,6 @@ public class ApplicationDAO<T> extends DAO<T>{
 	}
 
 	
-	
 	public List<T> search(PaginationFilter filter) throws DAOException{
 		getSearchableFields(clazz.getSimpleName(), getClassFields(clazz));
 		

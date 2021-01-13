@@ -11,7 +11,7 @@
 
 <script type="text/javascript">    
 	$(document).ready(function(){	
-		$( "input" ).checkboxradio();
+		$( ".subcategoryToogle" ).checkboxradio();
 		$( ".shape-bar, .brand" ).controlgroup();
 		$( ".toggles" ).controlgroup( {
 		  direction: "vertical"
@@ -75,7 +75,7 @@
 		<div class="toggles">	
 			<c:forEach items="${subCategories}" var="subCategory">
 				<label for="${subCategory.id}">${subCategory.name}</label>
-				<input type="checkbox" id="${subCategory.id}"/>	
+				<input class="subcategoryToogle" type="checkbox" id="${subCategory.id}"/>	
 			</c:forEach>
 		</div>
 	</div>
@@ -185,7 +185,7 @@
        	var i = 0;
        	while (i < cardsCount){
        			
-       		i += 50;
+       		i += 50;	
        	}
        	
        	cardsCount = i;

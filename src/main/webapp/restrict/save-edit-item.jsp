@@ -33,6 +33,29 @@
 	    color: #24292e;
 	    font-family: sans-serif;
 	}
+	
+	div.imgContainer{
+		width: 60px;
+	    margin: auto;
+	    display: inline-block;
+	    padding-top: 5px;
+	    border: 1px solid;
+	}
+	
+	div.imgContainer .item-image{
+		max-width: 60px;
+	    max-height: 60px;
+	}
+	
+	img.ui-icon-closethick{
+		float: right;
+	}
+	
+	div#imagesContainer{
+		width: 100%;
+		display: inline-block;
+		margin: 5px;
+	}
 </style>
 
 <div id="newItemForm">
@@ -117,7 +140,7 @@
 			</div>
 			<br /><br />
 
-			<label for="description">Especificações *</label> <br />
+			<label for="description">Especificações</label> <br />
 			<div id="descriptionErrorDiv"></div>
 			<textarea name="description" style="text-align: justify;" rows="5" cols="30">
 				<ccvt:blob-to-string value="${item.description}"/>
@@ -125,6 +148,21 @@
 			<br /><br />
 	
 			<label for="name">Imagens</label> <br />
+			<div id="imagesContainer">
+				<c:forEach items="${item.images}" var="image">		
+					<c:url var="loadItemImageURL" value="/restrict/item/LoadImage.action">
+						<c:param name="item" value="${item.id}"/>
+						<c:param name="image" value="${image.id}"/>
+					</c:url>
+					<div class="imgContainer">
+						<img class="ui-icon ui-icon-closethick removeImage"></img>
+						<br/>
+						
+						<img class="item-image" data-image-id="${image.id}" src="${loadItemImageURL}">
+					</div>
+				</c:forEach>
+			</div>
+			
 			<input type="file" multiple="multiple" id="images" name="images"
 				placeholder="enviar imagens...">
 			<br /><br /><br />	
@@ -149,6 +187,14 @@
 			$(".saveSuccess").show();
 		
 		$("textarea").jqte();
+		
+		$(".removeImage").on("click", function(){
+			var hiddenInput = $("<input type='hidden'/>");
+			hiddenInput.attr("name", "rmImg");
+			hiddenInput.attr("value", $(this).parent().find(".item-image").attr("data-image-id"));
+			$("#saveItemForm").append(hiddenInput);
+			$(this).parent().remove();
+		});
 		
 		$("#addPacketBtn").on("click", function(){
 			ajaxCall("get", '${newPacketURL}', null, function(data, textStatus, xhr){
@@ -179,8 +225,8 @@
 		$(":input[type='submit']").prop("disabled", true);
 
 		var form = $("#saveItemForm")[0];
+		console.log($("#saveItemForm").serialize());
 		var data = new FormData(form);
-
 		$.ajax({
 	        type: "post",
 	        enctype: 'multipart/form-data',

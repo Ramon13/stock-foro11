@@ -49,4 +49,29 @@ public class OrderDAO extends ApplicationDAO<Order>{
 		
 		return query.getResultList();
 	}
+	
+	public List<Order> search(OrderStatus status, PaginationFilter filter) throws DAOException{
+		getSearchableFields(clazz.getSimpleName(), getClassFields(clazz));
+		
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery<Order> criteriaQuery = builder.createQuery(clazz);
+		
+		Root<Order> root = criteriaQuery.from(clazz);
+		Predicate predicateForStatus = builder.equal(root.get("status"), status.getValue());
+		
+		Predicate[] predicates = getSearchPredicates(builder, root, filter);
+		
+		Predicate predicateForProperties = builder.or(predicates);
+		Predicate finalPredicate = builder.and(predicateForStatus, predicateForProperties);
+		
+		criteriaQuery.where(finalPredicate);
+		
+		setSortProperties(builder, criteriaQuery, root, filter);
+		
+		Query<Order> query = getSession().createQuery(criteriaQuery);
+		query.setMaxResults(filter.getMaxResults());
+		query.setFirstResult(filter.getFirstResultPage());
+		
+		return query.getResultList();
+	}
 }

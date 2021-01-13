@@ -7,7 +7,6 @@
 <c:url var="staticImages" value="/static/images"/>
 <c:url var="js" value="/static/js"/>
 <c:url var="jqteCss" value="/jquery-te-1.4.0.css"/>
-<c:url var="chosenCs	s" value="/js/chosen.css"/>
 <c:url var="cartURL" value="/common/cart.action"></c:url>
 <c:url var="homeURL" value="/common/home.action"></c:url>
 <c:url var="ordersURL" value="/common/orders.action"></c:url>
@@ -20,7 +19,6 @@
 		<title>Foro Da 11ª - Controle De Estoque</title>
 		<link rel="stylesheet" type="text/css" href="${css}/global.css">
 		<link rel="stylesheet" type="text/css" href="${css}/restrictStyle.css">
-		<link rel="stylesheet" type="text/css" href="${css}/chosen.css">
 		<link rel="stylesheet" type="text/css" href="${css}/jquery-te-1.4.0.css">
 		<link rel="stylesheet" type="text/css" href="${restrictCss}">
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -29,8 +27,6 @@
 		<script type="text/javascript" src="${js}/datepicker-pt-BR.js"></script>
 		<script  src="${js}/global.js"></script>
 		<script src="${js}/restrictJS.js"></script>
-		<script src="${js}/chosen.jquery.js"></script>
-		<script src="${js}/init.js"></script>
 		<script src="${js}/jquery-te-1.4.0.min.js"></script>
 		
 		<style>
@@ -65,12 +61,7 @@
 				padding: 5px;
 				width: 30px;
 			}
-			
-			form#searchForm {
-			    width: 70%;
-			    float: left;
-			}
-			
+		 
 			.ui-icon-cart{
 				padding-right: 10px;
 			}
@@ -111,6 +102,17 @@
 			h1{
 				padding-left: 10px !important;
 			}
+			
+			div#contentMenuBar{
+				width: auto !important;
+				float: none;
+			}
+			
+			input#searchInput{
+				width: 100%;
+				padding: 12px 20px;
+			}
+			
 		</style>
 	</head>
 	
@@ -135,9 +137,17 @@
 						<li>
 							<a href="${ordersURL}">Pedidos</a>
 						</li>
-						
+						<li>
+							<a href="${homeURL}">Início</a>
+						</li>
 					</ul>
 					
 				</div>
 			</div>
+			
+			<div id="contentMenuBar">
+			<form id="searchForm" onsubmit="return false">
+				<input id="searchInput" placeholder="Pesquisar..."  name="search" type="text" data-fields="all"/>
+			</form>
+		</div>
 			

@@ -1,7 +1,7 @@
 const ERROR_230 = 230;
 const SUCCESS_200 = 200;
 
-var scrolled = false;
+var scrolledPage = true;
 
 $(document).ready(function(){
 	$.datepicker.setDefaults( $.datepicker.regional[ "pt-BR" ] );
@@ -27,9 +27,12 @@ $(document).ready(function(){
 		location.href = url;
 	});
 	
+	var scrollHeight = 0;
 	$('#content').on('scroll', function() {
-        if(scrolled == false && isMaxScrollHeight($(this)) && url != "") {
-        	scrolled = true;
+		
+		var element = $(this);
+        if(scrollHeight < getScrollHeight(element) && isMaxScrollHeight(element) && scrolledPage == true) {
+    		scrollHeight = getScrollHeight(element) + 500;
         
 			var url = window.location.href;
 			var tbodyCount = $(this).find("table tbody").length;
@@ -37,16 +40,14 @@ $(document).ready(function(){
 			
 			ajaxCall("get", url, param, function(data, textStatus, xhr){
 				if (isSuccessRequest(xhr)){
-					var tbodyList = $(data).find("tbody");
-					
+					var table = $(data).find("table")[0];
+					var tbodyList = $(table).find("tbody");
     				$.each(tbodyList, function(){
     					$("table").append($(this));
     				});	
 				}
 			});
         }
-        
-		scrolled = false;
     });
 
 	$("body").on("click",".sortBy", function(){	
@@ -60,6 +61,10 @@ $(document).ready(function(){
 		location.href = url;
 	});
 });
+
+function loadContentOnEndPage(choice){
+	scrolledPage = choice;	
+}
 
 function loadPage(URL){
 	$("#searchForm").find("#searchInput").val("");
@@ -215,6 +220,10 @@ function isMaxScrollHeight(e){
 	return e.scrollTop() + e.innerHeight() >= e[0].scrollHeight - 1;
 }
 
+function getScrollHeight(e){
+	return e.scrollTop() + e.innerHeight();
+}
+
 var flag = true;
 function openView(element){
 	element = $(element);
@@ -305,7 +314,6 @@ function updateCartCount(url){
 	ajaxCall("get", url, null, function(data, textStatus, xhr){
 	
 		if (isSuccessRequest(xhr)){
-			console.log(data);
 			$("#cartCount").html(data);
 		}
 	});

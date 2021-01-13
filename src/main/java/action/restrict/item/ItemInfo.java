@@ -9,6 +9,7 @@ import action.ApplicationAction;
 import entity.Entry;
 import entity.Item;
 import entity.Order;
+import entity.PaginationFilter.orders;
 import service.EntryService;
 import service.OrderService;
 
@@ -32,7 +33,11 @@ public class ItemInfo extends ApplicationAction{
 		
 	}
 	
-	private List<Entry> sendEntriesByItem(Item item) throws Exception {	
+	private List<Entry> sendEntriesByItem(Item item) throws Exception {
+		if (StringUtils.isAllBlank(getRequest().getParameter("sortBy"))) {
+			 paginationFilter.setSortProperty("entry.id");
+			 paginationFilter.setOrder(orders.DESC);
+		}
 		EntryService entrySvc = getServiceFactory().getService(EntryService.class);
 		
 		if (isSearchAction())
@@ -41,7 +46,11 @@ public class ItemInfo extends ApplicationAction{
 		return entrySvc.listByItem(item, paginationFilter);
 	}
 	
-	private List<Order> sendOrdersByItem(Item item) throws Exception {	
+	private List<Order> sendOrdersByItem(Item item) throws Exception {
+		if (StringUtils.isAllBlank(getRequest().getParameter("sortBy"))) {
+			 paginationFilter.setSortProperty("order.id");
+			 paginationFilter.setOrder(orders.DESC);
+		}	
 		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
 		if (isSearchAction())
 			return orderSvc.searchOrdersByItem(item, paginationFilter);

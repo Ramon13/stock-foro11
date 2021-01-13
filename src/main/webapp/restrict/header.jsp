@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:url var="loadEntryPage" value="/restrict/entry/LoadPage.action" />
+<c:url var="listEntriesURL" value="/restrict/entry/List.action" />
 
 <%--Css and Javascript URL's --%>
 <c:url var="css" value="/static/css"/>
@@ -25,8 +25,8 @@
 		<meta charset="UTF-8">
 		<title>Controle De Estoque - Foro Da 11ª</title>
 		<link rel="stylesheet" type="text/css" href="${css}/global.css">
-		<link rel="stylesheet" type="text/css" href="${css}/restrictStyle.css">
 		<link rel="stylesheet" type="text/css" href="${css}/chosen.css">
+		<link rel="stylesheet" type="text/css" href="${css}/restrictStyle.css">
 		<link rel="stylesheet" type="text/css" href="${css}/jquery-te-1.4.0.css">
 		<link rel="stylesheet" type="text/css" href="${restrictCss}">
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -70,6 +70,10 @@
 			form#searchForm {
 			    width: 70%;
 			    float: left;
+			}
+			
+			input#searchInput{
+				text-align: left;
 			}
 		</style>
 	</head>
@@ -123,7 +127,7 @@
 						</ul>
 					</li>
 					<li>
-						<div onclick="location.href = '${loadEntryPage}'">
+						<div onclick="location.href = '${listEntriesURL}'">
 						<span class="ui-icon ui-icon-circle-arrow-s"></span>Entradas</div>
 					</li>
 					<li>
