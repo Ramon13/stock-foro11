@@ -1,31 +1,31 @@
-import java.lang.reflect.Field;
+import java.math.BigDecimal;
 
-import dao.Search;
+import org.hibernate.Session;
+
+import br.com.javamon.util.HibernateUtil;
+import entity.Entry;
+import entity.EntryItem;
 import entity.Item;
-import entity.OrderItem;
 
 public class Main {
 
 	
 	public static void main(String[] args){
+		HibernateUtil.beginTransaction();
+		Session session = HibernateUtil.getCurrentSession();
+		
+		Item item = session.createQuery("from Item i where i.id = 1", Item.class).uniqueResult();
+		Entry entry = session.createQuery("from Entry e where e.id = 1230", Entry.class).uniqueResult();
+		
+		EntryItem ei = new EntryItem();
+		ei.setAmount(2);
+		ei.setTotal(19.0);
+		ei.setValue(new BigDecimal(2));
+		ei.setItem(item);
+		ei.setEntry(entry);
+		session.save(ei);
+		HibernateUtil.commitTransaction();
+		
 		
 	}
-	
-	
-	private static void getSearchableFields(String fieldName, Field[] fields) {
-		
-		for (Field field : fields) {
-			if (field.isAnnotationPresent(Search.class)) {
-				
-				String s = String.format("%s.%s", fieldName, field.getName());
-				if (field.getAnnotation(Search.class).getMarckedFields()) {
-					getSearchableFields(s, field.getType().getDeclaredFields());
-				
-				}else {
-					System.out.println(s);
-				}
-			}
-		}
-	}
-	
 }

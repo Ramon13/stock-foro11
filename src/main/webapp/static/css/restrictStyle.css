@@ -1,5 +1,5 @@
 #tableHome{
-	width: 99%%;
+	width: 99%;
 }
 
 .selectBtn{
@@ -25,44 +25,6 @@
 	width: 100%;
 }
 
-.fold{
-	display: none;
-}
-
-.open-fold{
-	display: table-row;
-}
-
-.open-view{
-	background-color: #f37b26;
-	color: #ffffff;
-}
-
-#tabNewEntry table tbody, .fold{
-	background-color: #ffffff;
-}
-
-div.fold-content{
-	padding-bottom: 30px;	
-}
-
-div.fold-content table{
-	width: 98%;
-	margin: auto;
-}
-
-div.fold-content h3{
-	text-align: left;
-}
-
-div.fold-content thead{
-	background-color: black;
-	color: #ffffff;
-}
-
-.ui-icon-triangle-1-s, .ui-icon-triangle-1-n{
-	float: left;
-}
 
 td.sum-locale{
 	width: 30px;
@@ -73,14 +35,6 @@ td.sum-locale{
 .select2-container span{
 	color: black;
 }
-
-input#datePicker {
-    max-width: 200px;
-}
-
-input#invoiceNumber {
-    width: 200px;
-}	
 
 div#info{
 	width: 40%;

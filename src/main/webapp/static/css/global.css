@@ -2,6 +2,45 @@ body {
 	margin: 0px;
 }
 
+.fold{
+	display: none;
+}
+
+.open-fold{
+	display: table-row;
+}
+
+.open-view{
+	background-color: #f37b26;
+	color: #ffffff;
+}
+
+#tabNewEntry table tbody, .fold{
+	background-color: #ffffff;
+}
+
+div.fold-content{
+	padding-bottom: 30px;	
+}
+
+div.fold-content table{
+	width: 98%;
+	margin: auto;
+}
+
+div.fold-content h3{
+	text-align: left;
+}
+
+div.fold-content thead{
+	background-color: black;
+	color: #ffffff;
+}
+
+.ui-icon-triangle-1-s, .ui-icon-triangle-1-n{
+	float: left;
+}
+
 #topMenu {
 	overflow: hidden;
 	background-color: #26c4f3;

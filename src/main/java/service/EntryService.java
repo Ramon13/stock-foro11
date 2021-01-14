@@ -1,9 +1,7 @@
 package service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
@@ -16,7 +14,6 @@ import entity.EntryItem;
 import entity.Invoice;
 import entity.Item;
 import entity.PaginationFilter;
-import entity.Provider;
 
 public class EntryService extends ApplicationService<Entry, EntryDAO>{
 
@@ -42,45 +39,25 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 		return listFromEntryItems(entryItems);
 	}
 	
-	public void saveEntry(Entry entry) throws ServiceException, ValidationException{
-		
-		Set<EntryItem> entryItems = entry.getEntryItems();
-		entry.setEntryItems(new HashSet<EntryItem>(0));
-		
-		Provider provider = getServiceFactory()
-			.getService(ProviderService.class)
-			.findById(entry.getProvider().getId());
-		
-		if (provider == null)
-			throw new ValidationException(ValidationMessageUtil.ID_NOT_FOUND);
-		
+	public void saveEntry(Entry entry, List<EntryItem> entryItems) throws ServiceException, ValidationException{
 		validateInvoiceNumber(entry.getInvoice().getInvoiceIdNumber());
 		Invoice invoice = getServiceFactory()
 				.getService(InvoiceService.class)
 				.save(entry.getInvoice());
 		
-		entry.setProvider(provider);
 		entry.setInvoice(invoice);
 		
 		try {
-			Long id = (Long) getDaoFactory().getDAO(EntryDAO.class).save(entry);
-			entry = getDaoFactory().getDAO(EntryDAO.class).load(id);
+			getDaoFactory().getDAO(EntryDAO.class).save(entry);
 		} catch (DAOException e) {
+			e.printStackTrace();
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE, e);
 		}
 		
-		Item item;
 		for (EntryItem entryItem : entryItems) {
-			item = getServiceFactory()
-					.getService(ItemService.class)
-					.findById(entryItem.getItem().getId());
-			
-			if (item == null)
-				throw new ValidationException(ValidationMessageUtil.ID_NOT_FOUND);
-			
-			entryItem.setItem(item);
 			entryItem.setEntry(entry);
 			entryItem.calcTotal();
+			
 			getServiceFactory().getService(EntryItemService.class).save(entryItem);
 		}
 	}

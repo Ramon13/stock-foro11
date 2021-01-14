@@ -9,7 +9,7 @@
 <script type="text/javascript">
 	$( function() {
 		$( "#tabs" ).tabs();
-		$(".chosen-select").chosen({width: "100%"});
+		$(".chosen-select").chosen({width: "60%"});
 	});
 </script>
 
@@ -49,6 +49,9 @@
 		background-color: #204a87;
 	}
 	
+	td.col20{
+		width: 20%;
+	}
 </style>
 
 <c:url var="saveEntryURL" value="/restrict/entry/Save.action" />
@@ -186,12 +189,12 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>
+							<td class="col20">
 								<div id="dateErrorDiv"></div>
 								<input type="text" id="date" name="date" 
 									value="<cfmt:formatDate value="${today}" locale="ptBR"/>" />
 							</td>
-							<td>
+							<td class="col20">
 								<div id="invoiceNumberErrorDiv"></div>
 								<input type="text" name="invoiceNumber" 
 									id="invoiceNumber" class="inputNumber" />
@@ -236,19 +239,19 @@
 									</select>
 								</div>
 							</td>
-							<td>
+							<td class="col20">
 								<span class="clientErrorMsg"></span>
 								<div id="amountErrorDiv"></div>
 								<br />
 								<input type="text" name="amount" class="inputNumber amount"/>
 							</td>
-							<td>
+							<td class="col20">
 								<span class="clientErrorMsg"></span>
 								<div id="valueErrorDiv"></div>
 								<br />
 								<input type="text" name="value" class="inputNumber value"/>
 							</td>
-							<td>
+							<td class="col20">
 									<br />
 								<input type="text" class="inputNumber rowTotal" value="0"/>
 							</td>
@@ -257,7 +260,7 @@
 					<tbody id="tableTotal">
 						<tr>
 							<td colspan="3"></td>
-							<td>
+							<td class="col20">
 								<input type="text" value ="0" class="inputNumber colTotal"/>
 							</td>
 						</tr>
@@ -289,19 +292,19 @@
 							</select>
 						</div>
 					</td>
-					<td>
+					<td class="col20">
 						<span class="clientErrorMsg"></span>
 						<div id="amountErrorDiv"></div>
 						<br />
 						<input type="text" name="amount" class="inputNumber amount"/>
 					</td>
-					<td>
+					<td class="col20">
 						<span class="clientErrorMsg"></span>
 						<div id="amountErrorDiv"></div>
 						<br />
 						<input type="text" name="value" class="inputNumber value"/>
 					</td>
-					<td><input type="text" class="inputNumber rowTotal" value="0" /></td>
+					<td class="col20"><input type="text" class="inputNumber rowTotal" value="0" /></td>
 				</tr>
 				
 			</tbody>
@@ -332,7 +335,7 @@
 			clonedRow.show();
 			clonedRow.find("select").attr("class", "chosen-select");
 			
-			$(".chosen-select").chosen();
+			$(".chosen-select").chosen({width: "60%"});
 		});
 	});
 	
@@ -363,7 +366,7 @@
 		$.ajax({
 	        type: "post",
 	        url: saveURL,
-	        data: $("#saveEntryForm").serialize(),
+	        data: decodeURIComponent($("#saveEntryForm").serialize()),
 	        success: function(data, textStatus, xhr){
 
 	        	var JSONData = jQuery.parseJSON(data);

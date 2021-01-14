@@ -12,7 +12,7 @@
 		</id>
 		
 		<property name="amount" type="java.lang.Integer">
-			<column name="amount" default="0" not-null="false" precision="10" scale="2"/>
+			<column name="amount" not-null="false" precision="10" scale="2"/>
 		</property>
 		
 		<property name="total" type="java.lang.Double">

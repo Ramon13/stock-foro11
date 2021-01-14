@@ -4,13 +4,16 @@ import java.util.List;
 
 import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
-import br.com.javamon.service.Service;
 import dao.ProviderDAO;
 import domain.util.ExceptionMessageUtil;
 import entity.Provider;
 
 //TODO: abstract common methods on an interface
-public class ProviderService extends Service{
+public class ProviderService extends ApplicationService<Provider, ProviderDAO>{
+
+	public ProviderService() {
+		super(ProviderDAO.class);
+	}
 
 	public List<Provider> list() throws ServiceException{
 		try {

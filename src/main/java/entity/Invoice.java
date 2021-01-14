@@ -8,6 +8,12 @@ public class Invoice extends Entity{
 	private String invoiceIdNumber;
 	private Entry entry;
 
+	public Invoice() {}
+	
+	public Invoice(String invoiceIdNumber) {
+		this.invoiceIdNumber = invoiceIdNumber;
+	}
+
 	public String getInvoiceIdNumber() {
 		return invoiceIdNumber;
 	}

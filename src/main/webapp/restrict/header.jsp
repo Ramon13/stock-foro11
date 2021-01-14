@@ -26,7 +26,6 @@
 		<title>Controle De Estoque - Foro Da 11ª</title>
 		<link rel="stylesheet" type="text/css" href="${css}/global.css">
 		<link rel="stylesheet" type="text/css" href="${css}/chosen.css">
-		<link rel="stylesheet" type="text/css" href="${css}/restrictStyle.css">
 		<link rel="stylesheet" type="text/css" href="${css}/jquery-te-1.4.0.css">
 		<link rel="stylesheet" type="text/css" href="${restrictCss}">
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
