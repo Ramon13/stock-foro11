@@ -36,11 +36,6 @@ public class LoadItemImage extends Action {
 	}
 
 	private Path getAppImagesPath(Item item, Image image) throws ServiceException, ValidationException{
-		String name = image.getName();
-		if (image.getName() == null) {
-			name = getServiceFactory().getService(ImageService.class).fixImageName(image, Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString()));	
-		}
-		
-		return Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString(), name);
+		return Paths.get(ActionUtil.getimagesPath(getRequest()), item.getId().toString(), image.getName());
 	}
 }

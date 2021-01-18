@@ -141,7 +141,7 @@
 			});
 		});
 		
-		
+		var scrolled = false;
 		$('#contentDiv').on('scroll', function() {
 
 	        if(scrolled == false && isMaxScrollHeight($(this))) {

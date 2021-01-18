@@ -35,7 +35,7 @@ $(document).ready(function(){
     		scrollHeight = getScrollHeight(element) + 500;
         
 			var url = window.location.href;
-			var tbodyCount = $(this).find("table tbody").length;
+			var tbodyCount = element.find("table tbody").length;
 			var param = [{name: "firstResultPage", value: tbodyCount}];
 			
 			ajaxCall("get", url, param, function(data, textStatus, xhr){
