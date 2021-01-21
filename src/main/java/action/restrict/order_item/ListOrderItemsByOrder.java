@@ -33,14 +33,15 @@ public class ListOrderItemsByOrder extends Action{
 			
 			setItemAmount(orderItems, order);
 			String[] monthNames = DateUtil.lastMonthsNames(12, new java.util.Locale("pt"));
-			
+		
 			getRequest().setAttribute("firstDayOfCurrentYear", DateUtil.firstDayOfCurrentYear());
 			getRequest().setAttribute("today", DateUtil.today());
 			getRequest().setAttribute("order", order);
 			getRequest().setAttribute("orderItems", orderItems);
 			getRequest().setAttribute("monthNames", monthNames);
 			ActionUtil.addOrderStatusOnRequest(getRequest(), order);
-			ActionUtil.setSuperAdminUser(getRequest());
+			ActionUtil.addValidWriteRoleOnRequest(getRequest());
+			
 			foward("/restrict/order-item-ajax.jsp");
 		}
 		
@@ -58,8 +59,6 @@ public class ListOrderItemsByOrder extends Action{
 					itemSvc.getItemAmountByLocaleAndYear(locale, LocalDate.now().getYear(), item));
 			
 			item.setSumByMonth(itemSvc.getPreviousMonthsAmount(item, 12, locale));
-			
-			item.setAmount(itemSvc.getItemCurrentAmount(item));
 		}
 	}
 }

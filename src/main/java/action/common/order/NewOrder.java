@@ -26,6 +26,8 @@ public class NewOrder extends ApplicationAction {
 		Long orderId = orderSvc.save(createOrder(user));
 		Order order = orderSvc.findById(orderId);
 		updateOrderItemsAmount(user.getCart(), order);
+		
+		responseToClient(200, orderId.toString());
 	}
 
 	public Order createOrder(User user) {

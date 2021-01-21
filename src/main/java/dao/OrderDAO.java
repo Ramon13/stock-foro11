@@ -74,4 +74,11 @@ public class OrderDAO extends ApplicationDAO<Order>{
 		
 		return query.getResultList();
 	}
+	
+	public Order findByUser (Long orderId, User user) throws DAOException{
+		Query<Order> query = createQuery("from Order o where o.id = :orderId and o.customer = :user", Order.class);
+		query.setParameter("orderId", orderId);
+		query.setParameter("user", user);
+		return query.uniqueResult();
+	}
 }

@@ -150,7 +150,7 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 				for (ItemLocales itemLocales : itemLocalesList) {
 					
 					if (orderService.isValidToCheckOut(oi.getOrder()) &&
-							isBetweenDateRange(itemLocales.getFilter(), oi.getOrder().getFinalDate()))
+							isBetweenDateRange(itemLocales.getFilter(), oi.getOrder().getReleaseDate()))
 					{
 						idTemp = oi.getOrder().getCustomer().getLocale().getId().intValue();
 						int sum = itemLocales
@@ -188,12 +188,14 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 					}
 				}
 			}
+
+			
 		}
 	}
 	
 	private void addEntryAmount(ItemLocale itemLocale, EntryItem entryItem,
 			AdminHomeDateType adminHomeDateType, LocalDate date) {
-		if (entryItem.getEntry().getDate().isBefore(date)) {
+		if (entryItem.getEntry().getDate().isBefore(date) || entryItem.getEntry().getDate().isEqual(date)) {
 			if (adminHomeDateType == AdminHomeDateType.PRIMARY_DATE) {
 				int amount = itemLocale.getStartDateAmount();
 				itemLocale.setStartDateAmount(amount + entryItem.getAmount());
@@ -209,7 +211,7 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 	private void addOrderItemAmount(ItemLocale itemLocale, OrderItem orderItem,
 			AdminHomeDateType adminHomeDateType, LocalDate date) {
 		
-		if (orderItem.getOrder().getFinalDate().isBefore(date)) {
+		if (orderItem.getOrder().getReleaseDate().isBefore(date) || orderItem.getOrder().getReleaseDate().isEqual(date)) {
 			
 			if (adminHomeDateType == AdminHomeDateType.PRIMARY_DATE) {
 				int amount = itemLocale.getStartDateAmount();
@@ -269,9 +271,9 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 			order = orderItem.getOrder();
 			
 			if (orderSvc.isValidOrder(order) &&
-					OrderStatus.isFinalizedOrder(order) &&
+					OrderStatus.isFinalizedOrReleased(order) &&
 					order.getCustomer().getLocale().getId() == locale.getId() &&
-					order.getFinalDate().isAfter(DateUtil.firstDayOfYear(year))) {
+					order.getReleaseDate().isAfter(DateUtil.firstDayOfYear(year))) {
 				
 				orderSum += orderItem.getAmount();	
 			}
@@ -287,14 +289,15 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		int[] sumByMonth = new int[numOfMonths + 1];
 				
 		LocalDate oneYearBefore = LocalDate.now().withDayOfMonth(1).minusMonths(numOfMonths);
+		LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
 		
 		for (OrderItem orderItem : item.getOrderItems()) {
 			order = orderItem.getOrder();
 			
 			if (orderSvc.isValidOrder(order) &&
-					OrderStatus.isFinalizedOrder(order) &&
+					OrderStatus.isFinalizedOrReleased(order) &&
 					order.getCustomer().getLocale().getId() == locale.getId() &&
-					order.getFinalDate().isAfter(oneYearBefore)) {
+					DateValidator.isWithinRange(oneYearBefore, currentMonth, order.getReleaseDate())) {
 				
 					int monthValue = order.getFinalDate().getMonthValue();
 					sumByMonth[monthValue] += orderItem.getAmount();
@@ -334,6 +337,12 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		return new BigDecimal(entrySum - orderSum);
 	}
 	
+	public void updateItemCurrentAmount(Item...items) throws ServiceException{
+		for (Item item : items) {
+			item.setAmount(getItemCurrentAmount(item));
+			update(item);
+		}
+	}
 	
 	/**
 	 *  

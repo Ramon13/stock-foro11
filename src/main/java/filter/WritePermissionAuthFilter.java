@@ -12,11 +12,10 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import domain.LoggedUser;
-import domain.PermissionRoles;
+import action.ActionUtil;
 
-@WebFilter( urlPatterns = {"/restrict/*", "/index.jsp"})
-public class RestrictAuthFilter implements Filter {
+@WebFilter( urlPatterns = {"/wpermission/*"})
+public class WritePermissionAuthFilter implements Filter {
 
 	@Override
 	public void destroy() {
@@ -29,16 +28,9 @@ public class RestrictAuthFilter implements Filter {
 			HttpServletRequest request = (HttpServletRequest) req;
 			HttpServletResponse response = (HttpServletResponse) resp;
 			
-			LoggedUser loggedUser = (LoggedUser) request.getSession().getAttribute("loggedUser");
-			
-			//Reject all non admin or superadmin requests
-			if (loggedUser == null || 
-					loggedUser.getUser().getPermission().getLevel() <= PermissionRoles.USER.getValue()) {
-				foward(request, response, "/public/login.jsp");
-				return;
+			if (ActionUtil.isRoleValidForWrite(request)) {
+				new RestrictAuthFilter().doFilter(request, response, chain);
 			}
-				
-			chain.doFilter(request, response);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,10 +40,6 @@ public class RestrictAuthFilter implements Filter {
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 		
-	}
-	
-	private void foward(HttpServletRequest request, HttpServletResponse response, String path) throws Exception{
-		request.getRequestDispatcher(path).forward(request, response);
 	}
 
 }

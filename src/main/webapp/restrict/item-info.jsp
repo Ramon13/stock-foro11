@@ -38,6 +38,33 @@
 	    height: 50px;
 	    border: 1px solid #d2d2d2;
 	}
+	
+	div#info{
+		width: 40%;
+	    background-color: #ffffff;
+	    margin: auto;
+	    padding-top: 20px;
+	}
+	
+	div#info img{
+		width: 100px;
+	    height: 100px;
+	    border: 1px solid #d2d2d2;
+	}
+	
+	div#info #itemAttr{
+		text-align: center;
+		max-width: 500px;
+	}
+	
+	.editItem{
+		width:40% !important;
+		text-align:center
+	}
+	
+	#info span{
+	    font-size: 14px;
+	}
 </style>
 
 

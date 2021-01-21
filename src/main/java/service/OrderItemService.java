@@ -1,6 +1,7 @@
 package service;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 import br.com.javamon.exception.DAOException;
@@ -61,8 +62,8 @@ public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO
 		update(orderItem);
 	}
 	
-	public boolean isValidForRelease(OrderItem orderItem) {
-		return orderItem.getAmount() <= orderItem.getItem().getAmount().intValue();	
+	public boolean isValidForRelease(OrderItem orderItem, BigDecimal itemAmount) {
+		return orderItem.getAmount() <= itemAmount.longValue();	
 	}
 	
 	public boolean isValidForChangeAmount(OrderItem orderItem, Integer newAmount) throws ServiceException, ValidationException {
@@ -89,6 +90,13 @@ public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO
 			return getDAO().listByShoppingCart(cart);
 		} catch (DAOException e) {
 			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateItemAmount(Collection<OrderItem> orderItems) throws ServiceException{
+		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
+		for (OrderItem oi : orderItems) {
+			itemSvc.updateItemCurrentAmount(oi.getItem());
 		}
 	}
 }

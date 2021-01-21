@@ -1,5 +1,6 @@
 package action.restrict.item;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import action.ActionUtil;
 import action.AdminHomeDateType;
 import action.ApplicationAction;
+import br.com.javamon.convert.DateConvert;
+import br.com.javamon.exception.ConvertException;
 import br.com.javamon.exception.ServiceException;
 import domain.DateUtil;
 import domain.ItemLocaleFilter;
@@ -26,9 +29,6 @@ public class ListWithLocalesAmount extends ApplicationAction{
 	}
 	
 	private void putContentOnRequest() throws Exception {
-		
-		ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.PRIMARY_DATE, null, getRequest().getSession()); 
-		ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.SECOND_DATE, null, getRequest().getSession());
 		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
 		
 		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
@@ -41,6 +41,8 @@ public class ListWithLocalesAmount extends ApplicationAction{
 		getRequest().setAttribute("lastYear", DateUtil.firstDayOfPreviousYear().getYear());
 		getRequest().setAttribute("locales", locales);
 		getRequest().setAttribute("items", items);
+		getRequest().setAttribute("primaryDate", getPrimaryDate());
+		getRequest().setAttribute("secondDate", getSecondDate());
 		getRequest().setAttribute("itemLocaleFromPreviousYear", itemLocalesFromPreviousYear);
 		getRequest().setAttribute("itemLocaleBetweenDates", itemLocalesBetweenDates);
 	}
@@ -65,14 +67,29 @@ public class ListWithLocalesAmount extends ApplicationAction{
 		return itemLocales;
 	}
 	
-	private ItemLocales getItemLocalesBetweenDates() {
-		ItemLocaleFilter filter = new ItemLocaleFilter(
-			ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.PRIMARY_DATE, null, getRequest().getSession()), 
-			ActionUtil.putAdminHomeDateOnSession(AdminHomeDateType.SECOND_DATE, null, getRequest().getSession()),
-			true);
+	private ItemLocales getItemLocalesBetweenDates() throws ConvertException {
+		ItemLocaleFilter filter = new ItemLocaleFilter(getPrimaryDate(), getSecondDate(), true);
 		
 		ItemLocales itemLocales = new ItemLocales();
 		itemLocales.setFilter(filter);
 		return itemLocales;
+	}
+	
+	private LocalDate getPrimaryDate() throws ConvertException {
+		String paramDate = null;
+		if (!StringUtils.isAllBlank((paramDate = getRequest().getParameter("primaryDate"))) ) {
+			return DateConvert.stringToLocalDate(paramDate, "yyyy-MM-dd");
+		}
+		
+		return LocalDate.of(LocalDate.now().getYear(), 1, 1);
+	}
+	
+	private LocalDate getSecondDate() throws ConvertException {
+		String paramDate = null;
+		if (!StringUtils.isAllBlank((paramDate = getRequest().getParameter("secondDate"))) ) {
+			return DateConvert.stringToLocalDate(paramDate, "yyyy-MM-dd");
+		}
+		
+		return LocalDate.now();
 	}
 }

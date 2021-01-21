@@ -15,7 +15,7 @@
 <script>
 	var dialog, form;
 	
-	function simpleConfirmationDialog(title, messageBody, ajaxSubmitFunction){
+	function simpleConfirmationDialog(title, messageBody, processFunction){
 		var dialogDiv = $("#simpleConfirmationDialog");
 		dialogDiv.attr("title", title);
 		dialogDiv.find("p").html(messageBody);
@@ -27,7 +27,8 @@
 		      modal: true,
 		      buttons: {
 		        "Continuar": function(){
-		        	ajaxSubmitFunction();
+		        	processFunction();
+		        	$( this ).dialog("destroy");
 		        },
 		        Cancel: function() {
 		          $( this ).dialog("destroy");
@@ -38,7 +39,7 @@
 		return dialog; 
 	}
 	
-	function smallDialogForm(dialog, submitFunction, form){
+	function smallDialogForm(dialog, form, submitFunction){
 		var originalContent;
 		var dialog = dialog.dialog({
 		      autoOpen: false,
@@ -47,7 +48,9 @@
 		      modal: true,
 		      open: originalContent = dialog.html(),
 		      buttons: {
-		    	"Salvar": submitFunction,
+		    	"Salvar": function(){
+		    		submitFunction();
+		    	},
 		    	
 		        Cancel: function() {
 		          dialog.dialog( "close" );

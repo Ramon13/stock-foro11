@@ -34,7 +34,7 @@ public class FixImageNames {
 			Session session = HibernateUtil.getCurrentSession();
 			List<Image> images = session.createQuery("from Image i", Image.class).getResultList();
 			
-			Path path = Paths.get("/home/ramon/tmp/app-images/");
+			Path path = Paths.get("/home/ramon/tmp/storage/app-images/");
 			for (Image image : images) {
 				fixImageName(session, image, path);
 			}

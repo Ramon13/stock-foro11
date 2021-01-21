@@ -2,7 +2,6 @@ package action.restrict.order;
 
 import action.ActionUtil;
 import action.ApplicationAction;
-import domain.LoggedUser;
 import entity.Order;
 import service.OrderService;
 
@@ -10,15 +9,14 @@ public class ReleaseOrder extends ApplicationAction{
 
 	@Override
 	public void processAction() throws Exception {
-		LoggedUser loggedUser = ActionUtil.getSessionLoggedUser(getRequest());
 		OrderService orderSvc = getServiceFactory().getService(OrderService.class);
-		String orderIdParam = getRequest().getParameter("order");
+		Order order = orderSvc.validateAndFindById(getRequest().getParameter("order"));
 		
-		Order order = orderSvc.validateAndFindById(orderIdParam);
-		
-		if (orderSvc.isValidForRelease(order, loggedUser)) {
-			orderSvc.releaseOrder(order, loggedUser);
+		if (orderSvc.isValidForRelease(order)) {
+			orderSvc.releaseOrder(order, ActionUtil.getSessionLoggedUser(getRequest()));
 		}
+		
+		redirect("restrict/orders.action?status=P");
 	}
 
 }

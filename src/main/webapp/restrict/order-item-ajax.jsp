@@ -5,16 +5,16 @@
 <%@taglib prefix="cfmt" uri="/WEB-INF/tag/custom-fmt.tld" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:url var="cancelOrderURL" value="/restrict/order/Cancel.action">
+<c:url var="cancelOrderURL" value="/wpermission/order/Cancel.action">
 	<c:param name="order" value="${order.id}"/>
 </c:url>
-<c:url var="comeBackOrderURL" value="/restrict/order/Pending.action">
+<c:url var="comeBackOrderURL" value="/wpermission/order/Pending.action">
 	<c:param name="order" value="${order.id}"/>
 </c:url>
-<c:url var="releaseOrderURL" value="/restrict/order/Release.action">
+<c:url var="releaseOrderURL" value="/wpermission/order/Release.action">
 	<c:param name="order" value="${order.id}"/>
 </c:url>
-<c:url var="finishOrderURL" value="/restrict/order/Finish.action">
+<c:url var="finishOrderURL" value="/wpermission/order/Finish.action">
 	<c:param name="order" value="${order.id}"/>
 </c:url>
 
@@ -23,6 +23,7 @@
 </c:url>
 <c:url var="editItemAmountURL" value="/restrict/orderItem/EditAmount.action" />
 
+
 <c:set var="PENDING" value="P" />
 <c:set var="FINALIZED" value="F" />
 <c:set var="RELEASED" value="R" />
@@ -30,18 +31,21 @@
 
 
 <style>
-	button.releaseBtn{
-		background-color: #ffa64d;
+	button.finishBtn{
+		background-color: #2ea44f !important;
+		padding: .4em 1em !important;
 		color: white;
 	}
-
-	button.cancelBtn{
-		background-color: #ff4d4d;
+	
+	button.releaseBtn{
+		background-color: #ffa64d;
+		padding: .4em 1em !important;
 		color: white;
 	}
 	
 	button.comeBackBtn{
 		background-color: #003399;
+		padding: .4em 1em !important;
 		color: white;
 	}
 	
@@ -49,13 +53,26 @@
 		background-color: #000099;
 		color: white;
 	}
+	
+	button.releaseBtn{
+		background-color: #2ea44f !important;
+		padding: .4em 1em !important;
+		color: white;
+	}
+	
 	button.releaseBtn:hover{
-		background-color: #ff8c1a;
+		background-color: #247f3e !important;
+		color: white;
+	}
+	
+	button.cancelBtn{
+		background-color: #ff4d4d !important;
+		padding: .4em 1em !important;
 		color: white;
 	}
 	
 	button.cancelBtn:hover{
-		background-color: #ff0000;
+		background-color: #ff0000 !important;
 		color: white;
 	}
 	
@@ -176,17 +193,13 @@
 							</td>
 							<td>
 								<div id="editAmount">
-									<span class="amount">
+									<span class="orderAmount">
 										<fmt:formatNumber value="${orderItem.amount}" type="number"/>
 									</span>
 									<br />
 									<c:if test="${superAdmin}">
-										<button class="editAmountBtn" type="button" 
-											data-url="${editItemAmountURL}"
-											data-orderItem-id="${orderItem.id}">
-											Editar
-											
-										</button>
+										<a href="#" class="editAmountBtn" data-url="${editItemAmountURL}"
+											data-orderItem-id="${orderItem.id}">editar</a>
 									</c:if>
 								</div>
 							</td>				
@@ -213,18 +226,15 @@
 			</table>
 			<br /><br />
 			
-			<c:if test="${superAdmin}">
-				<div id="buttons">
-					<button type="button" class="ui-button ui-widget ui-corner-all cancelBtn"
-						data-cancel-action="${cancelOrderURL}" 
-						data-success-url="${ordersURL}">
+			<c:if test="${hasWritePermission eq true}">
+				<div id="buttons">		
+					<button data-url="${cancelOrderURL}" class="ui-button ui-widget ui-corner-all cancelBtn">
 						Cancelar
 					</button>
-					<button type="button" class="ui-button ui-widget ui-corner-all releaseBtn"
-						data-release-action="${releaseOrderURL}" 
-						data-success-url="${ordersURL}">
-						Liberar pedido
-					</button>	
+					
+					<button data-url="${releaseOrderURL}" class="ui-button ui-widget ui-corner-all releaseBtn">
+						Liberar Pedido
+					</button>
 				</div>
 			</c:if>
 		</c:when>
@@ -272,7 +282,7 @@
 				</c:forEach>
 			</table>
 			
-			<c:if test="${status == RELEASED}">
+			<c:if test="${status == RELEASED and hasWritePermission eq true}">
 				<div>
 					<div id="orderInfo">
 						<c:if test="${ not empty order.releaseAdministrator}">
@@ -292,14 +302,10 @@
 					<br />
 					
 					<div id="buttons">
-						<button type="button" class="ui-button ui-widget ui-corner-all comeBackBtn"
-							data-return-action="${comeBackOrderURL}" 
-							data-success-url="${ordersURL}">
+						<button type="button" class="ui-button ui-widget ui-corner-all comeBackBtn" data-url="${comeBackOrderURL}">
 							Retornar para a fase anterior
 						</button>
-						<button type="button" class="ui-button ui-widget ui-corner-all finishBtn saveBtn"
-							data-action="${finishOrderURL}" 
-							data-success-url="${ordersURL}">
+						<button type="button" class="ui-button ui-widget ui-corner-all finishBtn saveBtn" data-url="${finishOrderURL}">
 							Finalizar pedido
 						</button>
 					</div>
@@ -327,47 +333,77 @@
 		var dialogTitle, dialogMessage;
 		
 		$(".finishBtn").on("click", function(){
-			var url = $(this).attr("data-action");
-			var successURL = $(this).attr("data-success-url");
-			var receivedPerson = $(this).parent().parent().find("#receivedPerson");
+			var receivedPerson = $(this).parent().parent().find("#receivedPerson").val();
 			
-			url += "&receivedPerson=" + receivedPerson.val();
-			finishOrder(url, successURL);	
+			var url = $(this).attr("data-url");
+			var params = [{name:"receivedPerson", value: receivedPerson}]
+			
+			dialogTitle = "Finalizar Pedido";
+			dialogMessage = "Após finalizar o pedido não será mais possível altera-lo. Deseja prosseguir com a operação?";
+			var dialog = simpleConfirmationDialog(dialogTitle, dialogMessage, function(){
+				
+				ajaxCall("post", url, params, function(data, textStatus, xhr){
+					if (hasCallbackErrors(xhr)){
+						var JSON = jQuery.parseJSON(data);
+						simpleModalDialog("Alerta", JSON[0].message);
+					}else{
+						location.reload();
+					}	
+				});
+			});
 		});
 		
 		$(".comeBackBtn").on("click", function(){
-			var url = $(this).attr("data-return-action");
-			var successURL = $(this).attr("data-success-url");
+			var url = $(this).attr("data-url");
 			
 			dialogTitle = "Retornar para a fase anterior";
 			dialogMessage = "O pedido irá retornar para a fase de pendência. Deseja prosseguir com a operação?";
 			var dialog = simpleConfirmationDialog(dialogTitle, dialogMessage, function(){
-				comeBackOrder(url, successURL);
-				dialog.dialog("destroy");
+				
+				ajaxCall("post", url, null, function(data, textStatus, xhr){
+					if (hasCallbackErrors(xhr)){
+						var JSON = jQuery.parseJSON(data);
+						simpleModalDialog("Alerta", JSON[0].message);
+					}else{
+						location.reload();
+					}	
+				});
 			});
 		});
 		
-		$(".cancelBtn").on("click", function(){
-			var url = $(this).attr("data-cancel-action");
-			var successURL = $(this).attr("data-success-url");
+		$(".cancelBtn").on("click", function(){		
+			var url = $(this).attr("data-url");
 			
 			dialogTitle = "Cancelar Pedido";
 			dialogMessage = "O cancelamento do pedido é irreversível. Deseja prosseguir com o cancelamento?";
 			var dialog = simpleConfirmationDialog(dialogTitle, dialogMessage, function(){
-				cancelOrder(url, successURL);
-				dialog.dialog("close");
+				
+				ajaxCall("post", url, null, function(data, textStatus, xhr){
+					if (hasCallbackErrors(xhr)){
+						var JSON = jQuery.parseJSON(data);
+						simpleModalDialog("Alerta", JSON[0].message);
+					}else{
+						location.reload();
+					}	
+				});
 			});
 		});
 		
 		$(".releaseBtn").on("click", function(){
-			var url = $(this).attr("data-release-action");
-			var successURL = $(this).attr("data-success-url");
+			var url = $(this).attr("data-url");
 			
 			dialogTitle = "Liberar Pedido";
 			dialogMessage = "Deseja prosseguir com a liberação do pedido?";
 			var dialog = simpleConfirmationDialog(dialogTitle, dialogMessage, function(){
-				releaseOrder(url, successURL);
-				dialog.dialog("close");
+		
+				ajaxCall("post", url, null, function(data, textStatus, xhr){
+					if (hasCallbackErrors(xhr)){
+						var JSON = jQuery.parseJSON(data);
+						simpleModalDialog("Alerta", JSON[0].message);
+					}else{
+						location.reload();
+					}	
+				});
 			});
 		});
 		
@@ -376,74 +412,21 @@
 			var dialogDiv = $("#editAmountDlg");
 			var url = $(this).attr("data-url");
 
-			var amountInput = $(this).parent().find(".amount");
+			var amountInput = $(this).parent().find(".orderAmount");
 			var currentAmount = amountInput.text();
 			var orderItemId = $(this).attr("data-orderItem-id");
 			
 			dialogDiv.find("#amount").val(currentAmount.trim());
 			dialogDiv.find("#orderItem").val(orderItemId.trim());
 			
-			var editAmountDialog = dialogForm($("#editAmountDlg"), function(){
-				changeAmount(url, editAmountDialog, amountInput);
+			var dialog = smallDialogForm(dialogDiv, dialogDiv.find("form"), function(){
+				changeAmount(url, dialog, amountInput);
 			}).dialog("open");
 		});
 	});
 	
-	function comeBackOrder(url, successURL){
-		ajaxCall("post", url, null, function(data, textStatus, xhr){
-			if (isSuccessRequest(xhr)){
-				simpleConfirmationDialog("Pedido pendente", "O pedido foi retornado para a fase anterior.", function(){
-					location.href = successURL;
-					dialog.dialog("close");
-				});
-			}	
-		});
-	}
-	
-	function finishOrder(url, successURL){
-		ajaxCall("post", url, null, function(data, textStatus, xhr){
-			if (hasCallbackErrors(xhr)){
-				var JSON = jQuery.parseJSON(data);
-				console.log(JSON);
-				showDivErrors(JSON);
-				showInputErrors(JSON);
-			}else{
-				loadPage(successURL);	
-				simpleModalDialog("Pedido Finalizado", "O pedido foi finalizado com sucesso.");
-			}	
-		});
-	}
-	
-	function releaseOrder(url, successURL){
-		ajaxCall("post", url, null, function(data, textStatus, xhr){
-			if (hasCallbackErrors(xhr)){
-				var JSON = jQuery.parseJSON(data);
-				simpleModalDialog("Não foi possível liberar o pedido", JSON[0].message);
-			}else{
-				simpleConfirmationDialog("Pedido Liberado", "Pedido liberado para entrega.", function(){
-					location.href = successURL;
-					dialog.dialog("destroy");
-				});
-			}	
-		});
-	}
-	
-	function cancelOrder(url, successURL){
-		ajaxCall("post", url, null, function(data, textStatus, xhr){
-			if (hasCallbackErrors(xhr)){
-				var JSON = jQuery.parseJSON(data);
-				simpleModalDialog("Erro ao cancelar o Pedido", JSON[0].message);
-			}else{
-				loadPage(successURL);
-				simpleModalDialog("Pedido Cancelado", "O pedido foi cancelado.");
-			}
-		});
-	}
-	
 	function changeAmount(url, dialog, amountSpan){
-		
 		var formData = $("#newAmountForm").serialize();
-		console.log(formData);
 		ajaxCall("post", url, formData, function(data, textStatus, xhr){
 			if (hasCallbackErrors(xhr)){
 				var JSON = jQuery.parseJSON(data);

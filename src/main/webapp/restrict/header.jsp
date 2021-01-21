@@ -159,6 +159,8 @@
 				<span class="ui-icon ui-icon-search"></span>
 				<input id="searchInput" placeholder="Pesquisar..."  name="search" type="text" data-fields="all"/>
 			</form>
+			
+			<!-- 
 			<div id="tableOptions">
 				<button class="ui-button ui-widget ui-corner-all printPdfBtn">
 					<img src="${staticImages}/pdf-icon-512x512.png">
@@ -178,6 +180,7 @@
 				
 				
 			</div>
+			 -->
 		</div>
 			
 		<div id="content">

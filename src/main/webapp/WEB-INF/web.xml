@@ -24,7 +24,7 @@
 		<description>Location to store uploaded product images</description>
 		<param-name>UnixItemImagePath</param-name>
 		<param-value>
-			/home/ramon/tmp/app-images
+			/home/ramon/tmp/storage/app-images
 		</param-value>
 	</context-param>
 	
@@ -32,7 +32,37 @@
 		<description>Location to store uploaded product images</description>
 		<param-name>WindowsItemImagePath</param-name>
 		<param-value>
-			C:\development\stock-foro11\app-images
+			C:\development\stock-foro11\storage\app-images
+		</param-value>
+	</context-param>
+	
+	<context-param>
+		<description>Location to store jasper reports templates</description>
+		<param-name>UnixJasperReportsPath</param-name>
+		<param-value>
+			/home/ramon/tmp/storage/jreports
+		</param-value>
+	</context-param>
+	
+	<context-param>
+		<description>Location to store jasper reports templates</description>
+		<param-name>WindowsJasperReportsPath</param-name>
+		<param-value>
+			C:\development\stock-foro11\storage\jreports
+		</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>super_admin</param-name>
+		<param-value>
+			rw
+		</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>admin</param-name>
+		<param-value>
+			r
 		</param-value>
 	</context-param>
 </web-app>

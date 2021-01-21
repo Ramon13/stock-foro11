@@ -300,6 +300,7 @@ input[type=text], input[type=password], select {
 		"Helvetica Neue", Arial, sans-serif;
 }
 
+/*
 input[type=submit] {
 	background-color: #4CAF50;
 	color: white;
@@ -314,6 +315,7 @@ input[type=submit] {
 input[type=submit]:hover {
 	background-color: #45a049;
 }
+*/
 
 input[type=button] {
 	background-color: #78bb38;

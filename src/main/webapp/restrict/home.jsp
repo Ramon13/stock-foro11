@@ -10,9 +10,14 @@
 	thead tr th{
 		padding-bottom: 0px;
 	}
+	
+	td.sum-locale{
+		width: 30px;
+	    margin: 0px;
+	    padding: 0px;
+	}
 </style>
 
-<c:url var="changeFilterDate" value="/restrict/date/ChangeHomeFilterDate.action"/>
 <c:url var="homeActionURL" value="/restrict/home.action"/>
 
 <table id="tableHome" >
@@ -122,8 +127,7 @@
 				<span>Estoque em:</span>
 				<br />
 				<input type="text" id="primaryDate" class="date" name="date" 
-							value="<cfmt:formatDate value="${primaryDate}" locale="ptBR"/>" 
-							data-url="${changeFilterDate}"/>
+							value="<cfmt:formatDate value="${primaryDate}" locale="ptBR"/>" />
 			</th>
 			
 			<c:forEach items="${locales}" var="locale">
@@ -134,8 +138,7 @@
 				<span>Estoque em:</span>
 				<br />
 				<input type="text" id="secondDate" class="date" name="date" 
-							value="<cfmt:formatDate value="${secondDate}" locale="ptBR"/>" 
-							data-url="${changeFilterDate}"/>
+							value="<cfmt:formatDate value="${secondDate}" locale="ptBR"/>" />
 			</th>
 		</tr>
 	</thead>
@@ -184,20 +187,14 @@
 		
 		$(".date").on("change", function(){
 			var date = formatDate($(this).datepicker("getDate"));
-			var url = $(this).attr("data-url");
+			var url = window.location.href;
 			var paramName = $(this).attr("id");
-			
 			var param = [{name: paramName, value: date}];
-			ajaxCall("get", url, $.param(param), function(data, textStatus, xhr){
-				if (hasCallbackErrors(xhr)){
-					var JSONData = jQuery.parseJSON(data);
-	  	   			showInputErrors(JSONData);
-	  	   			showDivErrors(JSONData);
-	  	   		
-				}else{
-					loadContent();
-				}
-			});
+			
+			url = addParams(url, $.param(param));
+			console.log(url);
+			location.href = url;
+			
 		});
 	});
 </script>

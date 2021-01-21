@@ -6,11 +6,9 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import action.ApplicationAction;
-import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import entity.Item;
-import entity.PaginationFilter;
 import entity.SubCategory;
 import service.ItemService;
 import service.SubCategoryService;
@@ -19,17 +17,17 @@ public class ListItems extends ApplicationAction {
 
 	@Override
 	public void processAction() throws Exception {
-		List<Item> items = new ArrayList<>();
+		getRequest().setAttribute("subCategories", getServiceFactory().getService(SubCategoryService.class).list());
 		
 		SubCategory[] subCategories = getSubCategories();
-		items.addAll(getServiceFactory().getService(ItemService.class).listBySubCategory(paginationFilter, subCategories));
 		
-		if (items.isEmpty()) {
-			items.addAll(getItems());
+		if (subCategories.length == 0) {
+			getRequest().setAttribute("items", getItems());
+			foward("/common/home.jsp");
+			return;
 		}
-		
-		getRequest().setAttribute("items", items);
-		getRequest().setAttribute("subCategories", getServiceFactory().getService(SubCategoryService.class).list());
+
+		getRequest().setAttribute("items", getServiceFactory().getService(ItemService.class).listBySubCategory(paginationFilter, subCategories));
 		foward("/common/home.jsp");
 	}
 

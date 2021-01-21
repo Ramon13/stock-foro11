@@ -34,10 +34,7 @@ public class EditAmount extends ApplicationAction{
 	}
 	
 	private int validateField() throws ValidationException{
-		
-		List<FormValidateJSON> formValidationList = new ArrayList<FormValidateJSON>();
 		String strAmount = getRequest().getParameter("amount");
-		System.out.println(strAmount);
 		Integer amount = null;
 		
 		if (!StringValidator.isValidIntegerParse(strAmount)) {
@@ -52,7 +49,6 @@ public class EditAmount extends ApplicationAction{
 		}
 			
 		if (!formValidationList.isEmpty()) {
-			getRequest().setAttribute("formValidationList", formValidationList);
 			throw new ValidationException();
 		}
 		

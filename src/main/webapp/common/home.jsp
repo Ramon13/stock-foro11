@@ -10,7 +10,9 @@
 <c:url var="cartCountURL" value="/common/cart/count.action"></c:url>
 
 <script type="text/javascript">    
-	$(document).ready(function(){	
+	$(document).ready(function(){
+		loadContentOnEndPage(true);
+		updateCartCount('${cartCountURL}');
 		$( ".subcategoryToogle" ).checkboxradio();
 		$( ".shape-bar, .brand" ).controlgroup();
 		$( ".toggles" ).controlgroup( {
@@ -68,9 +70,24 @@
 		padding: 10px !important;
 	}
 	
+	div#contentMenuBar{
+		width: auto !important;
+		float: none;
+	}
+	
+	input#searchInput{
+		width: 100%;
+		padding: 12px 20px;
+	}
+	
 </style>
 
 <div>
+	<div id="contentMenuBar">
+		<form id="searchForm" onsubmit="return false">
+			<input id="searchInput" placeholder="Pesquisar..."  name="search" type="text" data-fields="all"/>
+		</form>
+	</div>
 	<div class="toggle-wrap category-menu">
 		<div class="toggles">	
 			<c:forEach items="${subCategories}" var="subCategory">
@@ -106,9 +123,6 @@
 
 <script>
 	$(document).ready(function(){
-		$("#contentDiv").attr("data-pagination-url", '${homeURL}');
-		
-		updateCartCount('${cartCountURL}');
 		
 		$("body").on("click", ".add-cart-btn", function(){
 		
@@ -119,16 +133,17 @@
 					simpleModalDialog("Falha ao adicionar produto", data);
 					
 				}else{
-					simpleModalDialog("Produto adicionado", "Produto adicionado ao carrinho.")	
+					simpleModalDialog("Produto adicionado", "Produto adicionado ao carrinho.");
+					updateCartCount('${cartCountURL}');
 				}
 			});
 		});
 		
 		$(".toggles input[type=checkbox]").on("change", function(){
 			var url = '${homeURL}';
-			url = setSubcategoriesParams(url);
+			var params = setSubcategoriesParams();
 			
-			ajaxCall("get", url, null, function(data, textStatus, xhr){
+			ajaxCall("get", url, params, function(data, textStatus, xhr){
 				if (isSuccessRequest(xhr)){
 					var cardList = $(data).find(".card");
 					$(".cardGrid").html('');
@@ -146,10 +161,13 @@
 
 	        if(scrolled == false && isMaxScrollHeight($(this))) {
 	        	
-	        	var url = setPaginationParams();
-	        	url = setSubcategoriesParams(url);
+	        	var url = window.location.href;
+	        	const params = setSubcategoriesParams();
 	        	
-				ajaxCall("get", url, null, function(data, textStatus, xhr){
+	        	var cardCount = $("body").find(".card").length;
+				params.push({name:"firstResultPage", value:cardCount});
+	        	
+				ajaxCall("get", url, params, function(data, textStatus, xhr){
 					if (isSuccessRequest(xhr)){
 						var cardList = $(data).find(".card");
 	    				$.each(cardList, function(){
@@ -164,42 +182,16 @@
 	    
 	});
 	
-	function setSubcategoriesParams(url){
+	function setSubcategoriesParams(){
+		const params = new Array();
 	    var checkboxes = $(".toggles input[type=checkbox]");
-			
-		var data;
-		
 		$.each(checkboxes, function(){
 			if($(this).is(":checked") ){
-				data = {subcategory: $(this).attr("id")}; 
-				url = addParam(url, data);
+				params.push({name:"subcategory", value:$(this).attr("id")})
 			}
 		});
 		
-		return url;
+		return params;
     }
     
-    function setPaginationParams(){
-    	var cardsCount = $(".cardGrid").find(".card").length;
-				
-       	var i = 0;
-       	while (i < cardsCount){
-       			
-       		i += 50;	
-       	}
-       	
-       	cardsCount = i;
-		var url = $("#contentDiv").attr("data-pagination-url");
-		
-		if (url != ""){
-			url = addParam(url, {firstResultPage: cardsCount})
-			url = addParam(url, {search: $("#searchInput").val()})
-		}
-		
-		return url;
-    }
-    
-    function addToCart(){
-    
-    }
 </script>

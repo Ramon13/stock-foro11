@@ -5,7 +5,8 @@
 
 <%@include file="header.jsp" %>
 <c:url var="newOrder" value="/common/order/new.action" />
-<c:url var="cartCountURL" value="/common/cart/count.action"></c:url>
+<c:url var="cartCountURL" value="/common/cart/count.action" />
+<c:url var="orderURL" value="/common/order.action" />
 
 <style>
 
@@ -54,6 +55,14 @@
 	}
 }
 </style>
+
+<script>
+	$(function(){
+		$(".amountSlct").selectmenu();
+		updateCartCount('${cartCountURL}');
+		loadContentOnEndPage(false);
+	});
+</script>
 
 <div>
 	<c:choose>
@@ -118,10 +127,6 @@
 
 <script>
 	$(document).ready(function(){
-		$("#content").attr("data-pagination-url", '');
-		$(".amountSlct").selectmenu();
-		
-		updateCartCount('${cartCountURL}');
 		
 		$(".rm-cart-btn").on("click", function(){
 			var url = $(this).attr("data-url");
@@ -148,13 +153,14 @@
 			var url = $(this).attr("data-url");
 			var data = $("fieldset").serialize();
 			
-			ajaxCall("get", url, data, function(data, textStatus, xhr){
-				if (isSuccessRequest(xhr)){
-					location.reload(true);
-				
-				}else{
-					simpleModalDialog("Falha ao finalizar pedido", jQuery.parseJSON(data)[0].message);
-				}
+			simpleConfirmationDialog("Abir pedido", "Prosseguir com a abertura do pedido no sistema?", function(){
+				ajaxCall("get", url, data, function(data, textStatus, xhr){
+					if (isSuccessRequest(xhr)){
+						location.href = "${orderURL}?order=" + data;
+					}else{
+						simpleModalDialog("Falha ao finalizar pedido", jQuery.parseJSON(data)[0].message);
+					}
+				});
 			});
 		});
 	});

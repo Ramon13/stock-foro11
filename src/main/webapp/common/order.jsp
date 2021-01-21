@@ -39,8 +39,28 @@
 	table tbody:hover {
 	    background-color: #ffffff !important;
 	}
+	
+	input.cancelBtn{
+		margin-top: 40px;
+	    background-color: #de1414;
+	    color: #ffffff;
+	    padding: .6em 2em;
+	}
+	
+	input.cancelBtn:hover{
+		background: #b51616 !important;
+    	color: #ffffff !important;
+	}
 }
 </style>
+
+<script>
+	$(function(){
+		$(".amountSlct").selectmenu();
+		loadContentOnEndPage(false);
+		updateCartCount('${cartCountURL}');
+	});
+</script>
 
 <div>
 	<c:choose>
@@ -71,15 +91,16 @@
 					</c:forEach>
 					
 					<c:if test="${order.status eq PENDING}">
+						<c:url var="cancelOrderURL" value="/common/order/cancel.action"/>
 						<tr>
 							<td colspan="3">
-								<button type="button" class="ui-button ui-widget ui-corner-all cancelBtn"
-									data-url="${newOrder}">
-									Cancelar Pedido
-								</button>
+								<form method="post" action="${cancelOrderURL}">
+									<input type="hidden" name="order" value="${order.id}">
+									<input type="submit" class="ui-button ui-widget ui-corner-all cancelBtn" value="Cancelar Pedido">
+								</form>
 							</td>
 						</tr>
-					</c:if>
+					</c:if>	
 				</table>
 			</fieldset>		
 		</c:otherwise>
@@ -90,11 +111,6 @@
 
 <script>
 	$(document).ready(function(){
-		$("#content").attr("data-pagination-url", '');
-		$(".amountSlct").selectmenu();
-		
-		updateCartCount('${cartCountURL}');
-		
 		$(".rm-cart-btn").on("click", function(){
 			var url = $(this).attr("data-url");
 			

@@ -28,6 +28,7 @@
 		<script  src="${js}/global.js"></script>
 		<script src="${js}/restrictJS.js"></script>
 		<script src="${js}/jquery-te-1.4.0.min.js"></script>
+		<script src="${js}/tree-map.js"></script>
 		
 		<style>
 			body{
@@ -101,18 +102,7 @@
 			
 			h1{
 				padding-left: 10px !important;
-			}
-			
-			div#contentMenuBar{
-				width: auto !important;
-				float: none;
-			}
-			
-			input#searchInput{
-				width: 100%;
-				padding: 12px 20px;
-			}
-			
+			}	
 		</style>
 	</head>
 	
@@ -143,11 +133,4 @@
 					</ul>
 					
 				</div>
-			</div>
-			
-			<div id="contentMenuBar">
-			<form id="searchForm" onsubmit="return false">
-				<input id="searchInput" placeholder="Pesquisar..."  name="search" type="text" data-fields="all"/>
-			</form>
-		</div>
-			
+			</div>	

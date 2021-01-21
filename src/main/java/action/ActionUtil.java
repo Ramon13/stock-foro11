@@ -23,6 +23,17 @@ public class ActionUtil{
 		return request.getParameter("search");
 	}
 	
+	public static boolean isRoleValidForWrite(HttpServletRequest request) {
+		PermissionRoles userPermission = PermissionRoles.getByValue(getSessionLoggedUser(request).getUser().getPermission().getLevel());
+		String rwPermission = (String) request.getServletContext().getInitParameter(userPermission.toString().toLowerCase());
+		return rwPermission.contains("w");
+	}
+	
+	public static void addValidWriteRoleOnRequest(HttpServletRequest request) {
+		if (isRoleValidForWrite(request))
+			request.setAttribute("hasWritePermission", true);
+	}
+	
 	public static Item getRequestItem(HttpServletRequest request) throws ValidationException, ServiceException {
 		return ServiceFactory
 				.getInstance()
@@ -75,24 +86,6 @@ public class ActionUtil{
 		return lu;
 	}
 	
-	public static LocalDate putAdminHomeDateOnSession(AdminHomeDateType dateType, 
-			LocalDate date, HttpSession session) {
-		
-		String paramName = dateType.getParamName();
-		if ( date != null) {
-			session.setAttribute(paramName, date);
-			return date;
-		
-		}else if ((LocalDate) session.getAttribute(paramName) == null) {
-			date = dateType.getDefaultDate();
-			session.setAttribute(paramName, date);
-			return date;
-		
-		}else {
-			return (LocalDate) session.getAttribute(paramName);
-		}
-	}
-	
 	public static Integer getFirstResultPagination(HttpSession session) {
 		Integer firstResult = (Integer) session.getAttribute("paginationFirstResult");
 		if (firstResult == null)
@@ -105,6 +98,14 @@ public class ActionUtil{
 		String imagesPath = "UnixItemImagePath";
 		if (SystemUtils.IS_OS_WINDOWS)
 			imagesPath = "WindowsItemImagePath";
+		
+		return request.getServletContext().getInitParameter(imagesPath);
+	}
+	
+	public static String getReportsPath(HttpServletRequest request) {
+		String imagesPath = "UnixJasperReportsPath";
+		if (SystemUtils.IS_OS_WINDOWS)
+			imagesPath = "WindowsJasperReportsPath";
 		
 		return request.getServletContext().getInitParameter(imagesPath);
 	}

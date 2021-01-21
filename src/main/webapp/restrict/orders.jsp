@@ -26,10 +26,6 @@
 		font-weight: bold;
 	}
 	
-	a{
-		text-decoration: none;
-	}
-	
 	form#newDateForm, input[type=text]{
 		text-align: center;
 	}
@@ -220,11 +216,18 @@
 									</span>
 								</td>
 							</c:if>
+							
+							<td>								
+								<c:url var="orderReportURL" value="/restrict/orderItem/pdf_report/ListByOrder.action">
+									<c:param name="order" value="${order.id}"/>
+								</c:url>
+								<a target="_blank" href="${orderReportURL}">pdf</a>
+							</td>
 						</tr>
-		  
+		  				
 						<tr class="fold">
 							<td colspan="10"></td>
-						</tr>				
+						</tr>		
 					</tbody>
 				</c:forEach>
 			</table>

@@ -12,15 +12,15 @@
 		</id>
 		
 		<property name="requestDate" type="java.time.LocalDate">
-			<column name="request_date" not-null="false" />
+			<column name="requestDate" not-null="false" />
 		</property>
 		
 		<property name="finalDate" type="java.time.LocalDate">
-			<column name="date" not-null="false" />
+			<column name="finalDate" not-null="false" />
 		</property>
 		
 		<property name="releaseDate" type="java.time.LocalDate">
-			<column name="release_date" not-null="false"/>
+			<column name="releaseDate" not-null="false"/>
 		</property>
 		
 		<property name="status" column="status" type="java.lang.Character"/>
