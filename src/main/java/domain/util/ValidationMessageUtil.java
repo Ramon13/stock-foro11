@@ -54,6 +54,9 @@ public class ValidationMessageUtil {
 	public static final String INVALID_USERNAME = "Usuário Inválido.";
 	public static final String USER_NAME_ALREADY_EXISTS = "O nome de usuário já cadastrado no sistema.";
 	public static final String INVALID_PASSWORD = "Senha inválida.";
+	public static final String INVALID_PASSWORD_PATTERN = "A senha deve possuir letras e números.";
+	public static final String INVALID_PASSWORD_LEN = "A senha deve possuir entre 8 e 16 caracteres.";
+	public static final String DIFF_PASSWORDS = "Senhas diferentes.";
 	
 	public static final String LOCALE_NAME_MAX_LEN = "O nome do local não pode ter mais do que 255 caracteres.";
 	public static final String LOCALE_NAME_EMPTY = "O nome do local não pode ser vazio.";

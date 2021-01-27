@@ -30,6 +30,10 @@
 		text-align: center;
 	}
 	
+	.reportLink img{
+		width: 20px;
+		margin-right: 15px;
+	}
 </style>
 
 
@@ -221,7 +225,9 @@
 								<c:url var="orderReportURL" value="/restrict/orderItem/pdf_report/ListByOrder.action">
 									<c:param name="order" value="${order.id}"/>
 								</c:url>
-								<a target="_blank" href="${orderReportURL}">pdf</a>
+								<a class="reportLink" target="_blank" href="${orderReportURL}">
+									<img src="${staticImages}/pdf-icon-512x512.png">	
+								</a>
 							</td>
 						</tr>
 		  				

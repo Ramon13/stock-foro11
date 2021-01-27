@@ -15,11 +15,31 @@ public class ItemLocale {
 	/**
 	 * An array That Stores The Sum Amount Output By locale
 	 */
-	private List<Integer> sumLocales = new ArrayList<Integer>();
+	private List<SumLocale> sumLocales = new ArrayList<SumLocale>();
 	
 	private Integer startDateAmount = 0;
 	private Integer endDateAmount = 0;
+	
+	public class SumLocale{
+		private Integer sum;
 		
+		public SumLocale(Integer sum) {
+			this.sum = sum;
+		}
+		
+		public Integer getSum() {
+			return sum;
+		}
+
+		public void setSum(Integer sum) {
+			this.sum = sum;
+		}
+		
+		public void incremment(Integer addSum) {
+			this.sum += addSum;
+		}
+	}
+	
 	public Item getItem() {
 		return item;
 	}
@@ -28,11 +48,11 @@ public class ItemLocale {
 		this.item = item;
 	}
 
-	public List<Integer> getSumLocales() {
+	public List<SumLocale> getSumLocales() {
 		return sumLocales;
 	}
 
-	public void setSumLocales(List<Integer> sumLocales) {
+	public void setSumLocales(List<SumLocale> sumLocales) {
 		this.sumLocales = sumLocales;
 	}
 
@@ -51,5 +71,4 @@ public class ItemLocale {
 	public void setEndDateAmount(Integer endDateAmount) {
 		this.endDateAmount = endDateAmount;
 	}
-
 }

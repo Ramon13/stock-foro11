@@ -1,10 +1,12 @@
 package action.restrict.order;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import action.ApplicationAction;
+import br.com.javamon.exception.ServiceException;
 import domain.OrderStatus;
 import entity.Item;
 import entity.Order;
@@ -18,10 +20,14 @@ public class ListOrder extends ApplicationAction{
 	
 	@Override
 	public void processAction() throws Exception {
+		
 		 orderSvc = getServiceFactory().getService(OrderService.class);
 		 String strStatus = getRequest().getParameter("status");
 		 
-		 if (!StringUtils.isAllBlank(strStatus)) {
+		 if (!StringUtils.isAllBlank(getRequest().getParameter("countUnfinished"))) {
+			 sendUnfinishedOrdersNum();
+			 
+		 }else if (!StringUtils.isAllBlank(strStatus)) {
 			 sendOrders(OrderStatus.getByValue(strStatus.charAt(0)));
 		 
 		 }else {
@@ -70,4 +76,7 @@ public class ListOrder extends ApplicationAction{
 		
 	}
 	
+	private void sendUnfinishedOrdersNum() throws ServiceException, IOException {
+		responseToClient(200, getServiceFactory().getService(OrderService.class).countUnfinishedOrders().toString());
+	}
 }

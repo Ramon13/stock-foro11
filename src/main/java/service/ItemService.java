@@ -17,6 +17,7 @@ import br.com.javamon.validation.DateValidator;
 import dao.ItemDAO;
 import domain.DateUtil;
 import domain.ItemLocale;
+import domain.ItemLocale.SumLocale;
 import domain.ItemLocaleFilter;
 import domain.ItemLocales;
 import domain.OrderStatus;
@@ -128,8 +129,8 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 	}
 	
 	public void sumLocales(List<Item> items, ItemLocales ... itemLocalesList) throws ServiceException {
-		Locale lastLocale = getServiceFactory().getService(LocaleService.class).getLastLocaleById();
-		int lastLocaleId = lastLocale.getId().intValue(); 
+		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
+		int lastLocaleId = locales.get(locales.size() - 1).getId().intValue();
 		
 		int idTemp = 0;
 		OrderService orderService = getServiceFactory().getService(OrderService.class);
@@ -138,7 +139,7 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 			for (ItemLocales itemLocales : itemLocalesList) {
 				ItemLocale il = new ItemLocale();
 				for (int j = 0; j <= lastLocaleId; j++) {
-					il.getSumLocales().add(0);
+					il.getSumLocales().add(il.new SumLocale(0));
 				}
 				il.setItem(items.get(i));
 				itemLocales.getItemLocales().add(il);
@@ -153,14 +154,8 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 							isBetweenDateRange(itemLocales.getFilter(), oi.getOrder().getReleaseDate()))
 					{
 						idTemp = oi.getOrder().getCustomer().getLocale().getId().intValue();
-						int sum = itemLocales
-								.getItemLocales()
-								.get(i)
-								.getSumLocales()
-								.get(idTemp);
 						
-						sum += oi.getAmount();
-						itemLocales.getItemLocales().get(i).getSumLocales().set(idTemp, sum);
+						itemLocales.getItemLocales().get(i).getSumLocales().get(idTemp).incremment(oi.getAmount());;
 						
 					}
 					
@@ -188,8 +183,18 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 					}
 				}
 			}
-
-			
+		}
+		
+		
+		for (ItemLocales itemLocales : itemLocalesList) {
+			for (ItemLocale il : itemLocales.getItemLocales()) {
+				List<SumLocale> sumLocales =  new ArrayList<>();
+				for (Locale locale : locales) {
+					sumLocales.add(il.getSumLocales().get(locale.getId().intValue()));
+				}
+				
+				il.setSumLocales(sumLocales);
+			}
 		}
 	}
 	
@@ -374,6 +379,14 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 	}
 	
 	
+	public Long getLastItemId() throws ServiceException{
+		try {
+			return getDAO().getLastItemId();
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
+		}
+	}
 }
 
 

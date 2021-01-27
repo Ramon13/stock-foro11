@@ -1,20 +1,13 @@
-import java.math.BigDecimal;
-
-import org.hibernate.Session;
-
-import br.com.javamon.util.HibernateUtil;
-import entity.Entry;
-import entity.EntryItem;
-import entity.Item;
-import report.OrderItemReport;
+import br.com.javamon.convert.StringConvert;
 import report.ReportException;
 
 public class Main {
 
 	
 	public static void main(String[] args) throws ReportException{
-		OrderItemReport orderItemReport = new OrderItemReport();
-		orderItemReport.sendCompleteOrderReporttoPdf(null);
+		String s = "aaaa aaaaaa aaaaaaaa a aaaaaaaaa a aaa aaaaaaaaaaaaaa aaaaaaaa aaaaaa aaa aaaaaaaaaaa aaaaaaa a aaaaaaaaa aaa";
+		
+		System.out.println(StringConvert.addBreakRowOnEndLine(s, 20));
 	}
 	
 	

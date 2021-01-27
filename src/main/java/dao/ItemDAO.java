@@ -56,4 +56,10 @@ public class ItemDAO extends ApplicationDAO<Item>{
 		criteria.setFirstResult(filter.getFirstResultPage());
 		return criteria.list();
 	}
+	
+	public Long getLastItemId() throws DAOException{
+		Query<Long> query = createQuery("select i.id from Item i order by i.id desc", Long.class);
+		query.setMaxResults(1);
+		return query.uniqueResult();
+	}
 }

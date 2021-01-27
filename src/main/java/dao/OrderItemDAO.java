@@ -25,6 +25,10 @@ public class OrderItemDAO extends ApplicationDAO<OrderItem>{
 		super(OrderItem.class);
 	}
 	
+	public List<OrderItem> listAll() throws DAOException{
+		return createQuery("from OrderItem", OrderItem.class).getResultList();
+	}
+	
 	public List<OrderItem> listOrdersByItem(Item item) throws DAOException{
 		String hql = "from OrderItem o where o.item.id = :itemId order by o.order.id desc";
 		Query<OrderItem> query = createQuery(hql, OrderItem.class);

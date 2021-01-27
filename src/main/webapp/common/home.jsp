@@ -25,7 +25,7 @@
 
 	#contentDiv{
 		width: 80%;
-		height: 95vh;
+		height: 85vh;
 		float: right;
 		overflow: auto;	
 	}

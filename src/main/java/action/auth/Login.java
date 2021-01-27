@@ -3,6 +3,7 @@ package action.auth;
 import java.util.ArrayList;
 import java.util.List;
 
+import action.ActionUtil;
 import action.FormValidateJSON;
 import br.com.javamon.action.Action;
 import br.com.javamon.exception.ServiceException;
@@ -25,6 +26,7 @@ public class Login extends Action {
 			getRequest().getSession().setAttribute("loggedUser", new LoggedUser(user));
 
 			if (PermissionRoles.isAnyAdmin(user.getPermission())) {
+				ActionUtil.addValidWriteRoleOnSession(getRequest());
 				redirect("restrict/home.action");
 			
 			}else {

@@ -4,7 +4,7 @@
 <%--Css and Javascript URL's --%>
 <c:url var="css" value="/static/css"/>
 <c:url var="js" value="/static/js"/>
-<c:url var="loginURL" value="/public/auth/Login.action"/>
+<c:url var="resetPasswordURL" value="/public/auth/ResetPass.action"/>
 <c:url var="staticImages" value="/static/images"/>
 
 <!DOCTYPE html>
@@ -27,7 +27,7 @@
 				margin-top: 50px;
 			}
 			
-			.loginBtn{
+			.resetPassBtn{
 				border-radius: 3px !important;
 			    text-align: center !important;
 			    border: none !important;
@@ -37,7 +37,7 @@
 				font-size: 14px !important;
 			}
 			
-			.loginBtn:hover{
+			.resetPassBtn:hover{
 				background-color: #007bff !important;
 			}
 			
@@ -46,11 +46,11 @@
 				text-align: center;
 			}
 
-			.loginBtn img{
+			.resetPassBtn img{
 				width: 20px; 
 			}
 			
-			.loginBtn span{
+			.resetPassBtn span{
 				vertical-align: super;
 				margin-right: 5px;
 				font-size: 14px !important;
@@ -60,11 +60,11 @@
 	
 	<script>
 		$(function(){
-			$(".loginBtn").find("img").hide();
+			$(".resetPassBtn").find("img").hide();
 			
-			$(".loginBtn").on("click", function(){
+			$(".resetPassBtn").on("click", function(){
 				$(this).find("img").show();
-				$("#loginForm").submit();
+				$("#resetPasswordForm").submit();
 			});
 		});
 	</script>
@@ -76,32 +76,43 @@
 			</div>
 		</div>
 		<div id="content">
-			<form id="loginForm" method="post" action="${loginURL }">
-				
-				<div class="errorMsg">${generalError}</div>
-				<input type="hidden" id="loginPage" value="true"/>
-								
-				<label for="username">Usuário</label>
-				<br />
-				<div class="errorMsg">${usernameError}</div>
-				<input name="username" autocomplete="username" type="text" 
-					${empty usernameError ? "" : "class='inputError'"}/>
-				
-				<br /><br />
-				
-				<label for="password">Senha</label>
-				<br />
-				<div class="errorMsg">${passwordError}</div>
-				<input name="password" autocomplete="current-password" type="password"
-					${empty passwordError ? "" : "class='inputError'"}/>
-				
-				<br /><br />
-								
-				<button type="submit" class="ui-button ui-widget ui-corner-all loginBtn">
-					<span>Entrar</span>
-					<img src="${staticImages}/load-circle.gif">
-				</button>
-			</form>
+			<fieldset>
+				<legend>Definir nova senha</legend>
+				<form id="resetPasswordForm" method="post" action="${resetPasswordURL}">
+					
+					<div class="errorMsg">${generalError}</div>
+					<input type="hidden" id="loginPage" value="true"/>
+									
+					<label for="currentPass">Senha Atual</label>
+					<br />
+					<div class="errorMsg">${incorrectPass}</div>
+					<input id="currentPass" name="currentPass" autocomplete="current-password" type="password" 
+						${empty incorrectPass ? "" : "class='inputError'"}/>
+					
+					<br /><br />
+					
+					<label for="newPass">Nova Senha</label>
+					<br />
+					<div class="errorMsg">${invalidNewPassLen}</div>
+					<input id="newPass" name="newPass" autocomplete="new-password" type="password"
+						${empty invalidNewPassLen ? "" : "class='inputError'"}/>
+					
+					<br /><br />
+					
+					<label for="newPassTwice">Repita a Senha</label>
+					<br />
+					<div class="errorMsg">${invalidNewPassTwiceLen}</div>
+					<input id="newPassTwice" name="newPassTwice" autocomplete="new-password-twice" type="password"
+						${empty invalidNewPassTwiceLen ? "" : "class='inputError'"}/>
+					
+					<br /><br />
+									
+					<button type="submit" class="ui-button ui-widget ui-corner-all resetPassBtn">
+						<span>Entrar</span>
+						<img src="${staticImages}/load-circle.gif">
+					</button>
+				</form>
+				</fieldset>
 		</div>
 	</body>
 

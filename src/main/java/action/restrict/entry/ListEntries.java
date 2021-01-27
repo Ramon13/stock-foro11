@@ -2,8 +2,11 @@ package action.restrict.entry;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import action.ApplicationAction;
 import entity.Entry;
+import entity.PaginationFilter.orders;
 import service.EntryService;
 import service.ItemService;
 import service.ProviderService;
@@ -27,6 +30,11 @@ public class ListEntries extends ApplicationAction{
 
 	private List<Entry> getEntries() throws Exception{
 		EntryService entrySvc = getServiceFactory().getService(EntryService.class);
+		
+		if (StringUtils.isAllBlank(getRequest().getParameter("sortBy"))) {
+			 paginationFilter.setSortProperty("date");
+			 paginationFilter.setOrder(orders.DESC);
+		}	
 		if (isSearchAction()) {
 			return entrySvc.searchOnEntry(paginationFilter);
 		}

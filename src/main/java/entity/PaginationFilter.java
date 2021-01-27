@@ -8,16 +8,18 @@ public class PaginationFilter {
 	
 	private String searchWord;
 	private String sortProperty;
+	private String appSortProperty;
 	private orders order = orders.ASC;
-	private Integer firstResultPage = 1;
+	private Integer firstResultPage = 0;
 	private Integer maxResults = 50;
 	
 	public PaginationFilter(String searchWord, String sortProperty, orders order, 
-			Integer firsResultPage) {
+			Integer firsResultPage, String appSortProperty) {
 		setSearchWord(searchWord);
 		this.sortProperty = sortProperty;
 		this.order = order;
 		this.firstResultPage = firsResultPage;
+		this.appSortProperty = appSortProperty;
 	}
 	
 	public PaginationFilter() {
@@ -64,6 +66,10 @@ public class PaginationFilter {
 	
 	public void setMaxResults(Integer maxResults) {
 		this.maxResults = maxResults;
+	}
+	
+	public String getAppSortProperty() {
+		return appSortProperty;
 	}
 
 	@Override

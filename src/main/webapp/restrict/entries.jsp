@@ -60,7 +60,7 @@
 
 <div id="tabs">
 	<ul>
-		<li><a href="#tabEntries" >Entradas</a></li>
+		<li><a href="#tabEntries" onclick="confEntries()">Entradas</a></li>
 		<li><a href="#tabNewEntry" onclick="confNewEntryPage()">Nova Entrada</a></li>
 	</ul>
 	
@@ -385,5 +385,9 @@
 	
 	function confNewEntryPage(){
 		loadContentOnEndPage(false);
+	}
+	
+	function confEntries(){
+		loadContentOnEndPage(true);
 	}
 </script>

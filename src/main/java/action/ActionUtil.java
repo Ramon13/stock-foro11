@@ -29,9 +29,9 @@ public class ActionUtil{
 		return rwPermission.contains("w");
 	}
 	
-	public static void addValidWriteRoleOnRequest(HttpServletRequest request) {
+	public static void addValidWriteRoleOnSession(HttpServletRequest request) {
 		if (isRoleValidForWrite(request))
-			request.setAttribute("hasWritePermission", true);
+			request.getSession().setAttribute("hasWritePermission", true);
 	}
 	
 	public static Item getRequestItem(HttpServletRequest request) throws ValidationException, ServiceException {

@@ -22,6 +22,15 @@ public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO
 	public OrderItemService() {
 		super(OrderItemDAO.class);
 	}
+	
+	public List<OrderItem> list() throws ServiceException{
+		try {
+			return getDAO().listAll();
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
+		}
+	}
 
 	public List<OrderItem> listByItem(Item item) throws ServiceException{
 		try {

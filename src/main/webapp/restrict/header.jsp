@@ -14,10 +14,10 @@
 <c:url var="homeURL" value="/restrict/home.action"/>
 <c:url var="ordersURL" value="/restrict/orders.action"/>
 <c:url var="listUserURL" value="/restrict/user/List.action"/>
-<c:url var="printPdfURL" value="restrict/item/Print.action" />
-<c:url var="listStockForecastURL" value="/restrict/stockForecast/List.action"></c:url>
-<c:url var="newItemURL" value="/restrict/item/New.action" />
-
+<c:url var="stockForecastURL" value="/restrict/stockForecast/List.action" />
+<c:url var="countUnfinishedOrdersURL" value="/restrict/orders.action">
+	<c:param name="countUnfinished" value="true" />
+</c:url>
 
 <!DOCTYPE html>
 <html>
@@ -27,8 +27,10 @@
 		<link rel="stylesheet" type="text/css" href="${css}/global.css">
 		<link rel="stylesheet" type="text/css" href="${css}/chosen.css">
 		<link rel="stylesheet" type="text/css" href="${css}/jquery-te-1.4.0.css">
+		<link rel="stylesheet" type="text/css" href="${css}/jquery-ui.min.css">
+		<link rel="stylesheet" type="text/css" href="${css}/jquery-ui.structure.min.css">
+		<link rel="stylesheet" type="text/css" href="${css}/jquery-ui.theme.min.css">
 		<link rel="stylesheet" type="text/css" href="${restrictCss}">
-		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<script type="text/javascript" src="${js}/jquery-3.5.1.min.js"></script>
 		<script type="text/javascript" src="${js}/jquery-ui.js"></script>
 		<script type="text/javascript" src="${js}/datepicker-pt-BR.js"></script>
@@ -39,43 +41,61 @@
 		<script src="${js}/jquery-te-1.4.0.min.js"></script>
 		<script src="${js}/tree-map.js"></script>
 		
-		<script type="text/javascript">    
-			$(document).ready(function(){	
-				$( "#menu" ).menu();
-			});
-		</script>
-		
-		<style>
-			h1:hover{
-				cursor: pointer;	
-			}
-			
-			#tableOptions{
-				float: right;
-				margin-right: 50px;
-			}
-			
-			#tableOptions img{
-				width: 20px !important;
-				height: 20px !important;
-			}
-			
-			#tableOptions button{
-				border: none;
-				padding: 5px;
-				width: 30px;
-			}
-			
-			form#searchForm {
-			    width: 70%;
-			    float: left;
-			}
-			
-			input#searchInput{
-				text-align: left;
-			}
-		</style>
 	</head>
+	
+	<script type="text/javascript">    
+		$(document).ready(function(){	
+			$( "#menu" ).menu();
+			getUnfinishedOrdersNum();
+		});
+		
+		function getUnfinishedOrdersNum(){
+			ajaxCall("get", '${countUnfinishedOrdersURL}', null, function(data, textStatus, xhr){
+				if (isSuccessRequest(xhr)){
+					$("#unfinishedOrdersNum").html("(" + data + ")");
+				}
+			});
+		}
+	</script>
+	
+	<style>
+		h1:hover{
+			cursor: pointer;	
+		}
+		
+		#tableOptions{
+			float: right;
+			margin-right: 50px;
+		}
+		
+		#tableOptions img{
+			width: 20px !important;
+			height: 20px !important;
+		}
+		
+		#tableOptions button{
+			border: none;
+			padding: 5px;
+			width: 30px;
+		}
+		
+		form#searchForm {
+		    width: 70%;
+		    float: left;
+		}
+		
+		input#searchInput{
+			text-align: left;
+		}
+		
+		#pending-ball{
+			width: 10px;
+		}
+		
+		ul#menu span{
+			font-size: 15px !important;
+		}
+	</style>
 	
 	<body>
 		<div id="topMenu">
@@ -92,54 +112,65 @@
 				<ul id="menu">
 					<li>
 						<div onclick="location.href = '${homeURL}'">
-							<span class="ui-icon ui-icon-home"></span>Início
+							<span class="ui-icon ui-icon-home"></span>
+							<span>Início</span>
 						</div>
 					</li>
 					<li>
-						<div><span class="ui-icon ui-icon-circle-arrow-n"></span>Pedidos</div>
+						<div>
+							<span class="ui-icon ui-icon-circle-arrow-n">		
+							</span>
+							<span>Pedidos</span>
+							<span id="unfinishedOrdersNum"></span>
+						</div>
 						<ul>
 							<li>
 								<div onclick="location.href='${ordersURL}?status=P'">		
-									Pendentes
+									<span>Pendentes</span>
 								</div>
 							</li>
 							<li>
 								<div onclick="location.href='${ordersURL}?status=R'">		
-									Autorizados
+									<span>Autorizados</span>
 								</div>
 							</li>
 							<li>
 								<div onclick="location.href='${ordersURL}?status=F'">		
-									Finalizados
+									<span>Finalizados</span>
 								</div>
 							</li>
 							<li>
 								<div onclick="location.href='${ordersURL}?status=C'">		
-									Cancelados Pelo Administrador
+									<span>Cancelados Pelo Administrador</span>
 								</div>
 							</li>
 							<li>
 								<div onclick="location.href='${ordersURL}?status=U'">
-									Cancelados Pelo Usuário
+									<span>Cancelados Pelo Usuário</span>
 								</div>
 							</li>
 						</ul>
 					</li>
 					<li>
 						<div onclick="location.href = '${listEntriesURL}'">
-						<span class="ui-icon ui-icon-circle-arrow-s"></span>Entradas</div>
-					</li>
-					<li>
-						<div onclick="location.href = '${listUserURL}'">
-							<span class="ui-icon ui-icon-person"></span>Usuários do sistema
+							<span class="ui-icon ui-icon-circle-arrow-s"></span>
+							<span>Entradas</span>
 						</div>
 					</li>
 					<li>
-						<div><span class="ui-icon ui-icon-document"></span>Relatórios</div>
+						<div onclick="location.href = '${listUserURL}'">
+							<span class="ui-icon ui-icon-person"></span>
+							<span>Usuários do sistema</span>
+						</div>
+					</li>
+					<li>
+						<div><span class="ui-icon ui-icon-document"></span>
+							<span>Relatórios</span>
+						</div>
 						<ul>
 							<li>
-								<div onclick="loadPage('${listStockForecastURL}')">		
-									Necessidade de Aquisição
+								<div onclick="location.href='${stockForecastURL}'">		
+									<span>Previsão de estoque</span>
 								</div>
 							</li>
 						</ul>
@@ -147,7 +178,7 @@
 					<li>
 						<c:url var="logoutURL" value="/public/auth/Logout.action"/>
 						<div onclick="location.href='${logoutURL}'">
-							Sair 
+							<span>Sair</span> 
 						</div>
 					</li>
 				</ul>

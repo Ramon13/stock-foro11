@@ -23,6 +23,10 @@ public class EntryItemDAO extends ApplicationDAO<EntryItem>{
 		super(EntryItem.class);
 	}
 	
+	public List<EntryItem> listAll() throws DAOException{
+		return createQuery("from EntryItem", EntryItem.class).getResultList();
+	}
+	
 	public List<EntryItem> listByEntry(Entry entry) throws DAOException{
 		String hql = "from EntryItem ei where ei.entry = :entry";
 		Query<EntryItem> query = createQuery(hql, EntryItem.class);

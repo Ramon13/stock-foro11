@@ -4,11 +4,8 @@ import java.util.List;
 
 import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
-import br.com.javamon.exception.ValidationException;
 import dao.UserDAO;
 import domain.LoggedUser;
-import domain.util.ExceptionMessageUtil;
-import domain.util.ValidationMessageUtil;
 import entity.PaginationFilter;
 import entity.User;
 
@@ -22,6 +19,12 @@ public class UserService extends ApplicationService<User, UserDAO>{
 		user.setActive(true);
 		user.setResetPassword(true);
 		save(user);
+	}
+	
+	public void setNewPassword(User user, String newPassword) throws ServiceException{
+		user.setPassword(newPassword);
+		user.setResetPassword(false);
+		update(user);
 	}
 	
 	public boolean isValidLogin(User user) throws ServiceException{

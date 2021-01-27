@@ -16,7 +16,7 @@ public class ReportFactory {
 		return instance;
 	}
 	
-	public Report getReport(Path reportsPath, String action) throws ServiceException{
-		return new JasperReport(reportsPath, action);
+	public Report getReport(Path reportsPath, String reportFileName) throws ServiceException{
+		return new JasperReport(reportsPath, reportFileName);
 	}
 }

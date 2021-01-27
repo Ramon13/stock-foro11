@@ -70,7 +70,8 @@ public abstract class ApplicationAction extends Action{
 				getRequest().getParameter("search"),
 				getRequest().getParameter("sortBy"),
 				getOrder(),
-				getFirstResultPage());
+				getFirstResultPage(),
+				getRequest().getParameter("appSortBy"));
 	}
 	
 	private orders getOrder() {

@@ -13,11 +13,13 @@ $(document).ready(function(){
 	$("body").on("click", ".dropdown-btn", function(e){
 		var dropdownContent = $(this).parent().find('.dropdown-content');
 		dropdownContent.toggleClass('dropdown-content-show');
+		$("#content").find("thead th").toggleClass("fixTableHead");
 	});
 	
 	$("body").on("click", ".close-dropdown", function(){
 		var dropdownContent = $(this).parent().parent().find('.dropdown-content');
 		dropdownContent.toggleClass('dropdown-content-show');
+		$("#content").find("thead th").toggleClass("fixTableHead");
 	});
 	
 	$("#searchForm").on("submit", function(event){	
@@ -51,10 +53,11 @@ $(document).ready(function(){
         }
     });
 
-	$("body").on("click",".sortBy", function(){	
+	$("body").on("click",".sortBy", function(){
 		var sortParams = [
 			{name: "sortBy", value: $(this).attr("data-property")},
-			{name: "order", value: $(this).attr("data-order")}];
+			{name: "order", value: $(this).attr("data-order")},
+			{name: "appSortBy", value: $(this).attr("data-app-property")}];
 		
 		var url = window.location.href;
 		url = addParams(url, decodeURIComponent($.param(sortParams)));

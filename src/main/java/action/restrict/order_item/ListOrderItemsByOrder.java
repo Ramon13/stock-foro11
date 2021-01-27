@@ -40,7 +40,6 @@ public class ListOrderItemsByOrder extends Action{
 			getRequest().setAttribute("orderItems", orderItems);
 			getRequest().setAttribute("monthNames", monthNames);
 			ActionUtil.addOrderStatusOnRequest(getRequest(), order);
-			ActionUtil.addValidWriteRoleOnRequest(getRequest());
 			
 			foward("/restrict/order-item-ajax.jsp");
 		}

@@ -4,7 +4,6 @@ import java.util.List;
 
 import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
-import br.com.javamon.service.Service;
 import dao.EntryItemDAO;
 import domain.util.ExceptionMessageUtil;
 import entity.Entry;
@@ -12,8 +11,21 @@ import entity.EntryItem;
 import entity.Item;
 import entity.PaginationFilter;
 
-public class EntryItemService extends Service{
+public class EntryItemService extends ApplicationService<EntryItem, EntryItemDAO>{
 
+	public EntryItemService() {
+		super(EntryItemDAO.class);
+	}
+
+	public List<EntryItem> list() throws ServiceException{
+		try {
+			return getDAO().listAll();
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
+		}
+	}
+	
 	public List<EntryItem> listByEntry(Entry entry) throws ServiceException{
 		try {
 			return getDaoFactory().getDAO(EntryItemDAO.class).listByEntry(entry);
@@ -37,16 +49,6 @@ public class EntryItemService extends Service{
 			return getDaoFactory().getDAO(EntryItemDAO.class).load(id);
 		} catch (DAOException e) {
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE, e);
-		}
-	}
-	
-	public EntryItem save(EntryItem entryItem) throws ServiceException{
-		try {
-			Long id = (Long) getDaoFactory().getDAO(EntryItemDAO.class).save(entryItem);
-			return findById(id);
-		} catch (DAOException e) {
-			e.printStackTrace();
-			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_SAVE);
 		}
 	}
 	

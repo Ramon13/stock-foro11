@@ -38,6 +38,11 @@ public class RestrictAuthFilter implements Filter {
 				return;
 			}
 				
+			if (loggedUser.getUser().getResetPassword() == Boolean.TRUE) {
+				foward(request, response, "/public/new-password-form.jsp");
+				return;
+			}
+
 			chain.doFilter(request, response);
 			
 		} catch (Exception e) {

@@ -37,9 +37,18 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 		}
 	}
 	
+	public Integer countUnfinishedOrders() throws ServiceException{
+		try {
+			return getDAO().listByStatus(new PaginationFilter(), OrderStatus.PENDING, OrderStatus.RELEASED).size();
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
+		}
+	}
+	
 	public List<Order> listByStatus(OrderStatus status, PaginationFilter filter) throws ServiceException{
 		try {
-			return getDaoFactory().getDAO(OrderDAO.class).listByStatus(status, filter);
+			return getDaoFactory().getDAO(OrderDAO.class).listByStatus(filter, status);
 		}catch(DAOException ex) {
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_LIST);
 		}

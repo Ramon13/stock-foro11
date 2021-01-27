@@ -7,8 +7,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
 import br.com.javamon.exception.DAOException;
@@ -23,15 +21,24 @@ public class OrderDAO extends ApplicationDAO<Order>{
 		super(Order.class);
 	}
 
-	@SuppressWarnings(value = {"deprecation", "unchecked"})
-	public List<Order> listByStatus(OrderStatus status, PaginationFilter filter) throws DAOException{
-		Criteria criteria = getSession().createCriteria(Order.class);
-		criteria.add(Restrictions.eq("status", status.getValue()));
-		setSortProperties(criteria, filter);
+	public List<Order> listByStatus(PaginationFilter filter, OrderStatus...statusArr) throws DAOException{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery<Order> criteriaQuery = builder.createQuery(Order.class);
+		Root<Order> root = criteriaQuery.from(Order.class);
 		
-		return criteria.setMaxResults(filter.getMaxResults())
-			.setFirstResult(filter.getFirstResultPage())
-			.list();
+		Predicate[] statusPredicates = new Predicate[statusArr.length];
+		for (int i = 0; i < statusArr.length; i++) {
+			statusPredicates[i] = builder.equal(root.get("status"), statusArr[i].getValue());
+		}
+		
+		criteriaQuery.where(builder.or(statusPredicates));
+		
+		setSortProperties(builder, criteriaQuery, root, filter);
+		
+		Query<Order> query = getSession().createQuery(criteriaQuery);
+		query.setMaxResults(filter.getMaxResults());
+		query.setFirstResult(filter.getFirstResultPage());
+		return query.getResultList();
 	}
 	
 	public List<Order> listByUser(User user, PaginationFilter filter) throws DAOException{

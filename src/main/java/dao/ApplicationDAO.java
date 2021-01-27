@@ -46,7 +46,10 @@ public class ApplicationDAO<T> extends DAO<T>{
 		setSortProperties(builder, criteriaQuery, root, filter);
 		
 		Query<T> query = getSession().createQuery(criteriaQuery);
-		query.setMaxResults(filter.getMaxResults());
+		
+		if (filter.getMaxResults() != null)
+			query.setMaxResults(filter.getMaxResults());
+		
 		query.setFirstResult(filter.getFirstResultPage());
 		
 		return query.getResultList();
@@ -106,8 +109,9 @@ public class ApplicationDAO<T> extends DAO<T>{
 		Criteria criteria = getSession().createCriteria(clazz);
 		setSortProperties(criteria, filter);
 		
-		return criteria.setMaxResults(filter.getMaxResults())
-			.setFirstResult(filter.getFirstResultPage())
+		if (filter.getMaxResults() != null)
+			criteria = criteria.setMaxResults(filter.getMaxResults());
+		return criteria.setFirstResult(filter.getFirstResultPage())
 			.list();
 	}
 	

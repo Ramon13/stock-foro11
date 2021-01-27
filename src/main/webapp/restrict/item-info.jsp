@@ -14,7 +14,7 @@
 	<c:param name="image" value="${item.mainImage }"/>
 </c:url>
 
-<c:url var="editItemURL" value="/restrict/item/Edit.action">
+<c:url var="editItemURL" value="/wpermission/item/Edit.action">
 	<c:param name="item" value="${item.id }"/>
 </c:url>
 
@@ -79,12 +79,14 @@
 	
 	<div id="info">
 		<div id="itemAttr">
-			<div>
-				<button type="button" onclick="location.href = '${editItemURL}'"
-					 class="ui-button ui-widget ui-corner-all editBtn">
-					<span class="ui-icon ui-icon-pencil"></span> Editar
-				</button><br /><br /><br />
-			</div>
+			<c:if test="${hasWritePermission}">
+				<div>
+					<button type="button" onclick="location.href = '${editItemURL}'"
+						 class="ui-button ui-widget ui-corner-all editBtn">
+						<span class="ui-icon ui-icon-pencil"></span> Editar
+					</button><br /><br /><br />
+				</div>
+			</c:if>
 			
 			<label class="tittle-label">Nome</label> <br />
 			<span id="nameSpan"><c:out value="${item.name }"/></span>

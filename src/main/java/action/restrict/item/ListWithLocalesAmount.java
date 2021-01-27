@@ -1,12 +1,13 @@
 package action.restrict.item;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import action.ActionUtil;
-import action.AdminHomeDateType;
 import action.ApplicationAction;
 import br.com.javamon.convert.DateConvert;
 import br.com.javamon.exception.ConvertException;
@@ -16,6 +17,9 @@ import domain.ItemLocaleFilter;
 import domain.ItemLocales;
 import entity.Item;
 import entity.Locale;
+import report.ItemReport;
+import report.ReportException;
+import report.ReportType;
 import service.ItemService;
 import service.LocaleService;
 
@@ -23,6 +27,11 @@ public class ListWithLocalesAmount extends ApplicationAction{
 
 	@Override
 	public void processAction() throws Exception {
+		if (!StringUtils.isBlank(getRequest().getParameter("reportType"))) {
+			sendReport();
+			return;
+		}
+		
 		putContentOnRequest();
 		
 		foward("/restrict/home.jsp");
@@ -91,5 +100,27 @@ public class ListWithLocalesAmount extends ApplicationAction{
 		}
 		
 		return LocalDate.now();
+	}
+	
+	private void sendReport() throws ServiceException, ConvertException, ReportException, IOException {
+		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
+		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
+		List<Item> items = getItems();
+		ItemLocales itemLocalesFromPreviousYear = getItemLocalesFromPreviousYear();
+		ItemLocales itemLocalesBetweenDates = getItemLocalesBetweenDates();
+		itemSvc.sumLocales(items, itemLocalesFromPreviousYear, itemLocalesBetweenDates);
+		ReportType reportType = ReportType.of(getRequest().getParameter("reportType"));
+		ItemReport itemReport = new ItemReport();
+		
+		getResponse().setHeader("Content-disposition", String.format("inline; filename=consumo-por-periodo.%s", reportType.getValue()));
+		if (reportType == ReportType.PDF) {
+			getResponse().setContentType("application/pdf");	
+			itemReport.sendPdfItemReport(locales, itemLocalesBetweenDates, getResponse().getOutputStream(), Paths.get(ActionUtil.getReportsPath(getRequest())));
+		
+		}else if (reportType == ReportType.XLS) {
+			getResponse().setContentType("application/xls");
+			itemReport.sendXlsItemReport(locales, itemLocalesBetweenDates, getResponse().getOutputStream(), Paths.get(ActionUtil.getReportsPath(getRequest())));
+		}
+		
 	}
 }

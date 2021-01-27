@@ -91,7 +91,7 @@ public class SaveItem extends ApplicationAction{
 			formValidationList.add(
 					new FormValidateJSON("name", ValidationMessageUtil.ITEM_NAME_EXISTS));
 			
-		if (!StringValidator.isValidLen(1000, description))
+		if (!StringValidator.isValidLen(100000, description))
 			formValidationList.add(
 					new FormValidateJSON("description", ValidationMessageUtil.ITEM_DESCRIPTION_MAX_LEN));
 		

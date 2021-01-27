@@ -7,30 +7,47 @@
 <%@ include file="header.jsp" %>
 
 <style>
-	thead tr th{
-		padding-bottom: 0px;
-	}
-	
 	td.sum-locale{
 		width: 30px;
 	    margin: 0px;
 	    padding: 0px;
 	}
+	
+	.myHeader tr th{
+		border: none;
+    	padding-bottom: 4px !important;
+	}
 </style>
 
-<c:url var="homeActionURL" value="/restrict/home.action"/>
+<c:url var="homeActionURL" value="/restrict/home.action" />
+<c:url var="newItemURL" value="/wpermission/item/New.action" />
 
 <table id="tableHome" >
 	<thead class="myHeader">
 		<tr>
 			<th colspan="5"></th>
-			<th colspan="${fn:length(locales)}">
+			<th colspan="7">
 				<span>Consumo por seção - ${lastYear}</span>
 			</th>
 			<th></th>
-			<th colspan="${fn:length(locales)}">
+			<th colspan="7">
 				<span>Consumo entre datas</span>
 			</th>	 
+			<th>
+				<div id="pageMenu">
+					<a class="reportLink" data-report-type="pdf">
+						<img src="${staticImages}/pdf-icon-512x512.png">
+					</a>
+					<a class="reportLink" data-report-type="xls">
+						<img src="${staticImages}/excel-icon.png">
+					</a>
+					<c:if test="${hasWritePermission}">
+						<a href="${newItemURL}">
+							<img src="${staticImages}/new-item.png">
+						</a>
+					</c:if>
+				</div>
+			</th>
 		</tr>
 	</thead>
 
@@ -117,8 +134,8 @@
 				</div>
 			</th>
 			
-			<c:forEach items="${locales}" var="locale">
-				<th><div  class="verticalTableHeader"><c:out value="${locale.name}" /></div></th>
+			<c:forEach begin="0" end="6" varStatus="loop">
+				<th><div  class="verticalTableHeader"><c:out value="${locales[loop.index].name}" /></div></th>
 			</c:forEach>
 			
 			<th>
@@ -130,8 +147,8 @@
 							value="<cfmt:formatDate value="${primaryDate}" locale="ptBR"/>" />
 			</th>
 			
-			<c:forEach items="${locales}" var="locale">
-				<th><div  class="verticalTableHeader"><c:out value="${locale.name}" /></div></th>
+			<c:forEach begin="0" end="6" varStatus="loop">
+				<th><div  class="verticalTableHeader"><c:out value="${locales[loop.index].name}" /></div></th>
 			</c:forEach>
 			
 			<th>
@@ -147,6 +164,7 @@
 		<c:url var="itemInfoURL" value="/restrict/item/ItemInfo.action">
 			<c:param name="itemId" value="${item.id}"/>
 		</c:url>
+			
 		<tbody>	
 			<tr class="itemRow" onclick="location.href='${itemInfoURL}'">
 				<td><c:out value="${item.id}"></c:out></td>
@@ -159,15 +177,15 @@
 				
 				<td><c:out value="${item.subCategory.name}"></c:out></td>
 				
-				<c:forEach items="${locales}" var="locale">
+				<c:forEach begin="0" end="6" varStatus="j">
 					<td class="sum-locale"><c:out 
-						value="${itemLocaleFromPreviousYear.itemLocales[loop.index].sumLocales[locale.id]}"></c:out></td>
+						value="${itemLocaleFromPreviousYear.itemLocales[loop.index].sumLocales[j.index].sum}"></c:out></td>
 				</c:forEach>
 			
 				<td><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].startDateAmount}" /></td>
 			
-				<c:forEach items="${locales}" var="locale">
-					<td class="sum-locale"><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].sumLocales[locale.id]}"></c:out></td>
+				<c:forEach begin="0" end="6" varStatus="j">
+					<td class="sum-locale"><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].sumLocales[j.index].sum}"></c:out></td>
 				</c:forEach>
 				
 				<td><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].endDateAmount}" /></td>		
@@ -186,15 +204,29 @@
 		$(".date").datepicker("option", "altFormat", "(dd/mm/yyyy)");
 		
 		$(".date").on("change", function(){
-			var date = formatDate($(this).datepicker("getDate"));
 			var url = window.location.href;
-			var paramName = $(this).attr("id");
-			var param = [{name: paramName, value: date}];
 			
-			url = addParams(url, $.param(param));
+			var primaryDateParam = [{name: "primaryDate", value: formatDate($("#primaryDate").datepicker("getDate"))}];
+			var secondDateParam = [{name: "secondDate", value: formatDate($("#secondDate").datepicker("getDate"))}];
+			
+			url = addParams(url, $.param(primaryDateParam));
+			url = addParams(url, $.param(secondDateParam));
+			
 			console.log(url);
 			location.href = url;
+		});
+		
+		$(".reportLink").on("click", function(){
+			var url = window.location.href;
 			
+			var primaryDateParam = [{name: "primaryDate", value: formatDate($("#primaryDate").datepicker("getDate"))}];
+			var secondDateParam = [{name: "secondDate", value: formatDate($("#secondDate").datepicker("getDate"))}];
+			var reportTypeParam = [{name: "reportType", value: $(this).attr("data-report-type")}];
+			
+			url = addParams(url, $.param(primaryDateParam));
+			url = addParams(url, $.param(secondDateParam));
+			url = addParams(url, $.param(reportTypeParam));
+			window.open(url, '_blank');
 		});
 	});
 </script>

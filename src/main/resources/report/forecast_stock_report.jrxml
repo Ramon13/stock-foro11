@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+   http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="freport" pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+		
+	
+   	<parameter name="startDate" class="java.lang.String" />
+	<parameter name="endDate" class="java.lang.String" />
+	
+	<field name = "itemName" class = "java.lang.String">
+	  <fieldDescription><![CDATA[item.name]]></fieldDescription>
+   </field>
+   
+    <field name = "itemAmount" class = "java.lang.Double">
+	  <fieldDescription><![CDATA[amount]]></fieldDescription>
+   </field>
+   
+   <field name = "twoYearsAverage" class = "java.lang.Double">
+	  <fieldDescription><![CDATA[twoYearsAverage]]></fieldDescription>
+   </field>
+   
+   <field name = "minRecommendedStock" class = "java.lang.Double">
+	  <fieldDescription><![CDATA[minRecommendedStock]]></fieldDescription>
+   </field>
+   
+   <field name = "forecastedStock" class = "java.lang.Double">
+	  <fieldDescription><![CDATA[forecastedStock]]></fieldDescription>
+   </field>
+   
+   <field name = "bidAmount" class = "java.lang.Double">
+	  <fieldDescription><![CDATA[bidAmount]]></fieldDescription>
+   </field>
+   
+   <field name = "lastEntryValue" class = "java.lang.Double">
+	  <fieldDescription><![CDATA[lastEntryValue]]></fieldDescription>
+   </field>
+   
+   <field name = "total" class = "java.lang.Double">
+	  <fieldDescription><![CDATA[total]]></fieldDescription>
+   </field>
+   
+   	<title>
+		<band height="70">
+			<line>
+				<reportElement x="0" y="0" width="515" height="1"/>
+				<graphicElement/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="10" width="515" height="30"/>
+				<textElement textAlignment="Center">
+					<font size="22"/>
+				</textElement>
+				<text><![CDATA[Previsão de Estoque]]></text>
+			</staticText>
+		</band>
+	</title>
+	
+	<pageHeader>
+		<band height="30">
+			<rectangle>
+				<reportElement x="0" y="5" width="515" height="15" forecolor="#333333" backcolor="#333333"/>
+				<graphicElement/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="10" width="150" height="20" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont">
+                <reportElement mode="Opaque" x="150" y="5" width="57" height="25" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["Estoque em " + $P{startDate}]]></textFieldExpression>
+            </textField>
+			<textField textAdjust="ScaleFont">
+                <reportElement mode="Opaque" x="207" y="5" width="57" height="25" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["Média Anual \n (últimos 2 anos)"]]></textFieldExpression>
+            </textField>
+             <textField textAdjust="ScaleFont">
+                <reportElement mode="Opaque" x="264" y="5" width="57" height="25" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["Estoque \n Mínimo"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="ScaleFont">
+                <reportElement mode="Opaque" x="321" y="5" width="57" height="25" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["Estoque em " + $P{endDate}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="ScaleFont">
+                <reportElement mode="Opaque" x="378" y="5" width="57" height="25" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["Licitar"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="ScaleFont">
+                <reportElement mode="Opaque" x="435" y="5" width="57" height="25" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["Valor Unitário \n (última aquisição)"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="ScaleFont">
+                <reportElement mode="Opaque" x="492" y="5" width="57" height="25" forecolor="#ffffff" backcolor="#333333"/>
+				<textElement textAlignment="Center"/>
+                <textFieldExpression class="java.lang.String"><![CDATA["Total"]]></textFieldExpression>
+            </textField>
+		</band>
+	</pageHeader>
+	
+	<detail>
+		<band height="20">
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="0" y="0" width="150" height="20"/>
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Left">
+				</textElement>
+				<textFieldExpression class="java.lang.Stringr"><![CDATA[$F{itemName}]]></textFieldExpression>
+			</textField> 
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="150" y="0" width="55" height="20"/>
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Center">
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[String.format("%.0f", $F{itemAmount})]]></textFieldExpression>
+			</textField>                                     
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="207" y="0" width="55" height="20"/>
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Center">
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[String.format("%.0f", $F{twoYearsAverage})]]></textFieldExpression>
+			</textField>
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="264" y="0" width="55" height="20"/>
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Center">
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[String.format("%.0f", $F{minRecommendedStock})]]></textFieldExpression>
+			</textField>
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="321" y="0" width="55" height="20" />
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Center">
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[String.format("%.0f", $F{forecastedStock})]]></textFieldExpression>
+			</textField>
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="378" y="0" width="55" height="20"/>
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Center">
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[String.format("%.0f", $F{bidAmount})]]></textFieldExpression>
+			</textField>           
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="435" y="0" width="55" height="20"/>
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Center">
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[String.format("%.2f", $F{lastEntryValue})]]></textFieldExpression>
+			</textField>
+			<textField bookmarkLevel="2" textAdjust="ScaleFont">
+				<reportElement x="492" y="0" width="55" height="20"/>
+				<box leftBorder="Thin" bottomBorder="Thin" leftPadding="2" rightPadding="2" topPadding="5"/>
+				<textElement textAlignment="Center">
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[String.format("%.2f", $F{total})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

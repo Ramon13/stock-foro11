@@ -14,7 +14,11 @@ public class EntryDAO extends ApplicationDAO<Entry>{
 	}
 	
 	public List<Entry> list() throws DAOException {
-		return list(new PaginationFilter(null, "date", orders.DESC, 1));
+		PaginationFilter filter = new PaginationFilter();
+		filter.setSortProperty("date");
+		filter.setOrder(orders.DESC);
+		filter.setFirstResultPage(1);
+		return list(filter);
 	}
 	
 }

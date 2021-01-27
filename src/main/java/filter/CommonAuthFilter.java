@@ -35,7 +35,11 @@ public class CommonAuthFilter implements Filter {
 				foward(request, response, "/public/login.jsp");
 				return;
 			}
-				
+			
+			if (loggedUser.getUser().getResetPassword() == Boolean.TRUE) {
+				foward(request, response, "/public/new-password-form.jsp");
+				return;
+			}
 			chain.doFilter(request, response);
 			
 		} catch (Exception e) {

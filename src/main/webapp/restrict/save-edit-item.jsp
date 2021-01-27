@@ -7,7 +7,7 @@
 <c:url var="newCategoryURL" value="/restrict/category/New.action" />
 <c:url var="newSubCategoryURL" value="/restrict/subcategory/New.action" />
 
-<c:url var="saveItemURL" value="/restrict/item/Save.action" />
+<c:url var="saveItemURL" value="/wpermission/item/Save.action" />
 <c:url var="itemInfoURL" value="/restrict/item/ItemInfo.action" />
 <c:url var="listByCategoryURL" value="/restrict/subcategory/ListByCategory.action" />
 

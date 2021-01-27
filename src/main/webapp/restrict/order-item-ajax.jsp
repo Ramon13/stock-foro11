@@ -110,7 +110,7 @@
 		margin-right: 80px;
 	}
 	
-	img{
+	.fold-content img{
 		width: 50px;
 	    height: 50px;
 	    border: 1px solid #d2d2d2;
@@ -197,7 +197,7 @@
 										<fmt:formatNumber value="${orderItem.amount}" type="number"/>
 									</span>
 									<br />
-									<c:if test="${superAdmin}">
+									<c:if test="${hasWritePermission}">
 										<a href="#" class="editAmountBtn" data-url="${editItemAmountURL}"
 											data-orderItem-id="${orderItem.id}">editar</a>
 									</c:if>
@@ -205,7 +205,7 @@
 							</td>				
 							<td>
 								<span>
-									<c:out value="${item.amount}" />
+									<fmt:formatNumber value="${item.amount}" type="number"/>
 								</span>
 							</td>
 							<td>
@@ -226,7 +226,7 @@
 			</table>
 			<br /><br />
 			
-			<c:if test="${hasWritePermission eq true}">
+			<c:if test="${hasWritePermission}">
 				<div id="buttons">		
 					<button data-url="${cancelOrderURL}" class="ui-button ui-widget ui-corner-all cancelBtn">
 						Cancelar
