@@ -36,7 +36,7 @@
 			}
 		
 			#content{
-				width: 70% !important;
+				width: 80% !important;
 				height: 100vh !important;
 				margin: auto;
 				float: none !important;

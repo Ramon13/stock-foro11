@@ -1,5 +1,4 @@
 /target/*
 /target/
-/src/main/webapp/static/*
 .classpath
 .settings

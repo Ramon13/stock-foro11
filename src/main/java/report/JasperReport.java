@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,13 +33,12 @@ public class JasperReport implements Report{
 	
 	@Override
 	public void exportReportToPdf(Map<String, Object> parameters, Collection<?> datasource, OutputStream out) {
-		URL templateURL = this.getClass().getResource(reportFileName + ".jrxml");
-		Path templatePath = Paths.get(templateURL.getPath());
-		Path compiledTemplatePath = Paths.get(reportsPath.toString(), reportFileName + ".jasper");
-		
-		JRBeanCollectionDataSource JRDataSource = new JRBeanCollectionDataSource(datasource);
-		
 		try {
+			URI templateURI = this.getClass().getResource(reportFileName + ".jrxml").toURI();
+			Path templatePath = Paths.get(templateURI.toString());
+			Path compiledTemplatePath = Paths.get(reportsPath.toString(), reportFileName + ".jasper");
+			
+			JRBeanCollectionDataSource JRDataSource = new JRBeanCollectionDataSource(datasource);
 			/**
 			if (!Files.exists(compiledTemplatePath)) {
 				Files.createFile(compiledTemplatePath);
@@ -50,20 +51,20 @@ public class JasperReport implements Report{
 			String printFileName = JasperFillManager.fillReportToFile(compiledTemplatePath.toString(), parameters, JRDataSource);
 			JasperExportManager.exportReportToPdfStream(new FileInputStream(new File(printFileName)), out);
 			
-		}catch(JRException | IOException e) {
+		}catch(JRException | IOException | URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void exportReportToXls(Map<String, Object> parameters, Collection<?> datasource, OutputStream out) {
-		URL templateURL = this.getClass().getResource(reportFileName + ".jrxml");
-		Path templatePath = Paths.get(templateURL.getPath());
-		Path compiledTemplatePath = Paths.get(reportsPath.toString(), reportFileName + ".jasper");
-		
-		JRBeanCollectionDataSource JRDataSource = new JRBeanCollectionDataSource(datasource);
-		
 		try {
+			URI templateURI = this.getClass().getResource(reportFileName + ".jrxml").toURI();
+			Path templatePath = Paths.get(templateURI.toString());
+			Path compiledTemplatePath = Paths.get(reportsPath.toString(), reportFileName + ".jasper");
+			
+			JRBeanCollectionDataSource JRDataSource = new JRBeanCollectionDataSource(datasource);
+			
 			/**
 			if (!Files.exists(compiledTemplatePath)) {
 				Files.createFile(compiledTemplatePath);
@@ -83,7 +84,7 @@ public class JasperReport implements Report{
 		    
 			xlsExporter.exportReport();
 			
-		}catch(JRException e) {
+		}catch(JRException | URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}
