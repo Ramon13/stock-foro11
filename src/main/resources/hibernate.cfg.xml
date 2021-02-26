@@ -12,7 +12,7 @@
     </property>
     
     <property name="connection.url">
-      jdbc:mysql://localhost:3306/estoque_foro11_dev?publicKeyRetrieval=false&amp;useTimezone=true&amp;serverTimezone=UTC&amp;characterEncoding=utf-8&amp;useUnicode=true
+      jdbc:mysql://localhost:3306/estoque_foro11?publicKeyRetrieval=false&amp;useTimezone=true&amp;serverTimezone=UTC&amp;characterEncoding=utf-8&amp;useUnicode=true
     </property>
 
     <property name="connection.username">cde_foro11</property>
@@ -25,17 +25,13 @@
       org.hibernate.dialect.MySQL57Dialect
     </property>
         
-     <property name="hibernate.current_session_context_class">thread</property>   
-         
- 	 <property name="hibernate.hbm2ddl.auto">update</property>  
+	<property name="hibernate.current_session_context_class">thread</property>        
+	<property name="hibernate.hbm2ddl.auto">update</property>  
 	
-	
-<!--    
   	<property name="hibernate.c3p0.min_size">5</property>
 	<property name="hibernate.c3p0.max_size">20</property>
   	<property name="hibernate.c3p0.timeout">300</property>   
 
--->
     <mapping resource="entity/Item.hbm.xml"/>
     <mapping resource="entity/Packet.hbm.xml"/>
    	<mapping resource="entity/Category.hbm.xml"/>  

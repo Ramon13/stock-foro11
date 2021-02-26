@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -35,7 +34,7 @@ public class JasperReport implements Report{
 	public void exportReportToPdf(Map<String, Object> parameters, Collection<?> datasource, OutputStream out) {
 		try {
 			URI templateURI = this.getClass().getResource(reportFileName + ".jrxml").toURI();
-			Path templatePath = Paths.get(templateURI.toString());
+			String templatePath = Paths.get(templateURI).toString();
 			Path compiledTemplatePath = Paths.get(reportsPath.toString(), reportFileName + ".jasper");
 			
 			JRBeanCollectionDataSource JRDataSource = new JRBeanCollectionDataSource(datasource);
@@ -46,7 +45,7 @@ public class JasperReport implements Report{
 			}
 			**/
 			
-			JasperCompileManager.compileReportToFile(templatePath.toString(), compiledTemplatePath.toString());
+			JasperCompileManager.compileReportToFile(templatePath, compiledTemplatePath.toString());
 			
 			String printFileName = JasperFillManager.fillReportToFile(compiledTemplatePath.toString(), parameters, JRDataSource);
 			JasperExportManager.exportReportToPdfStream(new FileInputStream(new File(printFileName)), out);
@@ -60,7 +59,7 @@ public class JasperReport implements Report{
 	public void exportReportToXls(Map<String, Object> parameters, Collection<?> datasource, OutputStream out) {
 		try {
 			URI templateURI = this.getClass().getResource(reportFileName + ".jrxml").toURI();
-			Path templatePath = Paths.get(templateURI.toString());
+			String templatePath = Paths.get(templateURI).toString();
 			Path compiledTemplatePath = Paths.get(reportsPath.toString(), reportFileName + ".jasper");
 			
 			JRBeanCollectionDataSource JRDataSource = new JRBeanCollectionDataSource(datasource);
@@ -72,7 +71,7 @@ public class JasperReport implements Report{
 			}
 			**/
 			
-			JasperCompileManager.compileReportToFile(templatePath.toString(), compiledTemplatePath.toString());
+			JasperCompileManager.compileReportToFile(templatePath, compiledTemplatePath.toString());
 			
 			String printFileName = JasperFillManager.fillReportToFile(compiledTemplatePath.toString(), parameters, JRDataSource);
 			JRXlsExporter xlsExporter = new JRXlsExporter();
