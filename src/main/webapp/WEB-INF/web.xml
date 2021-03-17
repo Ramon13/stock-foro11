@@ -24,7 +24,7 @@
 		<description>Location to store uploaded product images</description>
 		<param-name>UnixItemImagePath</param-name>
 		<param-value>
-			/home/ramon/tmp/storage/app-images
+			/home/storage/app-images
 		</param-value>
 	</context-param>
 	
@@ -40,7 +40,7 @@
 		<description>Location to store jasper reports templates</description>
 		<param-name>UnixJasperReportsPath</param-name>
 		<param-value>
-			/home/ramon/tmp/storage/jreports
+			/home/storage/jreports
 		</param-value>
 	</context-param>
 	
