@@ -40,6 +40,7 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 	}
 	
 	public void saveEntry(Entry entry, List<EntryItem> entryItems) throws ServiceException, ValidationException{
+		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
 		validateInvoiceNumber(entry.getInvoice().getInvoiceIdNumber());
 		Invoice invoice = getServiceFactory()
 				.getService(InvoiceService.class)
@@ -59,6 +60,7 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 			entryItem.calcTotal();
 			
 			getServiceFactory().getService(EntryItemService.class).save(entryItem);
+			itemSvc.updateItemCurrentAmount(entryItem.getItem());
 		}
 	}
 	
