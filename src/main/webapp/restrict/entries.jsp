@@ -40,12 +40,12 @@
 		background-color: #4e9a06;
 	}
 	
-	button#addRow{
+	button#addRow, button#newProvider{
 	    background-color: #3465a4;
 	    color: white;
 	}
 	
-	button#addRow:hover {
+	button#addRow:hover, button#newProvider:hover {
 		background-color: #204a87;
 	}
 	
@@ -55,6 +55,7 @@
 </style>
 
 <c:url var="saveEntryURL" value="/restrict/entry/Save.action" />
+<c:url var="newProviderURL" value="/restrict/provider/New.action" />
 
 <fmt:setLocale value="pt_BR"/>
 
@@ -208,6 +209,7 @@
 								 		</option>
 								 	</c:forEach>
 								</select>
+								<button id="newProvider" data-url="${newProviderURL}">Novo fornecedor</button>
 							</td>
 						</tr>
 					</tbody>
@@ -312,7 +314,11 @@
 	</div>
 </div>
 
+<jsp:include page="/public/dialogs.jsp" />
+
 <script>
+	var dialog;
+	
 	$(document).ready(function(){
 		$("#date").datepicker();
 		$("#date").datepicker("option", "altFormat", "(dd/mm/yyyy)");
@@ -337,6 +343,15 @@
 			
 			$(".chosen-select").chosen({width: "60%"});
 		});
+		
+		$("body").on("click", "#newProvider", function(){
+			ajaxCall("get", $("#newProvider").attr("data-url"), null, function(data, textStatus, xhr){
+				if (isSuccessRequest(xhr)){
+					dialog = dialogForm($(data), null);
+					dialog.dialog("open");
+				}
+			});
+		})
 	});
 	
 	function clearErrorMessages(element){

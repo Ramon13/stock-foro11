@@ -12,5 +12,9 @@
 		<property name="name" type="java.lang.String">
 			<column name="description" not-null="true" unique="true" length="255" />
 		</property>
+		
+		<property name="cnpj" type="java.lang.String">
+			<column name="cnpj" not-null="true" unique="true" length="20" />
+		</property>
 	</class>
 </hibernate-mapping>

@@ -30,4 +30,22 @@ public class ProviderService extends ApplicationService<Provider, ProviderDAO>{
 			throw new ServiceException(ExceptionMessageUtil.DAO_ERR_LOAD);
 		}
 	}
+	
+	public boolean isValidProviderName(Provider provider) throws ServiceException{
+		try {
+			return getDAO().findByName(provider.getName()) == null;
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
+		}
+	}
+	
+	public boolean isValidProviderCNPJ(Provider provider) throws ServiceException{
+		try {
+			return getDAO().findByCNPJ(provider.getCnpj()) == null;
+		} catch (DAOException e) {
+			e.printStackTrace();
+			throw new ServiceException(e);
+		}
+	}
 }

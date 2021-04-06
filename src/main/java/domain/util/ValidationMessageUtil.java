@@ -7,10 +7,14 @@ public class ValidationMessageUtil {
 	public static final String EMPTY_CATEGORY_NAME = "É necessário uma descrição para o cadastro de novos subitens.";
 	public static final String EMPTY_SUBCATEGORY_NAME = "É necessário uma descrição para o cadastro de novas categorias.";
 	public static final String EMPTY_PERSON_NAME = "É necessário o nome da pessoa que recebeu o pedido.";
+	public static final String EMPTY_PROVIDER_NAME = "É necessário uma descrição para o cadastro de novos fornecedores.";
+	public static final String EMPTY_PROVIDER_CNPJ = "O CNPJ é necessário para o cadastro de novos fornecedores.";
 	
 	public static final String ITEM_MAX_LEN = "A descrição não pode ter mais do que 255 caracteres.";
 	public static final String ITEM_DESCRIPTION_MAX_LEN = "A especificação não pode ter mais do que 1000 caracteres.";
 	public static final String PACKET_MAX_LEN = "A descrição não pode ter mais do que 255 caracteres.";
+	public static final String PROVIDER_MAX_LEN = "A descrição não pode ter mais do que 255 caracteres.";
+	public static final String PROVIDER_CNPJ_INVALID_LEN = "O CNPJ deve possuir de 10 a 20 caracteres.";
 	public static final String CATEGORY_MAX_LEN = "A descrição não pode ter mais do que 255 caracteres.";
 	public static final String SUBCATEGORY_MAX_LEN = "A descrição não pode ter mais do que 255 caracteres.";
 	public static final String INVALID_CATEGORY_TYPE = "A categoria precisa ser um número compreendido entre 0 e 1000";
@@ -24,6 +28,8 @@ public class ValidationMessageUtil {
 	
 	public static final String ITEM_NAME_EXISTS = "Esta descrição já está cadastrada no sistema.";
 	public static final String PACKET_NAME_EXISTS = "Esta unidade já está cadastrada no sistema.";
+	public static final String PROVIDER_NAME_EXISTS = "Este fornecedor já está cadastrado no sistema.";
+	public static final String PROVIDER_CNPJ_EXISTS = "Este CNPJ já está cadastrado no sistema.";
 	public static final String CATEGORY_NAME_EXISTS = "Este subitem já está cadastrado no sistema.";
 	public static final String SUBCATEGORY_NAME_EXISTS = "Esta categoria já está cadastrada no sistema.";
 	
