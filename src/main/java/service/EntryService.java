@@ -8,7 +8,6 @@ import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import dao.EntryDAO;
 import domain.util.ExceptionMessageUtil;
-import domain.util.ValidationMessageUtil;
 import entity.Entry;
 import entity.EntryItem;
 import entity.Invoice;
@@ -41,7 +40,6 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 	
 	public void saveEntry(Entry entry, List<EntryItem> entryItems) throws ServiceException, ValidationException{
 		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
-		validateInvoiceNumber(entry.getInvoice().getInvoiceIdNumber());
 		Invoice invoice = getServiceFactory()
 				.getService(InvoiceService.class)
 				.save(entry.getInvoice());
@@ -62,13 +60,6 @@ public class EntryService extends ApplicationService<Entry, EntryDAO>{
 			getServiceFactory().getService(EntryItemService.class).save(entryItem);
 			itemSvc.updateItemCurrentAmount(entryItem.getItem());
 		}
-	}
-	
-	private void validateInvoiceNumber(String invoiceNumber) throws ValidationException, ServiceException{
-		if (getServiceFactory()
-				.getService(InvoiceService.class)
-				.findByInvoiceNumber(invoiceNumber) != null)
-			throw new ValidationException(ValidationMessageUtil.INVOICE_NUMBER_EXISTS);
 	}
 	
 	public List<Entry> searchOnEntry(PaginationFilter filter) throws ServiceException{
