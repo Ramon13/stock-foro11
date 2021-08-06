@@ -58,6 +58,7 @@ public class ListOrderItemsByOrder extends Action{
 					itemSvc.getItemAmountByLocaleAndYear(locale, LocalDate.now().getYear(), item));
 			
 			item.setSumByMonth(itemSvc.getPreviousMonthsAmount(item, 12, locale));
+			item.setAmount(itemSvc.getItemCurrentAmount(item));
 		}
 	}
 }

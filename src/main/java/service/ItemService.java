@@ -276,9 +276,9 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 			order = orderItem.getOrder();
 			
 			if (orderSvc.isValidOrder(order) &&
-					OrderStatus.isFinalizedOrReleased(order) &&
+					OrderStatus.isNotCanceledOrder(order) &&
 					order.getCustomer().getLocale().getId() == locale.getId() &&
-					order.getReleaseDate().isAfter(DateUtil.firstDayOfYear(year))) {
+					order.getRequestDate().isAfter(DateUtil.firstDayOfYear(year))) {
 				
 				orderSum += orderItem.getAmount();	
 			}
@@ -300,11 +300,11 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 			order = orderItem.getOrder();
 			
 			if (orderSvc.isValidOrder(order) &&
-					OrderStatus.isFinalizedOrReleased(order) &&
+					OrderStatus.isNotCanceledOrder(order) &&
 					order.getCustomer().getLocale().getId() == locale.getId() &&
-					DateValidator.isWithinRange(oneYearBefore, currentMonth, order.getReleaseDate())) {
+					DateValidator.isWithinRange(oneYearBefore, currentMonth, order.getRequestDate())) {
 				
-					int monthValue = order.getFinalDate().getMonthValue();
+					int monthValue = order.getRequestDate().getMonthValue();
 					sumByMonth[monthValue] += orderItem.getAmount();
 				
 			}
@@ -333,12 +333,14 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		for (OrderItem orderItem : item.getOrderItems()) {
 			order = orderItem.getOrder();
 			
-			if (orderSvc.isValidOrder(order) && OrderStatus.isFinalizedOrReleased(order)) {
+			if (orderSvc.isValidOrder(order) && OrderStatus.isNotCanceledOrder(order)) {
 				orderSum += orderItem.getAmount();
 			}
 				
 		}
 		
+		System.out.println(item.getName());
+		System.out.println(new BigDecimal(entrySum - orderSum));
 		return new BigDecimal(entrySum - orderSum);
 	}
 	

@@ -116,6 +116,10 @@
 	    border: 1px solid #d2d2d2;
 	}
 	
+	td.invalidAmount span{
+		color: red;
+	}
+	
 </style>
 
 <c:set var="FINALIZED" value="F" />
@@ -176,6 +180,7 @@
 				<c:forEach var="orderItem" items="${orderItems}">
 				
 					<c:set var="item" value="${orderItem.item}"/>
+					<c:set var="invalidAmountClass" value="${item.amount < orderItem.amount ? 'invalidAmount' : ''}"></c:set>
 					
 					<tbody>
 						<tr>
@@ -186,12 +191,12 @@
 								</c:url>			
 								<img src="${loadItemImageURL}">
 							</td>
-							<td>
+							<td class="<c:out value="${invalidAmountClass}"></c:out>">
 								<span>
 									<c:out value="${item.name}" />
 								</span>
 							</td>
-							<td>
+							<td class="<c:out value="${invalidAmountClass}"></c:out>">
 								<div id="editAmount">
 									<span class="orderAmount">
 										<fmt:formatNumber value="${orderItem.amount}" type="number"/>
@@ -203,7 +208,7 @@
 									</c:if>
 								</div>
 							</td>				
-							<td>
+							<td class="<c:out value="${invalidAmountClass}"></c:out>">
 								<span>
 									<fmt:formatNumber value="${item.amount}" type="number"/>
 								</span>

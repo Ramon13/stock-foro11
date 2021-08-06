@@ -41,17 +41,9 @@
 	    background-color: #ffffff !important;
 	}
 	
-	.ui-selectmenu-button.ui-button{
-		width: 3em;
-	}
-	
-	#amountSlctDiv{
-		display: inline;
-	}
-	
-	.gtTenInput{
-		width: 80px !important;
-		text-align: center;
+	.amountInput{
+		width: 20px !important;
+		box-sizing: inherit !important;
 	}
 }
 </style>
@@ -89,12 +81,7 @@
 								<br/>
 								<span>Quantidade: </span>
 								<div id="amountSlctDiv">
-									<select class="amountSlct" name="itemAmount">
-										<c:forEach begin="1" end="9" varStatus="loop">
-											<option value="${loop.index}">${loop.index}</option>
-										</c:forEach>
-										<option class="gtTen">10+</option>
-									</select>
+									<input type='text' class='amountInput' name='itemAmount' value='${orderItem.amount}'/>
 								</div>
 							</td>
 							<td>
@@ -139,14 +126,6 @@
 					simpleModalDialog("Falha ao remover produto", jQuery.parseJSON(data)[0].message);
 				}
 			});
-		});
-		
-		$(".amountSlct").selectmenu({
-			change: function(event, data){
-				if (data.item.value === '10+'){
-					$(this).parent().html("<input type='text' class='gtTenInput' name='itemAmount' value='10'/>")	
-				}
-			}
 		});
 		
 		$(".saveBtn").on("click", function(){

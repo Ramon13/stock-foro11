@@ -80,6 +80,24 @@
 		padding: 12px 20px;
 	}
 	
+	select.amountSlct{
+		width: auto;
+		padding: 3px 10px;
+	}
+	
+	.amountSlctDiv{
+		display: inline;
+	}
+	
+	.ui-selectmenu-button.ui-button{
+		width: auto;
+	}
+	
+	.gtTenInput{
+		width: 20px !important;
+		text-align: center;
+		box-sizing: inherit !important;
+	}
 </style>
 
 <div>
@@ -109,6 +127,17 @@
 				<div class="cardOptions">
 					<span class="item-name">${item.name}</span>
 					<br />
+					<span>Quantidade</span>
+					<div class="amountSlctDiv">
+						<select class="amountSlct" name="itemAmount">
+							<c:forEach begin="1" end="9" varStatus="loop">
+								<option value="${loop.index}">${loop.index}</option>
+							</c:forEach>
+							<option class="gtTen">10+</option>
+						</select>
+					</div>
+								
+					<br />
 					<button type="button" class="ui-button ui-widget ui-corner-all add-cart-btn"
 						data-item-id="${item.id}">
 						Adicionar ao carrinho
@@ -126,8 +155,15 @@
 		
 		$("body").on("click", ".add-cart-btn", function(){
 		
+			var amount = $(this).parent().find('.amountSlct :selected').text();
+			
+			if (amount === '')
+				amount = $(this).parent().find('.gtTenInput').val();
+				
 			var itemId = $(this).attr('data-item-id');
-			var param = [{name:"item", value: itemId}];
+			var param = [{name:"item", value: itemId},
+				{name:"amount", value: amount}];
+			
 			ajaxCall("post", '${addToCartURL}', param, function(data, textStatus, xhr){
 				if (hasCallbackErrors(xhr)){
 					simpleModalDialog("Falha ao adicionar produto", data);
@@ -179,7 +215,14 @@
 				});	
 	        }
 	    });
-	    
+	 
+		$(".amountSlct").selectmenu({
+			change: function(event, data){
+				if (data.item.value === '10+'){
+					$(this).parent().html("<input type='text' class='gtTenInput' name='itemAmount' value='10'/>")	
+				}
+			}
+		});
 	});
 	
 	function setSubcategoriesParams(){

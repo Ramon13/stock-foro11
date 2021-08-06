@@ -4,8 +4,11 @@ import java.util.List;
 
 import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
+import br.com.javamon.exception.ValidationException;
 import dao.ProviderDAO;
+import domain.gson.ProviderJSON;
 import domain.util.ExceptionMessageUtil;
+import domain.util.ValidationMessageUtil;
 import entity.Provider;
 
 //TODO: abstract common methods on an interface
@@ -15,6 +18,20 @@ public class ProviderService extends ApplicationService<Provider, ProviderDAO>{
 		super(ProviderDAO.class);
 	}
 
+	public Provider saveProvider(Provider provider) throws ValidationException, ServiceException{
+		if (!isValidProviderName(provider))
+			throw new ValidationException(ValidationMessageUtil.PROVIDER_NAME_EXISTS);
+		if (!isValidProviderCNPJ(provider))
+			throw new ValidationException(ValidationMessageUtil.PROVIDER_CNPJ_EXISTS);
+		
+		Long id = provider.getId();
+		if (provider.getId() != null)
+			update(provider);
+		else
+			id = save(provider);
+		return findById(id);
+	}
+	
 	public List<Provider> list() throws ServiceException{
 		try {
 			return getDaoFactory().getDAO(ProviderDAO.class).list();
@@ -33,7 +50,13 @@ public class ProviderService extends ApplicationService<Provider, ProviderDAO>{
 	
 	public boolean isValidProviderName(Provider provider) throws ServiceException{
 		try {
-			return getDAO().findByName(provider.getName()) == null;
+			Provider providerDB = getDAO().findByName(provider.getName());
+			
+			if (providerDB != null)
+				if (!providerDB.getId().equals(provider.getId()))
+					return false;
+			
+			return true;
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new ServiceException(e);
@@ -42,10 +65,21 @@ public class ProviderService extends ApplicationService<Provider, ProviderDAO>{
 	
 	public boolean isValidProviderCNPJ(Provider provider) throws ServiceException{
 		try {
-			return getDAO().findByCNPJ(provider.getCnpj()) == null;
+			System.out.println(provider.getCnpj());
+			Provider providerDB = getDAO().findByCNPJ(provider.getCnpj());
+			
+			if (providerDB != null)
+				if (!providerDB.getId().equals(provider.getId()))
+					return false;
+			
+			return true;
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new ServiceException(e);
 		}
+	}
+	
+	public ProviderJSON toProviderJSON(Provider provider) throws ServiceException{
+		return new ProviderJSON(provider);
 	}
 }

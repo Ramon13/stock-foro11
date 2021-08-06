@@ -29,6 +29,20 @@ public class ShoppingCartService extends ApplicationService<ShoppingCart, Shoppi
 		return false;
 	}
 	
+	public OrderItem getOrderItemByItem(ShoppingCart cart, Item item) throws ServiceException {
+		List<OrderItem> orderItems = getServiceFactory()
+				.getService(OrderItemService.class)
+				.listByShoppingCart(cart);
+		
+		for (OrderItem oi : orderItems) {
+			if (oi.getItem().getId() == item.getId()) {
+				return oi;
+			}
+		}
+		
+		return null;
+	}
+	
 	public Integer countItemsOnCart(User user) throws ServiceException{
 		if (!getServiceFactory().getService(UserService.class).hasCart(user)) {
 			ShoppingCart shoppingCart = new ShoppingCart();

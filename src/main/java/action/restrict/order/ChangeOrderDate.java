@@ -14,7 +14,7 @@ import domain.util.ValidationMessageUtil;
 import entity.Order;
 import service.OrderService;
 
-public class ChangeOrderFinalDate extends ApplicationAction{
+public class ChangeOrderDate extends ApplicationAction{
 
 	@Override
 	public void processAction() throws Exception {
@@ -23,13 +23,11 @@ public class ChangeOrderFinalDate extends ApplicationAction{
 		Order order = orderSvc.validateAndFindById(getRequest().getParameter("order"));
 		
 		if (orderSvc.isValidForRelease(order)) {
-			orderSvc.editFinalDate(order, newDate);
+			orderSvc.editPendingDate(order, newDate);
 		}
 	}
 	
 	private LocalDate validateField() throws ValidationException{
-		
-		List<FormValidateJSON> formValidationList = new ArrayList<FormValidateJSON>();
 		String strDate = getRequest().getParameter("date");
 		
 		LocalDate date = null;
@@ -44,9 +42,7 @@ public class ChangeOrderFinalDate extends ApplicationAction{
 					new FormValidateJSON("date", ValidationMessageUtil.INVALID_DATE));
 		}
 		
-		
 		if (!formValidationList.isEmpty()) {
-			getRequest().setAttribute("formValidationList", formValidationList);
 			throw new ValidationException();
 		}
 		

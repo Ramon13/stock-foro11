@@ -112,7 +112,9 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 	
 	public void finishOrder(Order order) throws ServiceException {
 		order.setStatus(OrderStatus.FINALIZED.getValue());
-		order.setFinalDate(LocalDate.now());
+		order.setFinalDate(order.getRequestDate());
+		order.setReleaseDate(order.getRequestDate());
+		//order.setFinalDate(LocalDate.now());
 		getServiceFactory().getService(OrderItemService.class).updateItemAmount(order.getOrderItems());
 		update(order);
 	}
@@ -138,6 +140,11 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 	
 	public void editFinalDate(Order order, LocalDate newDate) throws ServiceException{
 		order.setFinalDate(newDate);
+		update(order);
+	}
+	
+	public void editPendingDate(Order order, LocalDate newDate) throws ServiceException{
+		order.setRequestDate(newDate);
 		update(order);
 	}
 	

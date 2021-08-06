@@ -74,12 +74,28 @@
 		      modal: true,
 		      open: originalContent = dialog.html(),
 		      close: function() {
-		        dialog.find("form")[ 0 ].reset();
 		        dialog.dialog("destroy");
 		      }
 		    });
 		
 		return dialog;
+	}
+	
+	function dialogForm(dialogDiv){
+		dialogDiv.dialog({
+		      autoOpen: false,
+		      height: 300,
+		      width: 350,
+		      modal: true,
+		      open: originalContent = dialogDiv.html(),
+		      close: function() {
+		        //dialogDiv.find("form")[ 0 ].reset();
+		        dialogDiv.dialog("close");
+		        dialogDiv.dialog("destroy");
+		      }
+		    });
+		
+		return dialogDiv;
 	}
 	
 	function simpleModalDialog(title, message){

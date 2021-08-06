@@ -41,5 +41,9 @@ public enum OrderStatus {
 		return isFinalizedOrder(order) || isReleasedOrder(order);
 	}
 	
+	public static boolean isNotCanceledOrder(Order order) {
+		return order.getStatus().equals(CANCELED_BY_ADMIN.getValue()) == Boolean.FALSE
+				&& order.getStatus().equals(CANCELED_BY_USER.getValue()) == Boolean.FALSE;
+	}
 	
 }

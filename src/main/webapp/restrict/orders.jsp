@@ -34,6 +34,16 @@
 		width: 20px;
 		margin-right: 15px;
 	}
+	
+	input[type=text]#requestDate{
+		width: auto;
+		padding: 0px;
+	}
+	
+	a.editDateBtn img{
+		width: 13px;
+		margin-left: 7px;
+	}
 </style>
 
 
@@ -98,7 +108,7 @@
 						<th>
 							<div class="dropdown">
 								<div class="dropdown-btn">
-									<img class="ui-icon ui-icon-triangle-1-s"></img>
+									<img class="ui-icon ui-icon-triangle-1-s"></img>		
 									<span>Data</span>
 								</div>
 								<div class="dropdown-content" data-sortURL="${selectedOrdersURL}">
@@ -158,6 +168,7 @@
 					</tr>
 				</thead>
 				
+				<c:url var="editOrderDateURL" value="/restrict/order/ChangeOrderDate.action"></c:url>
 				<c:forEach items="${orders}" var="order">
 					<tbody>
 					
@@ -178,29 +189,13 @@
 							</td>
 							<td>
 								<span>
-									<c:choose>
-										<c:when test="${status eq PENDING}">
-											<c:set var="displayDate" value="${order.requestDate}"/>
-										</c:when>
-										<c:when test="${status eq RELEASED}">
-											<c:set var="displayDate" value="${order.releaseDate}"/>
-										</c:when>
-										<c:otherwise>
-											<c:set var="displayDate" value="${order.finalDate}"/>
-										</c:otherwise>
-									</c:choose>
-									<cfmt:formatDate locale="pt_BR" value="${displayDate}"/>
+									<cfmt:formatDate locale="pt_BR" value="${order.requestDate}"/>
 								</span>
-								
-								<c:if test="${superAdmin and status eq PENDING}">
-									<button class="editDateBtn" type="button" 
-										data-url="${editFinalDateURL}" 
-										data-success-url="${selectedOrdersURL}"
-										data-order-id="${order.id}">
-										Editar
-										<span class="ui-icon ui-icon-pencil"></span>
-									</button>
-								</c:if>
+								<c:if test="${status == PENDING and hasWritePermission}">
+									<a href="#" class="editDateBtn" data-url="${editOrderDateURL}" data-order-id="${order.id}">
+										<img src="${staticImages}/edit.svg">
+									</a>
+								</c:if>	
 							</td>
 							<td>
 								<span>
@@ -243,12 +238,12 @@
 
 <div id="editDateDlg" class="jqDialog" hidden="hidden"
 	title="Editar data de solicitação">
-	<form id="newDateForm">
-		
-		<input type="hidden" id="order" name="order"/> 
+	<form id="newDateForm"> 
+		<input id="orderId" type="hidden" name="order">
 		<label for="date">Nova data:</label> <br />
-		<div id="dateErrorDiv"></div>
-		<input type="text" name="date" id="date"/>
+		<div id="dateErrorDiv generalErrorDiv"></div>
+		<div id="generalErrorDiv"></div>
+		<input class="date" type="text" name="date" id="date"/>
 	</form>
 </div>
 
@@ -257,8 +252,8 @@
 <c:url var="listOrderItemsURL" value="/restrict/orderItem/ListByOrder.action" />
 <script>
 	$(document).ready(function(){
-		$("#date").datepicker();
-		$("#date").datepicker("option", "altFormat", "(dd/mm/yyyy)");
+		$(".date").datepicker();
+		$(".date").datepicker("option", "altFormat", "(dd/mm/yyyy)");
 		
 		$.datepicker.setDefaults( $.datepicker.regional[ "pt-BR" ] );
 		
@@ -271,14 +266,16 @@
 			var url = $(this).attr("data-url");
 			var successURL = $(this).attr("data-success-url");
 
-			var currentDate = $(this).parent().find("span").text();
+			var currDateSpan = $(this).parent().find("span");
+			var currentDate = currDateSpan.text();
 			var orderId = $(this).attr("data-order-id");
 			
 			dialogDiv.find("#date").val(currentDate.trim());
-			dialogDiv.find("#order").val(orderId.trim());
+			dialogDiv.find("#orderId").val(orderId);
 			
-			var editDateDialog = dialogForm($("#editDateDlg"), function(){
-				changeDate(url, successURL, editDateDialog);
+			console.log(url);
+			smallDialogForm($("#editDateDlg"), $("#newDateForm"), function(){
+				changeDate(url, $("#editDateDlg"), currDateSpan);
 			}).dialog("open");
 		});
 		
@@ -287,8 +284,9 @@
 		});
 	});
 	
-	function changeDate(url, successURL, dialog){
+	function changeDate(url, dialog, dateSpanElement){
 		var formData = $("#newDateForm").serialize();
+		
 		ajaxCall("post", url, formData, function(data, textStatus, xhr){
 			if (hasCallbackErrors(xhr)){
 				var JSON = jQuery.parseJSON(data);
@@ -297,7 +295,7 @@
 				showInputErrors(JSON);
 				
 			}else{
-				loadPage(successURL);
+				dateSpanElement.text($("#newDateForm").children("#date").val());
 				simpleModalDialog("Editar data de solicitação", "A data foi modificada com sucesso.");
 				dialog.dialog("destroy");
 			}

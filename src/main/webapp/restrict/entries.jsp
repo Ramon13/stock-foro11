@@ -40,12 +40,13 @@
 		background-color: #4e9a06;
 	}
 	
-	button#addRow, button#newProvider{
-	    background-color: #3465a4;
-	    color: white;
+	button#addRow, button#pConfig{
+	    position: absolute;
+	    margin: 0 0 0 10px;
+	    display: inline-flex;
 	}
 	
-	button#addRow:hover, button#newProvider:hover {
+	button#newProvider:hover {
 		background-color: #204a87;
 	}
 	
@@ -55,14 +56,16 @@
 </style>
 
 <c:url var="saveEntryURL" value="/restrict/entry/Save.action" />
-<c:url var="newProviderURL" value="/restrict/provider/New.action" />
+<c:url var="listProviderURL" value="/restrict/provider/List.action" />
 
 <fmt:setLocale value="pt_BR"/>
 
 <div id="tabs">
 	<ul>
 		<li><a href="#tabEntries" onclick="confEntries()">Entradas</a></li>
-		<li><a href="#tabNewEntry" onclick="confNewEntryPage()">Nova Entrada</a></li>
+		<c:if test="${hasWritePermission}">
+			<li><a href="#tabNewEntry" onclick="confNewEntryPage()">Nova Entrada</a></li>
+		</c:if>
 	</ul>
 	
 	<div id="tabEntries">
@@ -171,153 +174,158 @@
 			</c:forEach>
 		</table>
 	</div>
-	
-	<div id="tabNewEntry">
-		<form id="saveEntryForm" onsubmit="return false">
-			<fieldset>
-				<legend>Adicionar Entradas</legend>
-				
-				<div id="generalErrorDiv"></div>
-				<div id="successDiv"></div>
-				
-				<table>
-					<thead>
-						<tr>
-							<th><label for="date">Data</label></th>
-							<th><label for="invoiceNumber">Nº Do Documento</label></th>
-							<th><label for="providerSlct">Fornecedor</label></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="col20">
-								<div id="dateErrorDiv"></div>
-								<input type="text" id="date" name="date" 
-									value="<cfmt:formatDate value="${today}" locale="ptBR"/>" />
-							</td>
-							<td class="col20">
-								<div id="invoiceNumberErrorDiv"></div>
-								<input type="text" name="invoiceNumber" 
-									id="invoiceNumber" class="inputNumber" />
-							</td>
-							<td>
-								<div id="providerErrorDiv"></div>
-								<select name="provider" class="chosen-select" id="provider">
-								 	<c:forEach items="${providers}" var="provider">
-								 		<option value="${provider.id}">
-								 			<c:out value="${provider.name}" />
-								 		</option>
-								 	</c:forEach>
-								</select>
-								<button id="newProvider" data-url="${newProviderURL}">Novo fornecedor</button>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<br />
-				<br />
-				<table id="entryItemsTable">
-					<thead>
-						<tr>
-							<th>Item</th>
-							<th>Quantidade</th>
-							<th>Valor Unitário</th>
-							<th>Total (R$)</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-								<div>
-									<div id="itemErrorDiv"></div>
-									<br />
-									<select class="chosen-select"
-										 name="item">
-									 	<c:forEach items="${items}" var="item">
-									 		<option value="${item.id}">
-									 			<c:out value="${item.name }" />
+
+	<c:if test="${hasWritePermission}">	
+		<div id="tabNewEntry">
+			<form id="saveEntryForm" onsubmit="return false">
+				<fieldset>
+					<legend>Adicionar Entradas</legend>
+					
+					<div id="generalErrorDiv"></div>
+					<div id="successDiv"></div>
+					
+					<table>
+						<thead>
+							<tr>
+								<th><label for="date">Data</label></th>
+								<th><label for="invoiceNumber">Nº Do Documento</label></th>
+								<th><label for="providerSlct">Fornecedor</label></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="col20">
+									<div id="dateErrorDiv"></div>
+									<input type="text" id="date" name="date" 
+										value="<cfmt:formatDate value="${today}" locale="ptBR"/>" />
+								</td>
+								<td class="col20">
+									<div id="invoiceNumberErrorDiv"></div>
+									<input type="text" name="invoiceNumber" 
+										id="invoiceNumber" class="inputNumber" />
+								</td>
+								<td>
+									<div id="providerErrorDiv"></div>
+									<select name="provider" class="chosen-select" id="provider">
+									 	<c:forEach items="${providers}" var="provider">
+									 		<option value="${provider.id}">
+									 			<c:out value="${provider.name}" />
 									 		</option>
 									 	</c:forEach>
 									</select>
-								</div>
-							</td>
-							<td class="col20">
-								<span class="clientErrorMsg"></span>
-								<div id="amountErrorDiv"></div>
-								<br />
-								<input type="text" name="amount" class="inputNumber amount"/>
-							</td>
-							<td class="col20">
-								<span class="clientErrorMsg"></span>
-								<div id="valueErrorDiv"></div>
-								<br />
-								<input type="text" name="value" class="inputNumber value"/>
-							</td>
-							<td class="col20">
+									<button id="pConfig" onclick="providerConfig('${listProviderURL}')" title="configurar fornecedores">
+										<c:url var="prefIcon" value="/static/images/pref.svg" />
+										<img id="" src="${prefIcon}">
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<br />
+					<br />
+					<table id="entryItemsTable">
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Quantidade</th>
+								<th>Valor Unitário</th>
+								<th>Total (R$)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<div>
+										<div id="itemErrorDiv"></div>
+										<br />
+										<select class="chosen-select"
+											 name="item">
+										 	<c:forEach items="${items}" var="item">
+										 		<option value="${item.id}">
+										 			<c:out value="${item.name }" />
+										 		</option>
+										 	</c:forEach>
+										</select>
+									</div>
+								</td>
+								<td class="col20">
+									<span class="clientErrorMsg"></span>
+									<div id="amountErrorDiv"></div>
 									<br />
-								<input type="text" class="inputNumber rowTotal" value="0"/>
-							</td>
-						</tr>
-					</tbody>
-					<tbody id="tableTotal">
-						<tr>
-							<td colspan="3"></td>
-							<td class="col20">
-								<input type="text" value ="0" class="inputNumber colTotal"/>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<button type="button" id="addRow" class="ui-button ui-widget ui-corner-all">
-					+Inserir
-				</button>
-			</fieldset>
-			
-			<br /><br />
-				<button type="button" id="saveEntries" onclick="saveEntry('${saveEntryURL}')"
-				 	class="ui-button ui-widget ui-corner-all saveBtn">
-					Finalizar
-				</button>
-		</form>
-		
-		<table>
-		  <tbody id="baseRow" hidden=hidden>
-				<tr>
-					<td>
-						<div>
-							<select name="item">
-							 	<c:forEach items="${items}" var="item">
-							 		<option value="${item.id}">
-							 			<c:out value="${item.name }" />
-							 		</option>
-							 	</c:forEach>
-							</select>
-						</div>
-					</td>
-					<td class="col20">
-						<span class="clientErrorMsg"></span>
-						<div id="amountErrorDiv"></div>
-						<br />
-						<input type="text" name="amount" class="inputNumber amount"/>
-					</td>
-					<td class="col20">
-						<span class="clientErrorMsg"></span>
-						<div id="amountErrorDiv"></div>
-						<br />
-						<input type="text" name="value" class="inputNumber value"/>
-					</td>
-					<td class="col20"><input type="text" class="inputNumber rowTotal" value="0" /></td>
-				</tr>
+									<input type="text" name="amount" class="inputNumber amount"/>
+								</td>
+								<td class="col20">
+									<span class="clientErrorMsg"></span>
+									<div id="valueErrorDiv"></div>
+									<br />
+									<input type="text" name="value" class="inputNumber value"/>
+								</td>
+								<td class="col20">
+										<br />
+									<input type="text" class="inputNumber rowTotal" value="0"/>
+								</td>
+							</tr>
+						</tbody>
+						<tbody id="tableTotal">
+							<tr>
+								<td colspan="3"></td>
+								<td class="col20">
+									<input type="text" value ="0" class="inputNumber colTotal"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<button type="button" id="addRow" class="ui-button ui-widget ui-corner-all">
+						+Inserir
+					</button>
+				</fieldset>
 				
-			</tbody>
-		</table>	
-	</div>
+				<br /><br />
+					<button type="button" id="saveEntries" onclick="saveEntry('${saveEntryURL}')"
+					 	class="ui-button ui-widget ui-corner-all saveBtn">
+						Finalizar
+					</button>
+			</form>
+			
+			<table>
+			  <tbody id="baseRow" hidden=hidden>
+					<tr>
+						<td>
+							<div>
+								<select name="item">
+								 	<c:forEach items="${items}" var="item">
+								 		<option value="${item.id}">
+								 			<c:out value="${item.name }" />
+								 		</option>
+								 	</c:forEach>
+								</select>
+							</div>
+						</td>
+						<td class="col20">
+							<span class="clientErrorMsg"></span>
+							<div id="amountErrorDiv"></div>
+							<br />
+							<input type="text" name="amount" class="inputNumber amount"/>
+						</td>
+						<td class="col20">
+							<span class="clientErrorMsg"></span>
+							<div id="amountErrorDiv"></div>
+							<br />
+							<input type="text" name="value" class="inputNumber value"/>
+						</td>
+						<td class="col20"><input type="text" class="inputNumber rowTotal" value="0" /></td>
+					</tr>
+					
+				</tbody>
+			</table>	
+		</div>
+	</c:if>
 </div>
 
 <jsp:include page="/public/dialogs.jsp" />
 
 <script>
-	var dialog;
+	var lDialog;
 	
 	$(document).ready(function(){
 		$("#date").datepicker();
@@ -344,15 +352,30 @@
 			$(".chosen-select").chosen({width: "60%"});
 		});
 		
-		$("body").on("click", "#newProvider", function(){
-			ajaxCall("get", $("#newProvider").attr("data-url"), null, function(data, textStatus, xhr){
+		$("body").on("click", "#providerConfig", function(){
+			ajaxCall("get", $("#providerConfig").attr("data-url"), null, function(data, textStatus, xhr){
 				if (isSuccessRequest(xhr)){
-					dialog = dialogForm($(data), null);
-					dialog.dialog("open");
+					lDialog = dialogForm($(data), null);
+					lDialog.dialog({
+						width: 600
+					})
+					lDialog.dialog("open");
 				}
 			});
 		})
 	});
+	
+	function providerConfig(url){
+		ajaxCall("get", url, null, function(data, textStatus, xhr){
+			if (isSuccessRequest(xhr)){
+				lDialog = dialogForm($(data), null);
+				lDialog.dialog({
+					width: 600
+				})
+				lDialog.dialog("open");
+			}
+		});
+	}
 	
 	function clearErrorMessages(element){
 		$(element).parent().find(".clientErrorMsg").text("");
@@ -375,8 +398,6 @@
 	}
 	
 	function saveEntry(saveURL){
-
-		console.log($("#saveEntryForm").serialize());
 		clearErrorDivs();
 		$.ajax({
 	        type: "post",
@@ -390,7 +411,6 @@
 	  	   			showDivErrors(JSONData);
 	  	   		}
 	  	   		else{
-	  	   			console.log(JSONData);
 	  	   			var span = $("<span />").html("Entrada salva com sucesso.");
 	  	   			$("#successDiv").html(span);
 	  	   		}

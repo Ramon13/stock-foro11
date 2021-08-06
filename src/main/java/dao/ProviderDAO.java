@@ -14,7 +14,7 @@ public class ProviderDAO extends ApplicationDAO<Provider>{
 	}
 
 	public List<Provider> list() throws DAOException{
-		String hql = "from Provider";
+		String hql = "from Provider p order by p.id desc";
 		return list(hql);
 	}
 	

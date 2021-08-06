@@ -25,19 +25,22 @@ public class AddOrderItem extends ApplicationAction{
 	public OrderItem createOrderItem() throws ValidationException, ServiceException{
 		Item item = getServiceFactory().getService(ItemService.class)
 		.validateAndFindById(getRequest().getParameter("item"));
-		
+		int amount = Integer.parseInt(getRequest().getParameter("amount"));
+				
 		ShoppingCart cart = ActionUtil.getSessionLoggedUser(getRequest()).getUser().getCart();
 		ShoppingCartService shoppingCartSvc = getServiceFactory().getService(ShoppingCartService.class);
 		
+		OrderItem orderItem;
 		if (!shoppingCartSvc.isItemOnCart(cart, item)) {
-			OrderItem orderItem = new OrderItem();
-			orderItem.setAmount(1);
+			orderItem = new OrderItem();
+			orderItem.setAmount(amount);
 			orderItem.setItem(item);			
 			orderItem.setCart(cart);
-			return orderItem;
-		
 		}else {
-			throw new ValidationException("This item is already in the cart");
+			orderItem = shoppingCartSvc.getOrderItemByItem(cart, item);
+			orderItem.setAmount(orderItem.getAmount() + amount);
 		}
+		
+		return orderItem;
 	}
 }
