@@ -1,5 +1,6 @@
 package action.restrict.order_item;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class ListOrderItemsByOrder extends Action{
 					itemSvc.getItemAmountByLocaleAndYear(locale, LocalDate.now().getYear(), item));
 			
 			item.setSumByMonth(itemSvc.getPreviousMonthsAmount(item, 12, locale));
-			item.setAmount(itemSvc.getItemCurrentAmount(item));
+			item.setAmount(BigDecimal.valueOf(itemSvc.getItemCurrentAmount(item).longValue() + oi.getAmount()));
 		}
 	}
 }

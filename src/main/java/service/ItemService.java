@@ -339,8 +339,6 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 				
 		}
 		
-		System.out.println(item.getName());
-		System.out.println(new BigDecimal(entrySum - orderSum));
 		return new BigDecimal(entrySum - orderSum);
 	}
 	

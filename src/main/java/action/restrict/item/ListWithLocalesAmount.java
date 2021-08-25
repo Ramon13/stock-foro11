@@ -105,7 +105,10 @@ public class ListWithLocalesAmount extends ApplicationAction{
 	private void sendReport() throws ServiceException, ConvertException, ReportException, IOException {
 		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
 		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
+		
+		paginationFilter.setMaxResults(null);
 		List<Item> items = getItems();
+		
 		ItemLocales itemLocalesFromPreviousYear = getItemLocalesFromPreviousYear();
 		ItemLocales itemLocalesBetweenDates = getItemLocalesBetweenDates();
 		itemSvc.sumLocales(items, itemLocalesFromPreviousYear, itemLocalesBetweenDates);
