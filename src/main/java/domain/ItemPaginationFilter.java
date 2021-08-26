@@ -2,18 +2,18 @@ package domain;
 
 import java.time.LocalDate;
 
-public class ItemLocaleFilter {
+public class ItemPaginationFilter {
 
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private boolean calcItemAmountByDate = false;
 
-	public ItemLocaleFilter(LocalDate startDate, LocalDate endDate) {
+	public ItemPaginationFilter(LocalDate startDate, LocalDate endDate) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
 	
-	public ItemLocaleFilter(LocalDate startDate, LocalDate endDate, boolean calcItemAmountByDate) {
+	public ItemPaginationFilter(LocalDate startDate, LocalDate endDate, boolean calcItemAmountByDate) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.calcItemAmountByDate = calcItemAmountByDate;

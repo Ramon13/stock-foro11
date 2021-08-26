@@ -13,8 +13,8 @@ import br.com.javamon.convert.DateConvert;
 import br.com.javamon.exception.ConvertException;
 import br.com.javamon.exception.ServiceException;
 import domain.DateUtil;
-import domain.ItemLocaleFilter;
 import domain.ItemLocales;
+import domain.ItemPaginationFilter;
 import entity.Item;
 import entity.Locale;
 import report.ItemReport;
@@ -25,8 +25,12 @@ import service.LocaleService;
 
 public class ListWithLocalesAmount extends ApplicationAction{
 
+	private ItemService itemSvc;
+	
 	@Override
 	public void processAction() throws Exception {
+		itemSvc = getServiceFactory().getService(ItemService.class);
+		
 		if (!StringUtils.isBlank(getRequest().getParameter("reportType"))) {
 			sendReport();
 			return;
@@ -40,18 +44,24 @@ public class ListWithLocalesAmount extends ApplicationAction{
 	private void putContentOnRequest() throws Exception {
 		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
 		
-		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
-		
 		List<Item> items = getItems();
-		ItemLocales itemLocalesFromPreviousYear = getItemLocalesFromPreviousYear();
-		ItemLocales itemLocalesBetweenDates = getItemLocalesBetweenDates();
-		itemSvc.sumLocales(items, itemLocalesFromPreviousYear, itemLocalesBetweenDates);
+		
+		addAmountByLocaleToRequest(items);
 		
 		getRequest().setAttribute("lastYear", DateUtil.firstDayOfPreviousYear().getYear());
 		getRequest().setAttribute("locales", locales);
 		getRequest().setAttribute("items", items);
 		getRequest().setAttribute("primaryDate", getPrimaryDate());
 		getRequest().setAttribute("secondDate", getSecondDate());
+		
+	}
+
+	private void addAmountByLocaleToRequest(List<Item> items)
+			throws ConvertException, ServiceException {
+		ItemLocales itemLocalesFromPreviousYear = getItemLocalesFromPreviousYear();
+		ItemLocales itemLocalesBetweenDates = getItemLocalesBetweenDates();
+		itemSvc.sumLocales(items, itemLocalesFromPreviousYear, itemLocalesBetweenDates);
+		
 		getRequest().setAttribute("itemLocaleFromPreviousYear", itemLocalesFromPreviousYear);
 		getRequest().setAttribute("itemLocaleBetweenDates", itemLocalesBetweenDates);
 	}
@@ -67,21 +77,29 @@ public class ListWithLocalesAmount extends ApplicationAction{
 	}
 	
 	private ItemLocales getItemLocalesFromPreviousYear() {
-		ItemLocaleFilter filter = new ItemLocaleFilter(
-				DateUtil.firstDayOfPreviousYear(), 
-				DateUtil.firstDayOfCurrentYear());
+		ItemPaginationFilter filter = getPreviousYearFilter();
+		
+		ItemLocales itemLocales = new ItemLocales();
+		itemLocales.setFilter(filter);
+		return itemLocales;
+	}
+
+	private ItemLocales getItemLocalesBetweenDates() throws ConvertException {
+		ItemPaginationFilter filter = getBetweenDatesFilter();
 		
 		ItemLocales itemLocales = new ItemLocales();
 		itemLocales.setFilter(filter);
 		return itemLocales;
 	}
 	
-	private ItemLocales getItemLocalesBetweenDates() throws ConvertException {
-		ItemLocaleFilter filter = new ItemLocaleFilter(getPrimaryDate(), getSecondDate(), true);
-		
-		ItemLocales itemLocales = new ItemLocales();
-		itemLocales.setFilter(filter);
-		return itemLocales;
+	private ItemPaginationFilter getPreviousYearFilter() {
+		return new ItemPaginationFilter(
+				DateUtil.firstDayOfPreviousYear(), 
+				DateUtil.firstDayOfCurrentYear());
+	}
+	
+	private ItemPaginationFilter getBetweenDatesFilter() throws ConvertException {
+		return new ItemPaginationFilter(getPrimaryDate(), getSecondDate(), true);
 	}
 	
 	private LocalDate getPrimaryDate() throws ConvertException {

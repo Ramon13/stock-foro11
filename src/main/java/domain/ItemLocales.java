@@ -12,13 +12,13 @@ import java.util.List;
 public class ItemLocales {
 
 	private List<ItemLocale> itemLocales = new ArrayList<ItemLocale>(0);
-	private ItemLocaleFilter filter;
+	private ItemPaginationFilter filter;
 
-	public ItemLocaleFilter getFilter() {
+	public ItemPaginationFilter getFilter() {
 		return filter;
 	}
 
-	public void setFilter(ItemLocaleFilter filter) {
+	public void setFilter(ItemPaginationFilter filter) {
 		this.filter = filter;
 	}
 	

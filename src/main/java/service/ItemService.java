@@ -18,8 +18,8 @@ import dao.ItemDAO;
 import domain.DateUtil;
 import domain.ItemLocale;
 import domain.ItemLocale.SumLocale;
-import domain.ItemLocaleFilter;
 import domain.ItemLocales;
+import domain.ItemPaginationFilter;
 import domain.OrderStatus;
 import domain.util.ExceptionMessageUtil;
 import domain.util.ValidationMessageUtil;
@@ -230,7 +230,7 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		}
 	}
 	
-	private boolean isBetweenDateRange(ItemLocaleFilter filter, LocalDate orderDate) {
+	private boolean isBetweenDateRange(ItemPaginationFilter filter, LocalDate orderDate) {
 		return DateValidator.isWithinRange(filter.getStartDate(), filter.getEndDate(), orderDate);
 	}
 	
