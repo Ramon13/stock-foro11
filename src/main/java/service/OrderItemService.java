@@ -71,7 +71,7 @@ public class OrderItemService extends ApplicationService<OrderItem, OrderItemDAO
 		update(orderItem);
 	}
 	
-	public boolean isValidForRelease(OrderItem orderItem, BigDecimal itemAmount) {
+	public boolean isValidForRelease(OrderItem orderItem, Long itemAmount) {
 		return orderItem.getAmount() <= itemAmount.longValue();	
 	}
 	

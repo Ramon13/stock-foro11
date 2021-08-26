@@ -1,6 +1,5 @@
 package service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,9 +85,10 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 		OrderItemService orderItemSvc = getServiceFactory().getService(OrderItemService.class);
 		ItemService itemSvc = getServiceFactory().getService(ItemService.class);
 		
-		BigDecimal itemAmount;
+		Long itemAmount;
 		for (OrderItem orderItem : order.getOrderItems()) {
-			itemAmount = itemSvc.getItemCurrentAmount(orderItem.getItem());
+			itemAmount = itemSvc.getItemCurrentAmount(orderItem.getItem()).longValue();
+			itemAmount += orderItem.getAmount();
 			if (!orderItemSvc.isValidForRelease(orderItem, itemAmount)) {
 				throw new ValidationException(ValidationMessageUtil.EMPTY_STOCK);
 			}
