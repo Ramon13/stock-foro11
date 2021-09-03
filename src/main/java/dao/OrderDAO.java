@@ -21,6 +21,21 @@ public class OrderDAO extends ApplicationDAO<Order>{
 		super(Order.class);
 	}
 
+	public List<Order> listByStatus(OrderStatus...statusArr) throws DAOException{
+		CriteriaBuilder builder = getSession().getCriteriaBuilder();
+		CriteriaQuery<Order> criteriaQuery = builder.createQuery(Order.class);
+		Root<Order> root = criteriaQuery.from(Order.class);
+		
+		Predicate[] statusPredicates = new Predicate[statusArr.length];
+		for (int i = 0; i < statusArr.length; i++) {
+			statusPredicates[i] = builder.equal(root.get("status"), statusArr[i].getValue());
+		}
+		
+		criteriaQuery.where(builder.or(statusPredicates));
+		Query<Order> query = getSession().createQuery(criteriaQuery);
+		return query.getResultList();
+	}
+	
 	public List<Order> listByStatus(PaginationFilter filter, OrderStatus...statusArr) throws DAOException{
 		CriteriaBuilder builder = getSession().getCriteriaBuilder();
 		CriteriaQuery<Order> criteriaQuery = builder.createQuery(Order.class);

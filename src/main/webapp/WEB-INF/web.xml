@@ -48,7 +48,7 @@
 		<description>Location to store jasper reports templates</description>
 		<param-name>WindowsJasperReportsPath</param-name>
 		<param-value>
-			C:\development\stock-foro11\storage\jreports
+			C:\development\tmp\storage\jreports
 		</param-value>
 	</context-param>
 	

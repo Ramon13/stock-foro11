@@ -3,6 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="cfmt" uri="/WEB-INF/tag/custom-fmt.tld" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@page import="action.model.SumOrderType" %>
 
 <%@ include file="header.jsp" %>
 
@@ -17,6 +18,32 @@
 		border: none;
     	padding-bottom: 4px !important;
 	}
+	
+	div#pageMenu{
+		float: right;
+	}
+	
+	th.th30{
+		width: 140px;
+	}
+	
+	div#orderSumType{
+		display: flex;
+		float: right;"
+	}
+	
+	div#orderSumType a{
+		padding: 4px;
+	    border: 1px solid #000;
+	    width: 30px;
+	    cursor: pointer;
+	    text-decoration: none;
+	    color: #000;
+	}
+	
+	.selectedLink{
+		background-color: hsl(210deg 8% 90%);
+	}
 </style>
 
 <c:url var="homeActionURL" value="/restrict/home.action" />
@@ -25,15 +52,13 @@
 <table id="tableHome" >
 	<thead class="myHeader">
 		<tr>
-			<th colspan="5"></th>
-			<th colspan="7">
-				<span>Consumo por seção - ${lastYear}</span>
-			</th>
-			<th></th>
-			<th colspan="7">
-				<span>Consumo entre datas</span>
-			</th>	 
-			<th>
+			<c:if  test="${displayAmountType eq SumOrderType.BY_LOCALE}">
+				<th colspan="5"></th>
+				<th colspan="7"><span>Consumo por seção - ${lastYear}</span></th>
+				<th></th>
+				<th colspan="7"><span>Consumo entre datas</span></th>
+			</c:if>
+			<th colspan=20>
 				<div id="pageMenu">
 					<a class="reportLink" data-report-type="pdf">
 						<img src="${staticImages}/pdf-icon-512x512.png">
@@ -46,11 +71,16 @@
 							<img src="${staticImages}/new-item.png">
 						</a>
 					</c:if>
+					<div id="orderSumType">
+						<a href="${homeActionURL}?displayAmountType=by_locale" 
+							class=<c:out value="${displayAmountType eq SumOrderType.BY_LOCALE ? 'selectedLink' : ''}"/> >Local</a>
+						<a href="${homeActionURL}?displayAmountType=by_item" 
+							class=<c:out value="${displayAmountType eq SumOrderType.BY_ITEM ? 'selectedLink' : ''}"/> >Item</a>
+					</div>
 				</div>
 			</th>
 		</tr>
 	</thead>
-
 	<thead  class="myHeader2">
 		<tr>
 			<th>
@@ -134,9 +164,20 @@
 				</div>
 			</th>
 			
-			<c:forEach begin="0" end="6" varStatus="loop">
-				<th><div  class="verticalTableHeader"><c:out value="${locales[loop.index].name}" /></div></th>
-			</c:forEach>
+			<c:choose>
+				<c:when test="${displayAmountType eq SumOrderType.BY_LOCALE}">
+					<c:forEach items="${locales}" var="locale">
+						<th>
+							<div  class="verticalTableHeader">
+								<c:out value="${locale.name}" />
+							</div>
+						</th>
+					</c:forEach>
+				</c:when>
+				<c:otherwise>
+					<th class="th30"><span>Consumo - ${lastYear}</span></th>
+				</c:otherwise>
+			</c:choose>
 			
 			<th>
 				<span class="dateErrorMsg"></span>
@@ -147,9 +188,20 @@
 							value="<cfmt:formatDate value="${primaryDate}" locale="ptBR"/>" />
 			</th>
 			
-			<c:forEach begin="0" end="6" varStatus="loop">
-				<th><div  class="verticalTableHeader"><c:out value="${locales[loop.index].name}" /></div></th>
-			</c:forEach>
+			<c:choose>
+				<c:when test="${displayAmountType eq SumOrderType.BY_LOCALE}">
+					<c:forEach items="${locales}" var="locale">
+						<th>
+							<div  class="verticalTableHeader">
+								<c:out value="${locale.name}" />
+							</div>
+						</th>
+					</c:forEach>
+				</c:when>
+				<c:otherwise>
+					<th class="th30"><span>Consumo entre datas</span></th>
+				</c:otherwise>
+			</c:choose>
 			
 			<th>
 				<span>Estoque em:</span>
@@ -177,18 +229,35 @@
 				
 				<td><c:out value="${item.subCategory.name}"></c:out></td>
 				
-				<c:forEach begin="0" end="6" varStatus="j">
-					<td class="sum-locale"><c:out 
-						value="${itemLocaleFromPreviousYear.itemLocales[loop.index].sumLocales[j.index].sum}"></c:out></td>
-				</c:forEach>
+				<c:choose>
+					<c:when test="${displayAmountType eq SumOrderType.BY_LOCALE}">
+						<c:forEach items="${locales}" var="locale">
+							<td class="sum-locale"><c:out 
+								value="${itemSumWrapperMap[item.id].previousYearLocaleSum[locale.id]}"></c:out>
+							</td>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<td class="sum-locale"><c:out value="${itemSumWrapperMap[item.id].previousYearOrderAmountSum}"></c:out></td>
+					</c:otherwise>
+				</c:choose>
 			
-				<td><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].startDateAmount}" /></td>
+				<td><c:out value="${itemSumWrapperMap[item.id].customStartStock}" /></td>
 			
-				<c:forEach begin="0" end="6" varStatus="j">
-					<td class="sum-locale"><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].sumLocales[j.index].sum}"></c:out></td>
-				</c:forEach>
+				<c:choose>
+					<c:when test="${displayAmountType eq SumOrderType.BY_LOCALE}">
+						<c:forEach items="${locales}" var="locale">
+							<td class="sum-locale"><c:out 
+								value="${itemSumWrapperMap[item.id].betweenDatesLocaleSum[locale.id]}"></c:out>
+							</td>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<td class="sum-locale"><c:out value="${itemSumWrapperMap[item.id].betweenDatesOrderAmountSum}"></c:out></td>
+					</c:otherwise>
+				</c:choose>
 				
-				<td><c:out value="${itemLocaleBetweenDates.itemLocales[loop.index].endDateAmount}" /></td>		
+				<td><c:out value="${itemSumWrapperMap[item.id].customEndStock}" /></td>		
 			</tr>
 		</tbody>
 	</c:forEach>

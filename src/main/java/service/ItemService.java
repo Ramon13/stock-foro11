@@ -9,17 +9,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import action.AdminHomeDateType;
 import br.com.javamon.exception.DAOException;
 import br.com.javamon.exception.ServiceException;
 import br.com.javamon.exception.ValidationException;
 import br.com.javamon.validation.DateValidator;
 import dao.ItemDAO;
 import domain.DateUtil;
-import domain.ItemLocale;
-import domain.ItemLocale.SumLocale;
-import domain.ItemLocales;
-import domain.ItemPaginationFilter;
 import domain.OrderStatus;
 import domain.util.ExceptionMessageUtil;
 import domain.util.ValidationMessageUtil;
@@ -126,112 +121,6 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 		} catch (DAOException e) {
 			throw new ServiceException("An exception ocourred in an attempt to recover data", e);
 		}
-	}
-	
-	public void sumLocales(List<Item> items, ItemLocales ... itemLocalesList) throws ServiceException {
-		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
-		int lastLocaleId = locales.get(locales.size() - 1).getId().intValue();
-		
-		int idTemp = 0;
-		OrderService orderService = getServiceFactory().getService(OrderService.class);
-		for (int i = 0; i < items.size(); i++) {
-			
-			for (ItemLocales itemLocales : itemLocalesList) {
-				ItemLocale il = new ItemLocale();
-				for (int j = 0; j <= lastLocaleId; j++) {
-					il.getSumLocales().add(il.new SumLocale(0));
-				}
-				il.setItem(items.get(i));
-				itemLocales.getItemLocales().add(il);
-			}
-			
-			
-			for(OrderItem oi : items.get(i).getOrderItems()) {
-				
-				for (ItemLocales itemLocales : itemLocalesList) {
-					
-					if (orderService.isValidToCheckOut(oi.getOrder()) &&
-							isBetweenDateRange(itemLocales.getFilter(), oi.getOrder().getReleaseDate()))
-					{
-						idTemp = oi.getOrder().getCustomer().getLocale().getId().intValue();
-						
-						itemLocales.getItemLocales().get(i).getSumLocales().get(idTemp).incremment(oi.getAmount());;
-						
-					}
-					
-					if (orderService.isValidToCheckOut(oi.getOrder()) && 
-							itemLocales.getFilter().isCalcItemAmountByDate()) {
-						
-						addOrderItemAmount(itemLocales.getItemLocales().get(i), oi,
-								AdminHomeDateType.PRIMARY_DATE, itemLocales.getFilter().getStartDate());
-						
-						addOrderItemAmount(itemLocales.getItemLocales().get(i), oi,
-								AdminHomeDateType.SECOND_DATE, itemLocales.getFilter().getEndDate());
-					}
-				}
-			}
-			
-			
-			for (EntryItem ei : items.get(i).getEntryItems()) {
-				for (ItemLocales itemLocales : itemLocalesList) {
-					if (itemLocales.getFilter().isCalcItemAmountByDate()) {
-						addEntryAmount(itemLocales.getItemLocales().get(i),
-								ei, AdminHomeDateType.PRIMARY_DATE, itemLocales.getFilter().getStartDate());
-						
-						addEntryAmount(itemLocales.getItemLocales().get(i),
-								ei, AdminHomeDateType.SECOND_DATE, itemLocales.getFilter().getEndDate());
-					}
-				}
-			}
-		}
-		
-		
-		for (ItemLocales itemLocales : itemLocalesList) {
-			for (ItemLocale il : itemLocales.getItemLocales()) {
-				List<SumLocale> sumLocales =  new ArrayList<>();
-				for (Locale locale : locales) {
-					sumLocales.add(il.getSumLocales().get(locale.getId().intValue()));
-				}
-				
-				il.setSumLocales(sumLocales);
-			}
-		}
-	}
-	
-	private void addEntryAmount(ItemLocale itemLocale, EntryItem entryItem,
-			AdminHomeDateType adminHomeDateType, LocalDate date) {
-		if (entryItem.getEntry().getDate().isBefore(date) || entryItem.getEntry().getDate().isEqual(date)) {
-			if (adminHomeDateType == AdminHomeDateType.PRIMARY_DATE) {
-				int amount = itemLocale.getStartDateAmount();
-				itemLocale.setStartDateAmount(amount + entryItem.getAmount());
-			
-			}else {
-				int amount = itemLocale.getEndDateAmount();
-				itemLocale.setEndDateAmount(amount + entryItem.getAmount());
-			}
-			
-		}
-	}
-	
-	private void addOrderItemAmount(ItemLocale itemLocale, OrderItem orderItem,
-			AdminHomeDateType adminHomeDateType, LocalDate date) {
-		
-		if (orderItem.getOrder().getReleaseDate().isBefore(date) || orderItem.getOrder().getReleaseDate().isEqual(date)) {
-			
-			if (adminHomeDateType == AdminHomeDateType.PRIMARY_DATE) {
-				int amount = itemLocale.getStartDateAmount();
-				itemLocale.setStartDateAmount(amount - orderItem.getAmount());
-			
-			}else {
-				int amount = itemLocale.getEndDateAmount();
-				itemLocale.setEndDateAmount(amount - orderItem.getAmount());
-			}
-			
-		}
-	}
-	
-	private boolean isBetweenDateRange(ItemPaginationFilter filter, LocalDate orderDate) {
-		return DateValidator.isWithinRange(filter.getStartDate(), filter.getEndDate(), orderDate);
 	}
 	
 	public void changeMainImage(Long itemId, Long imageId) throws ServiceException, ValidationException{
@@ -347,26 +236,6 @@ public class ItemService extends ApplicationService<Item, ItemDAO>{
 			item.setAmount(getItemCurrentAmount(item));
 			update(item);
 		}
-	}
-	
-	/**
-	 *  
-	 * @param sumByMonth Array with the sum of every month.
-	 * Each index represents the sum of the respective month
-	 * 
-	 * @return A sorted list on decreasing order starting on the current month.
-	 * Example: current month = nov -> sorted: oct, sept, jul...
-	 */
-	private List<Integer> sortSums(int[] sumByMonth){
-		List<Integer> sorted = new ArrayList<Integer>();
-		LocalDate date = LocalDate.now().withDayOfMonth(1);
-		
-		for (int i = 1; i < sumByMonth.length; i++) {
-			date = date.minusMonths(1);
-			sorted.add(sumByMonth[date.getMonthValue()]);
-		}
-		
-		return sorted;
 	}
 	
 	public List<Item> searchOnItems(PaginationFilter filter) throws ServiceException{

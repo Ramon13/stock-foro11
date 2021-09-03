@@ -3,25 +3,37 @@ package action.restrict.item;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 
 import action.ActionUtil;
 import action.ApplicationAction;
+import action.model.ItemSumWrapper;
+import action.model.SumOrderType;
 import br.com.javamon.convert.DateConvert;
 import br.com.javamon.exception.ConvertException;
 import br.com.javamon.exception.ServiceException;
 import domain.DateUtil;
-import domain.ItemLocales;
 import domain.ItemPaginationFilter;
+import domain.OrderStatus;
+import entity.Entry;
+import entity.EntryItem;
 import entity.Item;
 import entity.Locale;
+import entity.Order;
+import entity.OrderItem;
 import report.ItemReport;
 import report.ReportException;
 import report.ReportType;
+import service.EntryItemService;
 import service.ItemService;
 import service.LocaleService;
+import service.OrderItemService;
 
 public class ListWithLocalesAmount extends ApplicationAction{
 
@@ -42,28 +54,100 @@ public class ListWithLocalesAmount extends ApplicationAction{
 	}
 	
 	private void putContentOnRequest() throws Exception {
-		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list();
+		List<Locale> locales = getServiceFactory().getService(LocaleService.class).list(7);
 		
 		List<Item> items = getItems();
 		
-		addAmountByLocaleToRequest(items);
+		getDisplayAmountType(getRequest().getSession());
+		Map<Long, ItemSumWrapper> itemSumWrapperMap = getItemAmountSum(items, locales);
 		
+		getRequest().setAttribute("itemSumWrapperMap", itemSumWrapperMap);
 		getRequest().setAttribute("lastYear", DateUtil.firstDayOfPreviousYear().getYear());
 		getRequest().setAttribute("locales", locales);
 		getRequest().setAttribute("items", items);
 		getRequest().setAttribute("primaryDate", getPrimaryDate());
-		getRequest().setAttribute("secondDate", getSecondDate());
-		
+		getRequest().setAttribute("secondDate", getSecondDate());	
 	}
-
-	private void addAmountByLocaleToRequest(List<Item> items)
-			throws ConvertException, ServiceException {
-		ItemLocales itemLocalesFromPreviousYear = getItemLocalesFromPreviousYear();
-		ItemLocales itemLocalesBetweenDates = getItemLocalesBetweenDates();
-		itemSvc.sumLocales(items, itemLocalesFromPreviousYear, itemLocalesBetweenDates);
+	
+	private Map<Long, ItemSumWrapper> getItemAmountSum(List<Item> items, List<Locale> locales) throws ServiceException, ConvertException {
+		Map<Long, ItemSumWrapper> itemSumWrapperMap = new HashMap<>();
 		
-		getRequest().setAttribute("itemLocaleFromPreviousYear", itemLocalesFromPreviousYear);
-		getRequest().setAttribute("itemLocaleBetweenDates", itemLocalesBetweenDates);
+		OrderItemService orderItemSvc = getServiceFactory().getService(OrderItemService.class);
+		List<OrderItem> orderItems = orderItemSvc.list();
+		
+		ItemPaginationFilter previousYearFilter = getPreviousYearFilter();
+		ItemPaginationFilter betweenDatesFilter = getBetweenDatesFilter();
+		
+		for (Item item : items) {
+			itemSumWrapperMap.put(item.getId(), new ItemSumWrapper(item, locales));	
+		}
+		
+		boolean isPreviousYear, isBetweenDates;
+		long itemId;
+		int amount;
+		Order order;
+		Locale locale;
+		ItemSumWrapper itemSumWrapper;
+		for (OrderItem orderItem : orderItems) {
+			order = orderItem.getOrder();
+			itemId = orderItem.getItem().getId();
+			itemSumWrapper = itemSumWrapperMap.get(itemId);
+			
+			if (order != null && itemSumWrapper != null && OrderStatus.isFinalizedOrReleased(order)) {
+				locale = order.getCustomer().getLocale();
+				amount = orderItem.getAmount();
+				
+				if (DateUtil.isPrevious(order.getReleaseDate(), betweenDatesFilter.getStartDate())) {
+					itemSumWrapper.incrementCustomStartStock(amount * -1);
+				}
+				
+				if (DateUtil.isPrevious(order.getReleaseDate(), betweenDatesFilter.getEndDate())) {
+					itemSumWrapper.incrementCustomEndStock(amount * -1);
+				}
+				
+				isPreviousYear = DateUtil.isBetweenOrEqual(order.getReleaseDate(),
+						previousYearFilter.getStartDate(),
+						previousYearFilter.getEndDate());
+				
+				if (isPreviousYear) {
+					itemSumWrapper.incrementPreviousYearSum(amount);
+					itemSumWrapper.incremmentPreviousYearLocaleSum(locale.getId(), amount);
+				}
+				
+				isBetweenDates = DateUtil.isBetweenOrEqual(order.getReleaseDate(),
+						betweenDatesFilter.getStartDate(), 
+						betweenDatesFilter.getEndDate());
+				
+				if (!isBetweenDates && !isPreviousYear)
+					continue;
+				
+				if (isBetweenDates) {
+					itemSumWrapper.incrementBetweenSum(amount);
+					itemSumWrapper.incremmentBetweenDatesLocaleSum(locale.getId(), amount);
+				}
+			}
+		}
+		
+		EntryItemService entryItemSvc = getServiceFactory().getService(EntryItemService.class);
+		List<EntryItem> entryItems = entryItemSvc.list();
+		Entry entry;
+		for (EntryItem entryItem : entryItems) {
+			entry = entryItem.getEntry();
+			itemId = entryItem.getItem().getId();
+			itemSumWrapper = itemSumWrapperMap.get(itemId);
+			
+			if (entry != null && itemSumWrapper != null) {
+				if (DateUtil.isPrevious(entry.getDate(), betweenDatesFilter.getStartDate())) {
+					itemSumWrapper.incrementCustomStartStock(entryItem.getAmount());
+				}
+				
+				if (DateUtil.isPrevious(entry.getDate(), betweenDatesFilter.getEndDate())) {
+					itemSumWrapper.incrementCustomEndStock(entryItem.getAmount());
+				}
+			}
+		}
+		
+		return itemSumWrapperMap;
 	}
 	
 	private List<Item> getItems() throws ServiceException{
@@ -74,22 +158,6 @@ public class ListWithLocalesAmount extends ApplicationAction{
 		}
 		
 		return itemSvc.searchOnItems(paginationFilter);
-	}
-	
-	private ItemLocales getItemLocalesFromPreviousYear() {
-		ItemPaginationFilter filter = getPreviousYearFilter();
-		
-		ItemLocales itemLocales = new ItemLocales();
-		itemLocales.setFilter(filter);
-		return itemLocales;
-	}
-
-	private ItemLocales getItemLocalesBetweenDates() throws ConvertException {
-		ItemPaginationFilter filter = getBetweenDatesFilter();
-		
-		ItemLocales itemLocales = new ItemLocales();
-		itemLocales.setFilter(filter);
-		return itemLocales;
 	}
 	
 	private ItemPaginationFilter getPreviousYearFilter() {
@@ -127,21 +195,36 @@ public class ListWithLocalesAmount extends ApplicationAction{
 		paginationFilter.setMaxResults(null);
 		List<Item> items = getItems();
 		
-		ItemLocales itemLocalesFromPreviousYear = getItemLocalesFromPreviousYear();
-		ItemLocales itemLocalesBetweenDates = getItemLocalesBetweenDates();
-		itemSvc.sumLocales(items, itemLocalesFromPreviousYear, itemLocalesBetweenDates);
+		ItemPaginationFilter betweenDatesFilter = getBetweenDatesFilter();
+		Map<Long, ItemSumWrapper> itemSumWrapperMap = getItemAmountSum(items, locales);
+		
 		ReportType reportType = ReportType.of(getRequest().getParameter("reportType"));
 		ItemReport itemReport = new ItemReport();
 		
 		getResponse().setHeader("Content-disposition", String.format("inline; filename=consumo-por-periodo.%s", reportType.getValue()));
 		if (reportType == ReportType.PDF) {
 			getResponse().setContentType("application/pdf");	
-			itemReport.sendPdfItemReport(locales, itemLocalesBetweenDates, getResponse().getOutputStream(), Paths.get(ActionUtil.getReportsPath(getRequest())));
+			itemReport.sendPdfItemReport(betweenDatesFilter, itemSumWrapperMap.values(), 
+					getResponse().getOutputStream(), Paths.get(ActionUtil.getReportsPath(getRequest())));
 		
 		}else if (reportType == ReportType.XLS) {
 			getResponse().setContentType("application/xls");
-			itemReport.sendXlsItemReport(locales, itemLocalesBetweenDates, getResponse().getOutputStream(), Paths.get(ActionUtil.getReportsPath(getRequest())));
+			itemReport.sendXlsItemReport(betweenDatesFilter, itemSumWrapperMap.values(), 
+					getResponse().getOutputStream(), Paths.get(ActionUtil.getReportsPath(getRequest())));
 		}
 		
+	}
+	
+	private SumOrderType getDisplayAmountType(HttpSession session) {
+		SumOrderType type = SumOrderType.BY_ITEM;
+		if (!StringUtils.isAllBlank(getRequest().getParameter("displayAmountType"))) {
+			type = SumOrderType.fromString(getRequest().getParameter("displayAmountType"));
+		
+		}else if ((SumOrderType) session.getAttribute("displayAmountType") != null) {
+			type = (SumOrderType) session.getAttribute("displayAmountType");
+		}
+		
+		session.setAttribute("displayAmountType", type);
+		return type;
 	}
 }

@@ -18,6 +18,13 @@ public class LocaleDAO extends ApplicationDAO<Locale>{
 		return list(hql);
 	}
 	
+	public List<Locale> listLocales(int maxResults)throws DAOException{
+		String hql = "from Locale l order by l.id";
+		Query<Locale> query = createQuery(hql, Locale.class);
+		query.setMaxResults(maxResults);
+		return query.list();
+	}
+	
 	public Locale getLastLocale() throws DAOException{
 		String hql = "from Locale l order by l.id desc";
 		Query<Locale> query = createQuery(hql, Locale.class);

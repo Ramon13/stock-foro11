@@ -45,6 +45,14 @@ public class OrderService extends ApplicationService<Order, OrderDAO>{
 		}
 	}
 	
+	public List<Order> listByStatus(OrderStatus...status) throws ServiceException{
+		try {
+			return getDaoFactory().getDAO(OrderDAO.class).listByStatus(status);
+		}catch(DAOException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	public List<Order> listByStatus(OrderStatus status, PaginationFilter filter) throws ServiceException{
 		try {
 			return getDaoFactory().getDAO(OrderDAO.class).listByStatus(filter, status);

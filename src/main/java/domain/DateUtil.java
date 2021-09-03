@@ -43,4 +43,14 @@ public class DateUtil {
 		return names;
 	}
 	
+	public static boolean isBetweenOrEqual(LocalDate date, LocalDate startDate, LocalDate endDate) {
+		return date.isEqual(startDate) || date.isEqual(endDate) || (date.isAfter(startDate) && date.isBefore(endDate));
+	}
+	
+	/**
+	 * Checks if comparissonDate is before date
+	 */
+	public static boolean isPrevious(LocalDate date, LocalDate comparissonDate) {
+		return date.isBefore(comparissonDate) || date.isEqual(comparissonDate);
+	}
 }
